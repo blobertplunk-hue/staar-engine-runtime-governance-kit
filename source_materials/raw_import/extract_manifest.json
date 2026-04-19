@@ -1,0 +1,778 @@
+{
+  "zip_path": "/mnt/data/MPE_CANONICAL_BASE_AUDITED_FULL_RUNTIME.zip",
+  "selected_count": 193,
+  "selected": [
+    {
+      "path": "ENGINE_REGISTRY.json",
+      "size": 5803
+    },
+    {
+      "path": "MPE_ENGINE/MPP_SPEC.json",
+      "size": 2037
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/MB_LEDGER.json",
+      "size": 132
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R10_receipt.json",
+      "size": 705
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R1_receipt.json",
+      "size": 581
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R2_R3_receipt.json",
+      "size": 344
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R2_report.json",
+      "size": 78
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R3_1_receipt.json",
+      "size": 1263
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R3_report.json",
+      "size": 659
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R4_receipt.json",
+      "size": 1574
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R5_audit.json",
+      "size": 2048
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R5_receipt.json",
+      "size": 602
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R6_receipt.json",
+      "size": 476
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R7_receipt.json",
+      "size": 598
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R8_receipt.json",
+      "size": 467
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/R9_receipt.json",
+      "size": 334
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/S10_6_receipt.json",
+      "size": 231
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/S10_7_receipt.json",
+      "size": 155
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/S10_9_receipt.json",
+      "size": 120
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/adaptive_repair_plan.json",
+      "size": 286
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/adaptive_result.json",
+      "size": 81
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/adaptive_result_v2.json",
+      "size": 263
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/adaptive_state_v2.json",
+      "size": 195
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/cache_80824bdd6d9471fc0421d13e901d75234bd862d510061b3dfc23d61f295ea939.json",
+      "size": 38
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/canonical_base_declaration.json",
+      "size": 933
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/cartridge_authority_audit_report.json",
+      "size": 321
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/cartridge_authority_receipt.json",
+      "size": 832
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/cartridge_router_wiring_audit.json",
+      "size": 611
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/cartridge_router_wiring_receipt.json",
+      "size": 861
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/cartridge_selection.json",
+      "size": 29
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/ce_input_contract.json",
+      "size": 457
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/ce_output.json",
+      "size": 955
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/ce_routing_receipt.json",
+      "size": 88
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/ce_stage_1_adapter_receipt.json",
+      "size": 583
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/ce_stage_1_line_audit.json",
+      "size": 3616
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/ce_stage_1_line_audit.md",
+      "size": 691
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/ce_stage_1_output.json",
+      "size": 338
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/ce_stage_2_validation.json",
+      "size": 264
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/claim.json",
+      "size": 55
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/completion_packet.json",
+      "size": 234
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/deep_audit_report.json",
+      "size": 1129
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/evaluation_report.json",
+      "size": 108
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/evidence_object.json",
+      "size": 106
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/orchestrator_output.json",
+      "size": 77
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/post_patch_execution_audit.json",
+      "size": 5167
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/r12fi_gate_results.json",
+      "size": 8239
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/r12fi_metaroi_receipt.json",
+      "size": 819
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/retrieval_result.json",
+      "size": 130
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/router_output.json",
+      "size": 272
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/runner_result.json",
+      "size": 54
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/runtime_audit_report.json",
+      "size": 1798
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/stage_execution_result.json",
+      "size": 186
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/validation_gate_report.json",
+      "size": 38
+    },
+    {
+      "path": "MPE_ENGINE/artifacts/runs/workflow_state.json",
+      "size": 147
+    },
+    {
+      "path": "MPE_ENGINE/contracts/cartridges/cartridge_contract_v1.json",
+      "size": 2322
+    },
+    {
+      "path": "MPE_ENGINE/contracts/stage_contracts/S10_6_see_integration.json",
+      "size": 244
+    },
+    {
+      "path": "MPE_ENGINE/engine/MPP_RUNTIME.py",
+      "size": 442
+    },
+    {
+      "path": "MPE_ENGINE/engine/adaptive_controller_v1.py",
+      "size": 1687
+    },
+    {
+      "path": "MPE_ENGINE/engine/adaptive_controller_v2.py",
+      "size": 12817
+    },
+    {
+      "path": "MPE_ENGINE/engine/cartridge_router.py",
+      "size": 3753
+    },
+    {
+      "path": "MPE_ENGINE/engine/ce_adapter.py",
+      "size": 11243
+    },
+    {
+      "path": "MPE_ENGINE/engine/ce_native.py",
+      "size": 2477
+    },
+    {
+      "path": "MPE_ENGINE/engine/evaluation_engine_v1.py",
+      "size": 1690
+    },
+    {
+      "path": "MPE_ENGINE/engine/guard_layer.py",
+      "size": 874
+    },
+    {
+      "path": "MPE_ENGINE/engine/orchestrator.py",
+      "size": 957
+    },
+    {
+      "path": "MPE_ENGINE/engine/orchestrator_v2.py",
+      "size": 952
+    },
+    {
+      "path": "MPE_ENGINE/engine/pipeline_runner.py",
+      "size": 2241
+    },
+    {
+      "path": "MPE_ENGINE/engine/r12fi_engine.py",
+      "size": 31326
+    },
+    {
+      "path": "MPE_ENGINE/engine/router_v2.py",
+      "size": 969
+    },
+    {
+      "path": "MPE_ENGINE/engine/router_v3.py",
+      "size": 1799
+    },
+    {
+      "path": "MPE_ENGINE/engine/runtime_auditor_v1.py",
+      "size": 9878
+    },
+    {
+      "path": "MPE_ENGINE/engine/runtime_auditor_v2_deep.py",
+      "size": 13117
+    },
+    {
+      "path": "MPE_ENGINE/engine/stage_executor.py",
+      "size": 586
+    },
+    {
+      "path": "MPE_ENGINE/engine/validation_gate.py",
+      "size": 1190
+    },
+    {
+      "path": "MPE_ENGINE/engine/workflow_engine_v2.py",
+      "size": 2869
+    },
+    {
+      "path": "MPE_ENGINE/engine/workflow_engine_v3.py",
+      "size": 9195
+    },
+    {
+      "path": "MPE_ENGINE/governed_workflows/build_forward_from_canonical_base_v1.json",
+      "size": 1077
+    },
+    {
+      "path": "MPE_ENGINE/registry/cartridge_registry.json",
+      "size": 6626
+    },
+    {
+      "path": "MPE_ENGINE/registry/cartridge_selection_policy.json",
+      "size": 555
+    },
+    {
+      "path": "MPE_ENGINE/see_integration/see_pipeline_integration.py",
+      "size": 972
+    },
+    {
+      "path": "MPE_ENGINE/stage_inputs.json",
+      "size": 20
+    },
+    {
+      "path": "MPE_ENGINE/stage_selection.json",
+      "size": 54
+    },
+    {
+      "path": "MPE_ENGINE/task_request.json",
+      "size": 262
+    },
+    {
+      "path": "RUNTIME_BUILD_CONTRACT.json",
+      "size": 355904
+    },
+    {
+      "path": "assurance/VALIDATOR_REGISTRY.json",
+      "size": 15124
+    },
+    {
+      "path": "cartridges/ARTICLE_SOP.json",
+      "size": 9634
+    },
+    {
+      "path": "cartridges/BUNDLE_SHIPPER.json",
+      "size": 8356
+    },
+    {
+      "path": "cartridges/BUSY_WITCHY.json",
+      "size": 7269
+    },
+    {
+      "path": "cartridges/CARTRIDGE_IMPROVEMENT_CARTRIDGE.json",
+      "size": 4439
+    },
+    {
+      "path": "cartridges/CARTRIDGE_INTAKE_CARTRIDGE.json",
+      "size": 8182
+    },
+    {
+      "path": "cartridges/CARTRIDGE_REGISTRY.json",
+      "size": 6697
+    },
+    {
+      "path": "cartridges/CEJ.json",
+      "size": 9983
+    },
+    {
+      "path": "cartridges/DILL.json",
+      "size": 8390
+    },
+    {
+      "path": "cartridges/ERAC.json",
+      "size": 9402
+    },
+    {
+      "path": "cartridges/GAPFINDER.json",
+      "size": 7499
+    },
+    {
+      "path": "cartridges/HTML_BUILDER.json",
+      "size": 11118
+    },
+    {
+      "path": "cartridges/HTML_EDUCATIONAL.json",
+      "size": 8623
+    },
+    {
+      "path": "cartridges/IMPROVEMENT_CARTRIDGE.json",
+      "size": 6117
+    },
+    {
+      "path": "cartridges/MTSS_DOCUMENTATION.json",
+      "size": 8378
+    },
+    {
+      "path": "cartridges/NSV3.json",
+      "size": 8781
+    },
+    {
+      "path": "cartridges/R12FI.json",
+      "size": 10297
+    },
+    {
+      "path": "cartridges/STAAR_ASSESSMENT.json",
+      "size": 10691
+    },
+    {
+      "path": "cartridges/TAMPERMONKEY.json",
+      "size": 9699
+    },
+    {
+      "path": "cartridges/TAURI_BUILDER.json",
+      "size": 9583
+    },
+    {
+      "path": "cartridges/TEKS_BILINGUAL.json",
+      "size": 8713
+    },
+    {
+      "path": "cartridges/TEKS_BILINGUAL_v2.json",
+      "size": 713
+    },
+    {
+      "path": "cartridges/TERMUX.json",
+      "size": 8228
+    },
+    {
+      "path": "cartridges/TPT_PRODUCT.json",
+      "size": 6947
+    },
+    {
+      "path": "cartridges/mb_auto_patch_engine_v1.json",
+      "size": 4199
+    },
+    {
+      "path": "cartridges/mb_autonomous_iteration_loop_v1.json",
+      "size": 4644
+    },
+    {
+      "path": "cartridges/mb_compliance_grader_v1.json",
+      "size": 3659
+    },
+    {
+      "path": "cartridges/mb_execution_orchestration_adapter_v1.json",
+      "size": 4122
+    },
+    {
+      "path": "cartridges/mb_failure_intelligence_system_v1.json",
+      "size": 3560
+    },
+    {
+      "path": "cartridges/mb_outcome_validator_v1.json",
+      "size": 2747
+    },
+    {
+      "path": "cartridges/mb_regression_harness_v1.json",
+      "size": 3870
+    },
+    {
+      "path": "cartridges/mb_stage_decision_template_v1.json",
+      "size": 3952
+    },
+    {
+      "path": "cartridges/mb_turn_packet_cartridge_v1.json",
+      "size": 1574
+    },
+    {
+      "path": "cartridges/mb_universal_auditor_v1.json",
+      "size": 5570
+    },
+    {
+      "path": "engines/ARTIFACT_SCANNER.py",
+      "size": 30058
+    },
+    {
+      "path": "engines/BOOTSTRAP_ENGINE_V2.py",
+      "size": 6176
+    },
+    {
+      "path": "engines/CARTRIDGE_BUNDLE_AUTOINTAKE_v1.py",
+      "size": 9176
+    },
+    {
+      "path": "engines/CARTRIDGE_INTAKE_HOOK_v1.py",
+      "size": 5294
+    },
+    {
+      "path": "engines/CARTRIDGE_RESOLVER.py",
+      "size": 10530
+    },
+    {
+      "path": "engines/CE_ENGINE.json",
+      "size": 6432
+    },
+    {
+      "path": "engines/CHECKPOINT.py",
+      "size": 1054
+    },
+    {
+      "path": "engines/EXECUTION_KERNEL.py",
+      "size": 29406
+    },
+    {
+      "path": "engines/HASHING.py",
+      "size": 272
+    },
+    {
+      "path": "engines/JSON_TO_PYTHON.py",
+      "size": 21267
+    },
+    {
+      "path": "engines/MB_AUTO_PATCH_ENGINE_v1.py",
+      "size": 5983
+    },
+    {
+      "path": "engines/MB_CARTRIDGE_EXECUTION_ENGINE_v1.py",
+      "size": 5648
+    },
+    {
+      "path": "engines/MB_CARTRIDGE_RULE_COMPILER_v1.py",
+      "size": 2431
+    },
+    {
+      "path": "engines/MB_EXECUTION_KERNEL_V3.py",
+      "size": 4466
+    },
+    {
+      "path": "engines/MB_LEDGER_v1.py",
+      "size": 1347
+    },
+    {
+      "path": "engines/MEMORY_ENGINE.py",
+      "size": 7978
+    },
+    {
+      "path": "engines/METARESEARCH_ENGINE.json",
+      "size": 4420
+    },
+    {
+      "path": "engines/MPP_RUNTIME.py",
+      "size": 7648
+    },
+    {
+      "path": "engines/MPP_SPEC.json",
+      "size": 9632
+    },
+    {
+      "path": "engines/MPP_STAGE_REGISTRY.json",
+      "size": 2623
+    },
+    {
+      "path": "engines/OBSERVER.py",
+      "size": 899
+    },
+    {
+      "path": "engines/ORCHESTRATOR.py",
+      "size": 31857
+    },
+    {
+      "path": "engines/RECONSTRUCTOR.py",
+      "size": 348
+    },
+    {
+      "path": "engines/REPLAY_ENGINE.py",
+      "size": 501
+    },
+    {
+      "path": "engines/SAFE_EXECUTOR.py",
+      "size": 1470
+    },
+    {
+      "path": "engines/SEE_RESEARCH_GATE.py",
+      "size": 14526
+    },
+    {
+      "path": "engines/SESSION_CONTEXT_READER.py",
+      "size": 2902
+    },
+    {
+      "path": "engines/SESSION_SUMMARY_WRITER.py",
+      "size": 2114
+    },
+    {
+      "path": "engines/SPEC_GATE.py",
+      "size": 7333
+    },
+    {
+      "path": "engines/TURN_STATE_LEDGER.py",
+      "size": 10997
+    },
+    {
+      "path": "engines/__init__.py",
+      "size": 10
+    },
+    {
+      "path": "engines/advanced_tests_v1.py",
+      "size": 401
+    },
+    {
+      "path": "engines/apr_engine_v2.py",
+      "size": 340
+    },
+    {
+      "path": "engines/ast_patch_engine_v1.py",
+      "size": 497
+    },
+    {
+      "path": "engines/auditor.py",
+      "size": 142
+    },
+    {
+      "path": "engines/ci_pipeline_v1.py",
+      "size": 887
+    },
+    {
+      "path": "engines/ci_pipeline_v2.py",
+      "size": 1269
+    },
+    {
+      "path": "engines/ci_pipeline_v3.py",
+      "size": 1462
+    },
+    {
+      "path": "engines/ci_pipeline_v4.py",
+      "size": 1245
+    },
+    {
+      "path": "engines/ci_pipeline_v5.py",
+      "size": 1881
+    },
+    {
+      "path": "engines/ci_pipeline_v6.py",
+      "size": 2300
+    },
+    {
+      "path": "engines/ci_pipeline_v7.py",
+      "size": 84
+    },
+    {
+      "path": "engines/claim_engine.py",
+      "size": 793
+    },
+    {
+      "path": "engines/dependency_validator_v1.py",
+      "size": 519
+    },
+    {
+      "path": "engines/differential_tester_v1.py",
+      "size": 64
+    },
+    {
+      "path": "engines/eee.py",
+      "size": 1658
+    },
+    {
+      "path": "engines/failure_classifier_v1.py",
+      "size": 221
+    },
+    {
+      "path": "engines/fuzz_engine_v1.py",
+      "size": 183
+    },
+    {
+      "path": "engines/invariant_engine_v1.py",
+      "size": 524
+    },
+    {
+      "path": "engines/invariant_learning_v1.py",
+      "size": 474
+    },
+    {
+      "path": "engines/patch_scorer_v2.py",
+      "size": 241
+    },
+    {
+      "path": "engines/query_refiner.py",
+      "size": 992
+    },
+    {
+      "path": "engines/retry.py",
+      "size": 327
+    },
+    {
+      "path": "engines/runtime_injector_v2.py",
+      "size": 450
+    },
+    {
+      "path": "engines/runtime_injector_v3.py",
+      "size": 540
+    },
+    {
+      "path": "engines/stage_contracts.json",
+      "size": 3047
+    },
+    {
+      "path": "engines/stages.py",
+      "size": 8233
+    },
+    {
+      "path": "engines/static_analysis_v1.py",
+      "size": 33
+    },
+    {
+      "path": "engines/symbol_enforcer_v1.py",
+      "size": 1477
+    },
+    {
+      "path": "engines/telemetry_v1.py",
+      "size": 270
+    },
+    {
+      "path": "engines/tool_adapter.py",
+      "size": 261
+    },
+    {
+      "path": "engines/type_validator_v1.py",
+      "size": 347
+    },
+    {
+      "path": "engines/validator.py",
+      "size": 619
+    },
+    {
+      "path": "engines/validator_stack_v3.py",
+      "size": 517
+    },
+    {
+      "path": "engines/workflow_engine_v1.py",
+      "size": 208
+    },
+    {
+      "path": "schemas/ATOM_SCHEMA.json",
+      "size": 232
+    },
+    {
+      "path": "schemas/CARTRIDGE_CLASSIFICATION_REPORT_SCHEMA.json",
+      "size": 576
+    },
+    {
+      "path": "schemas/CARTRIDGE_INTAKE_RECEIPT_SCHEMA.json",
+      "size": 497
+    },
+    {
+      "path": "schemas/CARTRIDGE_REGISTRATION_MANIFEST_SCHEMA.json",
+      "size": 334
+    },
+    {
+      "path": "schemas/CARTRIDGE_REGISTRY_PATCH_PLAN_SCHEMA.json",
+      "size": 381
+    },
+    {
+      "path": "schemas/SEE_EVIDENCE_SCHEMA.json",
+      "size": 837
+    },
+    {
+      "path": "schemas/SEE_WEB_RESULTS_SCHEMA.json",
+      "size": 1038
+    },
+    {
+      "path": "schemas/STATE_SNAPSHOT_SCHEMA.json",
+      "size": 169
+    },
+    {
+      "path": "schemas/TURN_RECEIPT_SCHEMA.json",
+      "size": 683
+    },
+    {
+      "path": "schemas/TURN_RECORD_SCHEMA.json",
+      "size": 184
+    }
+  ]
+}

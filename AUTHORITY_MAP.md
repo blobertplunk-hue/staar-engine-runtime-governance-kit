@@ -1,0 +1,10 @@
+# AUTHORITY_MAP
+
+1. source_materials/raw_import/
+2. AUTHORITY_MAP.md
+3. REPO_MAP.md
+4. CLAUDE.md
+5. governance/
+6. contracts/
+7. runtimes/
+8. audits/

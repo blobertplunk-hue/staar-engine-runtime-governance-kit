@@ -1,0 +1,80 @@
+{
+  "repo_name": "staar-engine-runtime-governance-kit",
+  "repo_root": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit",
+  "found_count": 9,
+  "raw_file_count": 9,
+  "files": [
+    {
+      "filename": "3.6ABC 3.8A 3.4BC.pdf",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/3.6ABC 3.8A 3.4BC.pdf",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/released_tests/3.6ABC 3.8A 3.4BC.pdf",
+      "category": "source_materials/released_tests",
+      "sha256": "c78b8b0c9cde1dc7ccd0bf1d5050dadf997f8f132a235a7a9d8d991b45ded1cf",
+      "bytes": 5444753
+    },
+    {
+      "filename": "CODING_RELIABILITY_SOP_v1.md",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/CODING_RELIABILITY_SOP_v1.md",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/governance/sops/CODING_RELIABILITY_SOP_v1.md",
+      "category": "governance/sops",
+      "sha256": "90868ac1187de9314db253af519a0cf6d693f40bfa9f724814837ef2a93d6e84",
+      "bytes": 2797
+    },
+    {
+      "filename": "COMPANION_CHANGE_MATRIX_v1.json",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/COMPANION_CHANGE_MATRIX_v1.json",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/contracts/engine_contracts/COMPANION_CHANGE_MATRIX_v1.json",
+      "category": "contracts/engine_contracts",
+      "sha256": "1fd718c20053488799bae296e78a21e5ffb985c2c16f75c33b8de212b81e9b3a",
+      "bytes": 1208
+    },
+    {
+      "filename": "PROMOTION_GATE_v1.json",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/PROMOTION_GATE_v1.json",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/contracts/engine_contracts/PROMOTION_GATE_v1.json",
+      "category": "contracts/engine_contracts",
+      "sha256": "ebd99ccd544f36a826d129ddcbb46522565044c84c8dd2fcafa4c27b6c41cb16",
+      "bytes": 659
+    },
+    {
+      "filename": "STAAR_ENGINE_SOP.md",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/STAAR_ENGINE_SOP.md",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/governance/sops/STAAR_ENGINE_SOP.md",
+      "category": "governance/sops",
+      "sha256": "c27a6f3ed3950ff2c8a0176ebf8dc44e319a542ffd17d45b6eb75f5e298b3954",
+      "bytes": 19443
+    },
+    {
+      "filename": "SUBSYSTEM_VALIDATOR_MATRIX_v1.json",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/SUBSYSTEM_VALIDATOR_MATRIX_v1.json",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/contracts/engine_contracts/SUBSYSTEM_VALIDATOR_MATRIX_v1.json",
+      "category": "contracts/engine_contracts",
+      "sha256": "5b06c95ab829bfe28097f333f821e8ec8dff6af444351a81a3129d3b4977d79d",
+      "bytes": 1802
+    },
+    {
+      "filename": "extract_manifest.json",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/extract_manifest.json",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/contracts/engine_contracts/extract_manifest.json",
+      "category": "contracts/engine_contracts",
+      "sha256": "abf8e7f03f8526fad745b8bcbe1b2eb99a8d11c70ef0e926c7398e1332182574",
+      "bytes": 16650
+    },
+    {
+      "filename": "staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/runtimes/html_runtime_files/staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html",
+      "category": "runtimes/html_runtime_files",
+      "sha256": "dd1acb5d56be5dc132c729d59570caed91757241892a9f7df938357e294215f7",
+      "bytes": 192837
+    },
+    {
+      "filename": "teks_engine_contract_bundle_v1.json",
+      "raw_import_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/source_materials/raw_import/teks_engine_contract_bundle_v1.json",
+      "classified_path": "/data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/contracts/engine_contracts/teks_engine_contract_bundle_v1.json",
+      "category": "contracts/engine_contracts",
+      "sha256": "054c5929aad8b51c05d62e88515ee31f07985c68029edd7eb2ff2e551c0519fa",
+      "bytes": 16752
+    }
+  ]
+}

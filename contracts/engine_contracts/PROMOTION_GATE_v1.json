@@ -1,0 +1,22 @@
+{
+  "artifact_id": "PROMOTION_GATE_v1",
+  "created_at": "2026-04-19T00:06:32.845446+00:00",
+  "promotion_requirements": [
+    "source_runtime_declared",
+    "target_runtime_declared",
+    "one_subsystem_only",
+    "before_after_counts_recorded",
+    "syntax_check_passed",
+    "subsystem_validators_passed",
+    "duplicate_critical_function_audit_passed",
+    "single_boot_path_audit_passed",
+    "receipt_exists"
+  ],
+  "blockers": [
+    "multiple live definitions of a critical function",
+    "hidden dead-end user flow",
+    "family added without companion changes",
+    "runtime promoted without validator evidence",
+    "known blocker list omitted"
+  ]
+}

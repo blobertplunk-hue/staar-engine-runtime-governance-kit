@@ -1,0 +1,48 @@
+{
+  "artifact_id": "COMPANION_CHANGE_MATRIX_v1",
+  "created_at": "2026-04-19T00:06:32.845446+00:00",
+  "subsystems": {
+    "question_family": [
+      "generator",
+      "chooser_surface",
+      "validator_support",
+      "label_helper_support",
+      "coverage_signal",
+      "clue_support_mapping_if_applicable",
+      "persistence_review_if_state_shape_changes"
+    ],
+    "chooser_logic": [
+      "duplicate_definition_audit",
+      "winning_path_confirmation",
+      "surface_signal_check",
+      "coverage_audit_update_if_needed"
+    ],
+    "mastery_loop": [
+      "mode_state_update",
+      "UI_state_update",
+      "progress_display_update",
+      "overlay_path_validation",
+      "receipt_of_unchanged_question_mix"
+    ],
+    "unlock_ui": [
+      "reachable_trigger",
+      "visible_lockout_path",
+      "keyboard_path",
+      "teacher_only_scope_check"
+    ],
+    "clue_engine": [
+      "family_map",
+      "tier_1_concept_cue",
+      "tier_2_structure_check",
+      "tier_3_worked_or_checking_step",
+      "no_stem_echo_check"
+    ],
+    "persistence": [
+      "save_hook",
+      "restore_hook",
+      "safe_parse_guard",
+      "default_fallback",
+      "schema_version_or_shape_check"
+    ]
+  }
+}

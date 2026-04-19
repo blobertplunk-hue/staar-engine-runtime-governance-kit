@@ -1,0 +1,497 @@
+{
+  "artifact_type": "teks_engine_contract_bundle",
+  "version": "v1",
+  "governing_sources": {
+    "sop_file": "/mnt/data/STAAR_ENGINE_SOP.md",
+    "exemplar_runtime_file": "/mnt/data/staar_engine_v44_validator_scope_fix.html",
+    "released_packet_file": "/mnt/data/3.6ABC 3.8A 3.4BC.pdf"
+  },
+  "global_runtime_contract": {
+    "runtime_model": "single_file_html_adaptive_engine",
+    "must_inherit_runtime_patterns": [
+      "bilingual_en_es_support",
+      "adaptive_family_selection",
+      "misconception_counters",
+      "teacher_panel_with_family_exposure",
+      "scaffold_tiers_hidden_until_needed",
+      "challenge_gate_tied_to_exposure_not_score_only",
+      "validator_before_display",
+      "coverage_audit_no_dead_families"
+    ],
+    "interaction_invariants": {
+      "multiple_choice_selector_shape": "circle",
+      "multiselect_selector_shape": "square",
+      "skip_button_allowed": false,
+      "next_button_allowed": false,
+      "released_item_families_define_registry": true
+    },
+    "shared_components": [
+      "teacher_diagnostics_layer",
+      "scaffold_tier_framework",
+      "family_exposure_audit",
+      "bilingual_text_router",
+      "challenge_gate_controller"
+    ]
+  },
+  "build_order": [
+    "3.8A",
+    "3.6C",
+    "3.6B",
+    "3.6A",
+    "3.4C",
+    "3.4B"
+  ],
+  "teks_contracts": [
+    {
+      "teks": "3.8A",
+      "priority": 1,
+      "title": "summarize a data set with multiple categories using a frequency table, dot plot, pictograph, or bar graph with scaled intervals",
+      "released_item_types": [
+        "multiple_choice",
+        "inline_choice",
+        "graphing"
+      ],
+      "released_family_registry": [
+        "dot_plot_to_list",
+        "list_to_dot_plot",
+        "table_to_pictograph",
+        "pictograph_to_table",
+        "table_to_bar_graph",
+        "bar_graph_to_table",
+        "graph_correctness_mismatch_diagnosis",
+        "inline_choice_graph_correction",
+        "editable_bar_graph_completion"
+      ],
+      "required_visual_subsystems": [
+        "dot_plot_renderer",
+        "pictograph_renderer_with_key_support",
+        "frequency_table_renderer",
+        "bar_graph_renderer_with_scaled_intervals",
+        "editable_bar_graph_mode"
+      ],
+      "misconception_registry": [
+        "wrong_count_from_repeated_marks_or_dots",
+        "scale_or_key_confusion",
+        "category_misalignment",
+        "selects_graph_with_plausible_but_incorrect_interval_mapping",
+        "table_to_graph_mismatch",
+        "incomplete_translation_between_representations"
+      ],
+      "validator_contract": [
+        "source_dataset_is_canonical_and_shared_across_representations",
+        "pictograph_key_arithmetic_is_exact",
+        "scaled_interval_bars_are_exact",
+        "inline_choice_error_diagnosis_has_one_unambiguous_correction_set",
+        "graphing_items_validate_correct_editable_values",
+        "distractors_remain_plausible_but_nonequivalent"
+      ],
+      "scaffold_contract": {
+        "tier_1": [
+          "identify_representation_and_key_or_scale",
+          "highlight_one_category_or_x_position"
+        ],
+        "tier_2": [
+          "convert_one_category_from_source_data_into_target_representation_step_by_step",
+          "for_mismatch_items_show_one_corrected_mapping_only"
+        ]
+      },
+      "challenge_gate_contract": [
+        "must_expose_dot_plot",
+        "must_expose_pictograph",
+        "must_expose_bar_graph",
+        "must_expose_table",
+        "must_expose_at_least_one_graph_correction_family",
+        "must_expose_at_least_one_construction_family"
+      ],
+      "format_stamp_contract": [
+        "read_dot_plot",
+        "build_dot_plot",
+        "read_pictograph",
+        "match_table",
+        "read_bar_graph",
+        "build_bar_graph",
+        "fix_the_graph"
+      ],
+      "excluded_or_deferred_families": [
+        "two_step_graph_word_problems_belonging_to_3_8B",
+        "open_ended_narrative_data_interpretation_beyond_representation_matching"
+      ],
+      "runtime_integration_notes": [
+        "first_engine_to_build",
+        "chart_subsystem_should_be_reused_by_3_8B_later"
+      ]
+    },
+    {
+      "teks": "3.6C",
+      "priority": 2,
+      "title": "determine the area of rectangles with whole-number side lengths using multiplication related to rows times unit squares",
+      "released_item_types": [
+        "multiple_choice",
+        "equation_editor",
+        "multiselect"
+      ],
+      "released_family_registry": [
+        "shaded_rectangle_on_grid_to_area",
+        "rows_times_squares_per_row_numeric_entry",
+        "infer_full_rectangle_from_partial_border_or_unit_clues",
+        "choose_all_rectangles_with_target_area",
+        "compare_candidate_rectangles_by_area",
+        "area_from_tiled_rectangle_with_hidden_interior_count",
+        "direct_area_from_described_rows_and_columns"
+      ],
+      "required_visual_subsystems": [
+        "grid_rectangle_renderer",
+        "partial_border_clue_renderer",
+        "multi_rectangle_comparison_panel",
+        "numeric_entry_keypad_mode"
+      ],
+      "misconception_registry": [
+        "perimeter_instead_of_area",
+        "counts_only_visible_border_units",
+        "rows_columns_ignored_or_swapped",
+        "wrong_multiplication_pair",
+        "fails_to_infer_full_dimension_pattern",
+        "multiselect_selects_one_correct_rectangle_but_misses_second"
+      ],
+      "validator_contract": [
+        "implied_dimensions_from_border_clues_reconstruct_correctly",
+        "target_area_is_unique_in_multiple_choice_families",
+        "all_correct_rectangles_in_multiselect_match_target_area",
+        "numeric_entry_target_is_exact",
+        "distractors_include_realistic_perimeter_or_partial_count_traps",
+        "hidden_interior_inference_items_do_not_admit_multiple_answers"
+      ],
+      "scaffold_contract": {
+        "tier_1": [
+          "identify_rows_and_columns_or_repeated_unit_structure"
+        ],
+        "tier_2": [
+          "extend_shown_border_pattern_to_full_dimensions_then_multiply"
+        ]
+      },
+      "challenge_gate_contract": [
+        "must_expose_visual_grid_family",
+        "must_expose_numeric_entry_family",
+        "must_expose_multiselect_comparison_family",
+        "must_expose_hidden_dimension_inference_family"
+      ],
+      "format_stamp_contract": [
+        "grid_area",
+        "rows_times_columns",
+        "hidden_dimensions",
+        "pick_all_with_area",
+        "type_the_area"
+      ],
+      "excluded_or_deferred_families": [
+        "composite_figures",
+        "perimeter_area_hybrid_problems",
+        "non_rectangular_area"
+      ],
+      "runtime_integration_notes": [
+        "second_engine_to_build",
+        "not_just_length_times_width",
+        "must_support_numeric_entry_and_multiselect"
+      ]
+    },
+    {
+      "teks": "3.6B",
+      "priority": 3,
+      "title": "use attributes to recognize rhombuses parallelograms trapezoids rectangles and squares as examples of quadrilaterals",
+      "released_item_types": [
+        "hot_spot",
+        "multiple_choice"
+      ],
+      "released_family_registry": [
+        "select_two_quadrilaterals_from_mixed_board",
+        "identify_correct_descriptor_for_puzzle_piece_figures",
+        "choose_set_where_all_figures_belong_to_named_quadrilateral_subclasses",
+        "identify_nonexample_among_labeled_figures",
+        "group_descriptor_from_shared_attributes"
+      ],
+      "required_visual_subsystems": [
+        "clickable_figure_board_hotspot_layer",
+        "grouped_shape_boards",
+        "puzzle_shape_panels",
+        "labeled_figure_strip"
+      ],
+      "misconception_registry": [
+        "counts_four_sides_incorrectly",
+        "mistakes_any_slanted_figure_for_non_rectangle_or_non_parallelogram",
+        "subset_confusion_between_square_rectangle_rhombus_parallelogram_trapezoid",
+        "accepts_nearly_quadrilateral_distractors",
+        "misses_nonexample_because_it_visually_resembles_target_family"
+      ],
+      "validator_contract": [
+        "figure_classification_truth",
+        "hitboxes_align_only_to_correct_figures",
+        "exactly_required_number_of_selections",
+        "no_ambiguous_shape_definitions_in_distractors",
+        "set_membership_families_have_single_correct_set"
+      ],
+      "scaffold_contract": {
+        "tier_1": [
+          "count_sides_then_check_family_traits"
+        ],
+        "tier_2": [
+          "compare_one_target_figure_and_one_distractor_by_attributes_only"
+        ]
+      },
+      "challenge_gate_contract": [
+        "must_expose_hotspot_family",
+        "must_expose_class_membership_set_family",
+        "must_expose_nonexample_family"
+      ],
+      "format_stamp_contract": [
+        "pick_quadrilaterals",
+        "best_name",
+        "find_the_nonexample",
+        "which_set_works"
+      ],
+      "excluded_or_deferred_families": [
+        "student_drawing_tools",
+        "open_construction_tasks"
+      ],
+      "runtime_integration_notes": [
+        "hotspot_support_is_mandatory",
+        "shape_board_should_be_reused_by_3_6A"
+      ]
+    },
+    {
+      "teks": "3.6A",
+      "priority": 4,
+      "title": "classify and sort two-dimensional and three-dimensional figures based on attributes using formal geometric language",
+      "released_item_types": [
+        "multiselect",
+        "inline_choice",
+        "multiple_choice",
+        "equation_editor"
+      ],
+      "released_family_registry": [
+        "choose_true_statements_about_group_of_figures",
+        "explain_grouping_rule_with_inline_dropdowns",
+        "count_qualifying_shapes_in_mixed_set",
+        "choose_correct_attribute_table",
+        "identify_which_figure_is_not_a_prism",
+        "classify_real_world_objects_by_solid_type",
+        "choose_correct_grouped_list",
+        "identify_quadrilateral_sections_within_partitioned_figure",
+        "identify_common_property_of_set"
+      ],
+      "required_visual_subsystems": [
+        "mixed_2d_3d_figure_boards",
+        "group_sort_panels",
+        "attribute_tables",
+        "real_object_classification_panels",
+        "partitioned_section_diagrams",
+        "numeric_entry_mode"
+      ],
+      "misconception_registry": [
+        "2d_vs_3d_confusion",
+        "prism_vs_polygon_confusion",
+        "base_face_vertex_confusion",
+        "uses_exact_name_grouping_instead_of_attribute_grouping",
+        "misses_figures_can_belong_to_more_than_one_attribute_group",
+        "counting_errors_in_mixed_scenes"
+      ],
+      "validator_contract": [
+        "group_statements_are_mathematically_true",
+        "attribute_tables_match_figure_properties",
+        "numeric_count_items_have_one_exact_answer",
+        "multiselect_sets_are_exact",
+        "real_world_object_families_map_cleanly_to_intended_solid_categories",
+        "partition_section_families_define_polygons_unambiguously"
+      ],
+      "scaffold_contract": {
+        "tier_1": [
+          "identify_whether_rule_is_about_2d_3d_faces_bases_or_vertices"
+        ],
+        "tier_2": [
+          "test_one_figure_against_rule_then_generalize"
+        ]
+      },
+      "challenge_gate_contract": [
+        "must_expose_statement_family",
+        "must_expose_grouping_rule_family",
+        "must_expose_table_family",
+        "must_expose_count_family",
+        "must_expose_3d_object_family"
+      ],
+      "format_stamp_contract": [
+        "sort_the_group",
+        "whats_true",
+        "fill_the_rule",
+        "count_the_figures",
+        "match_the_table",
+        "real_objects"
+      ],
+      "excluded_or_deferred_families": [
+        "free_draw_construction",
+        "long_open_response_explanations"
+      ],
+      "runtime_integration_notes": [
+        "more_varied_than_3_6B",
+        "should_reuse_3_6B_shape_board_but_needs_more_family_modes_and_numeric_entry"
+      ]
+    },
+    {
+      "teks": "3.4C",
+      "priority": 5,
+      "title": "determine the value of a collection of coins and bills",
+      "released_item_types": [
+        "multiple_choice"
+      ],
+      "released_family_registry": [
+        "total_value_of_mixed_coin_bill_set",
+        "which_collection_could_equal_target_amount",
+        "which_collection_could_not_equal_target_amount",
+        "compare_candidate_collections_against_same_target"
+      ],
+      "required_visual_subsystems": [
+        "coin_bill_renderer",
+        "multi_option_collection_panels",
+        "optional_denomination_subtotals_in_scaffold_only"
+      ],
+      "misconception_registry": [
+        "counts_objects_not_value",
+        "coin_denomination_confusion",
+        "misses_one_denomination_in_total",
+        "wrong_dollars_cents_aggregation",
+        "reverse_validation_failure_in_could_or_could_not_items"
+      ],
+      "validator_contract": [
+        "each_collections_exact_total",
+        "reverse_validation_family_has_one_unique_correct_choice",
+        "distractors_reflect_denomination_errors_not_arbitrary_sums",
+        "visual_denominations_are_legible_and_unambiguous"
+      ],
+      "scaffold_contract": {
+        "tier_1": [
+          "group_same_denominations"
+        ],
+        "tier_2": [
+          "subtotal_by_denomination_then_combine"
+        ]
+      },
+      "challenge_gate_contract": [
+        "must_expose_direct_total_family",
+        "must_expose_could_family",
+        "must_expose_could_not_family"
+      ],
+      "format_stamp_contract": [
+        "count_the_value",
+        "could_be",
+        "could_not_be",
+        "compare_collections"
+      ],
+      "excluded_or_deferred_families": [
+        "making_change",
+        "purchase_word_problems_beyond_raw_value_collections",
+        "two_step_money_problems"
+      ],
+      "runtime_integration_notes": [
+        "narrower_than_3_8A_or_3_6C",
+        "needs_reverse_validation_logic_not_just_forward_totaling"
+      ]
+    },
+    {
+      "teks": "3.4B",
+      "priority": 6,
+      "title": "round to the nearest 10 or 100 or use compatible numbers to estimate solutions to addition and subtraction problems",
+      "released_item_types": [
+        "multiple_choice",
+        "drag_and_drop"
+      ],
+      "released_family_registry": [
+        "best_estimate_after_rounding_addends",
+        "estimate_total_from_data_table_context",
+        "drag_drop_complete_rounding_sequence",
+        "choose_compatible_or_rounded_result_from_options"
+      ],
+      "required_visual_subsystems": [
+        "simple_context_panel",
+        "draggable_answer_bank_into_ordered_blanks",
+        "optional_benchmark_support_line"
+      ],
+      "misconception_registry": [
+        "rounds_wrong_intermediate",
+        "mixes_exact_and_rounded_numbers",
+        "adds_original_values_after_rounding",
+        "selects_plausible_total_inconsistent_with_rounded_parts"
+      ],
+      "validator_contract": [
+        "each_intermediate_rounded_value_is_correct",
+        "drag_drop_order_is_exact",
+        "final_estimate_matches_rounded_intermediates",
+        "distractors_encode_real_rounding_mistakes"
+      ],
+      "scaffold_contract": {
+        "tier_1": [
+          "round_each_number_first"
+        ],
+        "tier_2": [
+          "add_only_the_rounded_values_and_compare_to_choices"
+        ]
+      },
+      "challenge_gate_contract": [
+        "must_expose_multiple_choice_estimate_family",
+        "must_expose_drag_drop_completion_family",
+        "must_expose_context_data_estimate_family"
+      ],
+      "format_stamp_contract": [
+        "round_then_add",
+        "best_estimate",
+        "build_the_estimate"
+      ],
+      "excluded_or_deferred_families": [
+        "open_number_line_rounding_construction",
+        "multi_operation_estimation_chains"
+      ],
+      "runtime_integration_notes": [
+        "smaller_engine",
+        "build_after_more_reusable_visual_engines"
+      ]
+    }
+  ],
+  "shared_subsystem_reuse_map": {
+    "shape_board_hotspot_layer": [
+      "3.6A",
+      "3.6B"
+    ],
+    "grid_rectangle_renderer": [
+      "3.6C"
+    ],
+    "chart_suite": [
+      "3.8A"
+    ],
+    "coin_bill_renderer": [
+      "3.4C"
+    ],
+    "drag_drop_ordered_blanks": [
+      "3.4B"
+    ],
+    "teacher_diagnostics_exposure_ledger": [
+      "3.8A",
+      "3.6C",
+      "3.6B",
+      "3.6A",
+      "3.4C",
+      "3.4B"
+    ],
+    "scaffold_tier_framework": [
+      "3.8A",
+      "3.6C",
+      "3.6B",
+      "3.6A",
+      "3.4C",
+      "3.4B"
+    ]
+  },
+  "hard_non_negotiables_before_implementation": [
+    "family_registry_must_be_copied_from_contracts_not_improvised",
+    "each_family_must_map_to_at_least_one_released_item_pattern",
+    "every_engine_must_declare_required_item_types_up_front",
+    "validator_must_be_family_aware",
+    "coverage_audit_must_show_all_required_families_reachable",
+    "exemplar_runtime_shell_should_be_reused_not_replaced"
+  ]
+}
