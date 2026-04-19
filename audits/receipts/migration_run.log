@@ -155,3 +155,70 @@ Flags:
 [STEP] Imported source files: 9
 [STEP] Checking GitHub auth...
 [OK] Existing GitHub auth found.
+[main be30b04] Initial migration from Android Downloads source corpus
+ 1 file changed, 31 insertions(+)
+[STEP] Creating or attaching GitHub repo...
+unknown flag: --visibility
+
+Usage:  gh repo create [<name>] [flags]
+
+Flags:
+      --add-readme             Add a README file to the new repository
+  -c, --clone                  Clone the new repository to the current directory
+  -d, --description string     Description of the repository
+      --disable-issues         Disable issues in the new repository
+      --disable-wiki           Disable wiki in the new repository
+  -g, --gitignore string       Specify a gitignore template for the repository
+  -h, --homepage URL           Repository home page URL
+      --include-all-branches   Include all branches from template repository
+      --internal               Make the new repository internal
+  -l, --license string         Specify an Open Source License for the repository
+      --private                Make the new repository private
+      --public                 Make the new repository public
+      --push                   Push local commits to the new repository
+  -r, --remote string          Specify remote name for the new repository
+  -s, --source string          Specify path to local repository to use as source
+  -t, --team name              The name of the organization team to be granted access
+  -p, --template repository    Make the new repository based on a template repository
+  
+
+[FATAL] Failed at line 366.
+[OK] Logging to: /data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/audits/receipts/migration_run.log
+[STEP] Copying source files from Downloads ...
+  [FOUND] 3.6ABC 3.8A 3.4BC.pdf  ← /storage/emulated/0/Download
+  [FOUND] STAAR_ENGINE_SOP.md  ← /storage/emulated/0/Download
+  [FOUND] extract_manifest.json  ← /storage/emulated/0/Download
+  [FOUND] teks_engine_contract_bundle_v1.json  ← /storage/emulated/0/Download
+  [FOUND] CODING_RELIABILITY_SOP_v1.md  ← /storage/emulated/0/Download
+  [FOUND] SUBSYSTEM_VALIDATOR_MATRIX_v1.json  ← /storage/emulated/0/Download
+  [FOUND] PROMOTION_GATE_v1.json  ← /storage/emulated/0/Download
+  [FOUND] COMPANION_CHANGE_MATRIX_v1.json  ← /storage/emulated/0/Download
+  [FOUND] staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html  ← /storage/emulated/0/Download
+[STEP] Imported source files: 9
+[STEP] Classifying files and building inventory ...
+  [CLASSIFIED] 3.6ABC 3.8A 3.4BC.pdf → source_materials/released_tests
+  [CLASSIFIED] CODING_RELIABILITY_SOP_v1.md → governance/sops
+  [CLASSIFIED] COMPANION_CHANGE_MATRIX_v1.json → contracts/engine_contracts
+  [CLASSIFIED] PROMOTION_GATE_v1.json → contracts/engine_contracts
+  [CLASSIFIED] STAAR_ENGINE_SOP.md → governance/sops
+  [CLASSIFIED] SUBSYSTEM_VALIDATOR_MATRIX_v1.json → contracts/engine_contracts
+  [CLASSIFIED] extract_manifest.json → contracts/engine_contracts
+  [CLASSIFIED] staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html → runtimes/html_runtime_files
+  [CLASSIFIED] teks_engine_contract_bundle_v1.json → contracts/engine_contracts
+[OK] Inventory written: /data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/MIGRATION_INVENTORY.json
+[OK] Git safe.directory registered
+[INFO] Existing .git found, skipping init
+M	.gitignore
+M	AUTHORITY_MAP.md
+M	CLAUDE.md
+M	MIGRATION_INVENTORY.json
+M	MIGRATION_RECEIPT.md
+M	README.md
+M	REPO_MAP.md
+M	audits/inventory/_inventory.jsonl
+M	audits/receipts/migration_run.log
+M	prompts/handoffs/CLAUDE_HANDOFF_PROMPT.md
+[STEP] Checking GitHub auth ...
+[OK] GitHub auth already active
+[OK] Git credential helper: store
+[OK] GitHub user: blobertplunk-hue

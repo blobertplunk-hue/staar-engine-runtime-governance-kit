@@ -1,3 +1,3 @@
 # staar-engine-runtime-governance-kit
 
-Migrated from uploaded source files copied from Android Downloads.
+Migrated from Android Downloads source corpus.

@@ -1,5 +1,4 @@
 # AUTHORITY_MAP
-
 1. source_materials/raw_import/
 2. AUTHORITY_MAP.md
 3. REPO_MAP.md
