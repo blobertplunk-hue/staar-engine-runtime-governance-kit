@@ -222,3 +222,46 @@ M	prompts/handoffs/CLAUDE_HANDOFF_PROMPT.md
 [OK] GitHub auth already active
 [OK] Git credential helper: store
 [OK] GitHub user: blobertplunk-hue
+[main d5d3d97] Initial migration from Android Downloads source corpus
+ 10 files changed, 113 insertions(+), 61 deletions(-)
+[OK] Initial commit created
+[STEP] Creating or attaching GitHub repo ...
+[INFO] Creating new private GitHub repo ...
+grep: warning: stray \ before -
+[INFO] Using visibility flag: --private
+https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit
+remote: Repository not found.
+fatal: repository 'https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit.git/' not found
+failed to run git: exit status 128
+
+[FATAL] Script failed at line 421 — check output above.
+[OK] Logging to: /data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/audits/receipts/migration_run.log
+[STEP] Copying source files from Downloads ...
+  [FOUND] 3.6ABC 3.8A 3.4BC.pdf  ← /storage/emulated/0/Download
+  [FOUND] STAAR_ENGINE_SOP.md  ← /storage/emulated/0/Download
+  [FOUND] extract_manifest.json  ← /storage/emulated/0/Download
+  [FOUND] teks_engine_contract_bundle_v1.json  ← /storage/emulated/0/Download
+  [FOUND] CODING_RELIABILITY_SOP_v1.md  ← /storage/emulated/0/Download
+  [FOUND] SUBSYSTEM_VALIDATOR_MATRIX_v1.json  ← /storage/emulated/0/Download
+  [FOUND] PROMOTION_GATE_v1.json  ← /storage/emulated/0/Download
+  [FOUND] COMPANION_CHANGE_MATRIX_v1.json  ← /storage/emulated/0/Download
+  [FOUND] staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html  ← /storage/emulated/0/Download
+[STEP] Imported source files: 9
+[STEP] Classifying files and building inventory ...
+  [CLASSIFIED] 3.6ABC 3.8A 3.4BC.pdf → source_materials/released_tests
+  [CLASSIFIED] CODING_RELIABILITY_SOP_v1.md → governance/sops
+  [CLASSIFIED] COMPANION_CHANGE_MATRIX_v1.json → contracts/engine_contracts
+  [CLASSIFIED] PROMOTION_GATE_v1.json → contracts/engine_contracts
+  [CLASSIFIED] STAAR_ENGINE_SOP.md → governance/sops
+  [CLASSIFIED] SUBSYSTEM_VALIDATOR_MATRIX_v1.json → contracts/engine_contracts
+  [CLASSIFIED] extract_manifest.json → contracts/engine_contracts
+  [CLASSIFIED] staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html → runtimes/html_runtime_files
+  [CLASSIFIED] teks_engine_contract_bundle_v1.json → contracts/engine_contracts
+[OK] Inventory written: /data/data/com.termux/files/home/storage/shared/ClaudeRepos/staar-engine-runtime-governance-kit/MIGRATION_INVENTORY.json
+[OK] Git safe.directory registered
+[INFO] Existing .git found, skipping init
+M	audits/receipts/migration_run.log
+[STEP] Checking GitHub auth ...
+[OK] GitHub auth already active
+[OK] Git credential helper: store
+[OK] GitHub user: blobertplunk-hue
