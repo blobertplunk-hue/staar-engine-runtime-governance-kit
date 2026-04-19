@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.6C Area Measurement Lab</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe 0%,#f0fdf4 100%);color:#1f2937;margin:0;padding:12px;min-height:100vh;}
+.shell{max-width:720px;margin:0 auto;}
+.header-bar{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:14px 18px;margin-bottom:12px;box-shadow:0 2px 12px rgba(16,185,129,.10);gap:12px;}
+.header-bar h1{margin:0;font-size:1.25rem;color:#059669;font-weight:800;}
+.header-actions{display:flex;gap:8px;}
+.icon-btn{background:#f3f4f6;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:.95rem;font-weight:700;color:#374151;display:flex;align-items:center;gap:5px;}
+.icon-btn:hover{background:#d1fae5;color:#059669;}
+/* SmartScore */
+.smartscore-bar{background:white;border-radius:16px;padding:14px 18px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.ss-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.ss-number{font-size:2.4rem;font-weight:900;line-height:1;background:linear-gradient(135deg,#059669,#0d9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ss-label{font-size:.78rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;}
+.ss-zone-badge{font-size:.8rem;font-weight:800;padding:3px 12px;border-radius:999px;}
+.ss-zone-badge.practice{background:#d1fae5;color:#065f46;}
+.ss-zone-badge.proficiency{background:#fef3c7;color:#92400e;}
+.ss-zone-badge.challenge{background:#fee2e2;color:#991b1b;}
+.ss-zone-badge.mastered{background:#dcfce7;color:#14532d;}
+.ss-track{background:#e5e7eb;border-radius:999px;height:14px;overflow:visible;position:relative;margin-bottom:6px;}
+.ss-fill{height:14px;border-radius:999px;transition:width .5s cubic-bezier(.34,1.56,.64,1);position:relative;}
+.ss-fill.practice{background:linear-gradient(90deg,#10b981,#0d9488);}
+.ss-fill.proficiency{background:linear-gradient(90deg,#f59e0b,#f97316);}
+.ss-fill.challenge{background:linear-gradient(90deg,#ef4444,#ec4899);}
+.ss-fill.mastered{background:linear-gradient(90deg,#10b981,#059669);}
+.ss-marker{position:absolute;top:-4px;width:2px;height:22px;background:rgba(0,0,0,.15);border-radius:2px;}
+.ss-zones{display:flex;justify-content:space-between;font-size:.72rem;color:#9ca3af;font-weight:600;margin-top:2px;}
+.streak-banner{display:none;background:linear-gradient(135deg,#f59e0b,#f97316);color:white;border-radius:12px;padding:8px 16px;margin-top:8px;font-weight:800;font-size:.95rem;text-align:center;}
+.streak-banner.visible{display:block;}
+/* Format stamps */
+.stamps-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;background:white;border-radius:14px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.stamp{display:flex;flex-direction:column;align-items:center;gap:2px;background:#f3f4f6;border-radius:10px;padding:6px 10px;min-width:52px;border:2px solid transparent;transition:all .2s;cursor:default;}
+.stamp.seen{background:#f0fdf4;border-color:#86efac;}
+.stamp.missed{background:#fff7ed;border-color:#fcd34d;}
+.stamp-icon{font-size:1.2rem;line-height:1;}
+.stamp-label{font-size:.62rem;font-weight:700;color:#6b7280;text-align:center;line-height:1.2;}
+.stamp.seen .stamp-label{color:#15803d;}
+.stamp.missed .stamp-label{color:#92400e;}
+/* Challenge gate banner */
+.check-banner{display:none;background:linear-gradient(135deg,#059669,#0d9488);color:white;border-radius:16px;padding:14px 20px;margin-bottom:12px;text-align:center;}
+.check-banner.visible{display:block;}
+.check-banner h2{margin:0 0 4px 0;font-size:1.1rem;font-weight:800;}
+.check-progress{font-size:.95rem;opacity:.95;}
+.check-dots{font-size:1.2rem;letter-spacing:4px;margin-top:6px;}
+/* Question card */
+.question-card{background:white;border-radius:20px;padding:22px;box-shadow:0 4px 20px rgba(5,150,105,.10);margin-bottom:12px;}
+.teks-label,.badge{display:inline-block;background:#d1fae5;color:#065f46;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:12px;}
+.badge.lang{background:#e0e7ff;color:#3730a3;margin-left:8px;}
+.question-text{font-size:1.15rem;font-weight:800;color:#111827;margin:0 0 16px 0;line-height:1.3;}
+#directions{font-size:.85rem;color:#6b7280;font-style:italic;margin-bottom:8px;display:block;width:100%;}
+.stimulus-wrap{background:#f0fdf4;border-radius:14px;padding:14px;margin-bottom:14px;}
+.visual-toggle{background:none;border:2px solid #d1fae5;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:.88rem;font-weight:600;color:#065f46;margin-bottom:10px;display:inline-flex;align-items:center;gap:6px;}
+.visual-toggle:hover{background:#d1fae5;}
+.visual{background:#f0fdf4;border-radius:14px;padding:14px;margin-bottom:14px;display:none;}
+.prompt{background:#fff7ed;border-left:4px solid #f59e0b;border-radius:0 10px 10px 0;padding:10px 14px;font-size:.92rem;color:#78350f;margin-bottom:12px;}
+#choices{margin-top:8px;}
+button.choice{display:flex;align-items:center;width:100%;text-align:left;margin:8px 0;padding:14px 18px;background:#f9fafb;border:2px solid #e5e7eb;border-radius:12px;cursor:pointer;font-size:1rem;font-weight:600;color:#1f2937;transition:border-color .15s,background .15s;line-height:1.4;gap:14px;}
+button.choice::before{content:'';flex-shrink:0;width:22px;height:22px;border:2.5px solid #9ca3af;background:white;display:inline-block;}
+button.choice[data-shape="circle"]::before{border-radius:50%;}
+button.choice[data-shape="square"]::before{border-radius:4px;}
+button.choice:hover:not(:disabled){background:#d1fae5;border-color:#6ee7b7;}
+button.choice:hover:not(:disabled)::before{border-color:#059669;}
+button.choice.selected{background:#d1fae5;border-color:#059669;color:#064e3b;}
+button.choice.selected::before{background:#059669;border-color:#059669;}
+button.choice[data-shape="circle"].selected::before{box-shadow:inset 0 0 0 4px white;}
+button.choice[data-shape="square"].selected::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath d='M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.58l7.3-7.3a1 1 0 0 1 1.4 0z'/%3E%3C/svg%3E");background-size:14px;background-repeat:no-repeat;background-position:center;}
+button.choice.correct{background:#dcfce7;border-color:#16a34a;color:#14532d;}
+button.choice.correct::before{background:#16a34a;border-color:#16a34a;}
+button.choice.wrong{background:#fee2e2;border-color:#dc2626;color:#7f1d1d;}
+button.choice.wrong::before{background:#dc2626;border-color:#dc2626;}
+button.choice:disabled{cursor:default;opacity:.88;}
+/* Grid renderer styles */
+.grid-rect{border-collapse:collapse;margin:0 auto;}
+.grid-rect td{border:2px solid #374151;background:#bfdbfe;}
+.grid-rect td.hidden-interior{background:#f1f5f9;border-style:dashed;border-color:#94a3b8;}
+.grid-rect td.partial-hidden{background:#f8fafc;border:2px dashed #cbd5e1;}
+.mini-grid{border-collapse:collapse;margin:0 auto;}
+.mini-grid td{border:1.5px solid #374151;background:#bfdbfe;}
+.compare-grid-stimulus{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:8px 0;}
+.compare-rect-item{text-align:center;background:#f9fafb;border-radius:10px;padding:8px;border:1.5px solid #e5e7eb;}
+.compare-rect-label{font-size:.85rem;font-weight:800;color:#374151;margin-bottom:5px;}
+.grid-choice-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:4px;}
+.grid-dim-label{font-size:.8rem;color:#6b7280;font-weight:700;}
+/* Numeric entry */
+.input{width:100%;padding:12px;border-radius:12px;border:2px solid #d1d5db;font-size:1.1rem;font-weight:700;}
+.input:focus{outline:none;border-color:#059669;box-shadow:0 0 0 3px rgba(5,150,105,.2);}
+/* Action row */
+.action-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.action-row>button:first-child{flex:1;padding:15px 20px;background:#059669;color:white;border:none;border-radius:14px;font-size:1.05rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s;}
+.action-row>button:first-child:hover:not(:disabled){background:#047857;transform:translateY(-1px);}
+.action-row>button:first-child:disabled{background:#9ca3af;cursor:default;transform:none;}
+.feedback{border-radius:14px;padding:14px 16px;margin-top:12px;font-size:1rem;font-weight:600;min-height:50px;display:block;line-height:1.5;background:#eff6ff;}
+/* Scaffold cards */
+.work-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px;margin:8px 0;}
+.work-title{font-size:.82rem;font-weight:800;color:#374151;margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
+.structure-note{font-size:.86rem;color:#374151;line-height:1.45;}
+/* Lockout */
+.lockout-inline{display:none;margin-top:12px;padding:12px;border-radius:12px;background:#fee2e2;border:1px solid #dc2626;}
+.lockout-inline .unlock-panel{display:none;margin-top:10px;}
+.lockout-inline .unlock-panel.visible{display:block;}
+/* Overlays */
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.88);z-index:9999;align-items:center;justify-content:center;padding:20px;}
+.overlay.visible{display:flex;}
+.overlay-card{max-width:560px;width:100%;background:white;border-radius:24px;padding:32px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.overlay-card h2{margin:0 0 8px 0;font-size:2rem;font-weight:900;color:#059669;}
+.overlay-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+.overlay-actions button{border:none;border-radius:14px;padding:13px 22px;font-size:1rem;font-weight:800;cursor:pointer;}
+.overlay-actions button:first-child{background:#059669;color:white;}
+.overlay-actions button:last-child{background:#f3f4f6;color:#374151;}
+.almost-card{max-width:460px;width:100%;background:white;border-radius:24px;padding:28px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.almost-card h2{margin:0 0 8px 0;font-size:1.6rem;font-weight:900;color:#92400e;}
+/* Teacher panel */
+.teacher-panel{display:block;margin-top:12px;}
+details.teacher-panel summary{cursor:pointer;font-weight:700;color:#6b7280;}
+.pre{white-space:pre-wrap;background:#f8fafc;border-radius:12px;padding:12px;overflow:auto;font-size:.8rem;}
+.small{font-size:.92rem;color:#4b5563;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+@keyframes floatUp{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-60px);opacity:0;}}
+.celebrate-pop{position:fixed;pointer-events:none;z-index:9998;font-size:2rem;animation:floatUp 1s ease forwards;}
+@media(max-width:500px){.stamps-row{gap:4px;padding:8px 10px;}.stamp{min-width:44px;padding:5px 7px;}.question-text{font-size:1rem;}.ss-number{font-size:2rem;}}
+</style>
+</head>
+<body>
+<main>
+<div class="shell">
+  <div class="header-bar">
+    <h1>📐 TEKS 3.6C Area Measurement Lab</h1>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" onclick="toggleLang()" aria-label="Switch language">🌐 <span id="langLabel">Español</span></button>
+      <button type="button" class="icon-btn" onclick="readAloud()" aria-label="Read aloud">🔊</button>
+      <button type="button" class="icon-btn" onclick="resetRuntimeSession()" aria-label="Start over">🔄 <span>Start Over</span></button>
+    </div>
+  </div>
+
+  <div class="smartscore-bar" id="smartscoreBar" role="region" aria-label="Your score">
+    <div class="ss-top">
+      <div>
+        <div class="ss-label" id="ssLabel">3.6C Area Power</div>
+        <div class="ss-number" id="ssNumber">0</div>
+      </div>
+      <div style="text-align:right">
+        <span class="ss-zone-badge practice" id="ssZoneBadge">Practice Zone</span>
+        <div style="font-size:.78rem;color:#6b7280;margin-top:4px;" id="ssGoalText">Get ready for area practice</div>
+      </div>
+    </div>
+    <div class="ss-track">
+      <div class="ss-fill practice" id="ssFill" style="width:0%"></div>
+      <div class="ss-marker" style="left:70%"></div>
+      <div class="ss-marker" style="left:90%"></div>
+    </div>
+    <div class="ss-zones"><span>0</span><span>Practice</span><span style="margin-left:auto">70 Proficiency</span><span style="margin-left:12px">90 Challenge</span><span style="margin-left:12px">100 ⭐</span></div>
+    <div class="streak-banner" id="streakBanner">🔥 <span id="streakCount">3</span> in a row!</div>
+  </div>
+
+  <!-- Format stamps: 5 stamps per 3.6C format_stamp_contract -->
+  <div class="stamps-row" id="stampsRow" role="region" aria-label="3.6C format coverage">
+    <div class="stamp" id="stamp_grid_area" title="Read a grid rectangle"><div class="stamp-icon">▦</div><div class="stamp-label">Grid<br>Area</div></div>
+    <div class="stamp" id="stamp_rows_times_columns" title="Rows × columns"><div class="stamp-icon">×</div><div class="stamp-label">Rows ×<br>Columns</div></div>
+    <div class="stamp" id="stamp_hidden_dimensions" title="Infer hidden dimensions"><div class="stamp-icon">🔍</div><div class="stamp-label">Hidden<br>Dims</div></div>
+    <div class="stamp" id="stamp_pick_all_with_area" title="Pick all with target area"><div class="stamp-icon">☑</div><div class="stamp-label">Pick All<br>w/ Area</div></div>
+    <div class="stamp" id="stamp_type_the_area" title="Type the area"><div class="stamp-icon">✏️</div><div class="stamp-label">Type the<br>Area</div></div>
+  </div>
+
+  <div class="check-banner" id="checkBanner" role="status" aria-live="polite">
+    <h2 id="checkBannerTitle">⭐ 3.6C Challenge Gate</h2>
+    <div class="check-progress" id="checkProgress">Question 1 of 5</div>
+    <div class="check-dots" id="checkDots">⬜⬜⬜⬜⬜</div>
+  </div>
+
+  <section class="question-card" aria-labelledby="stem">
+    <div>
+      <span class="teks-label" id="teksLabel">TEKS 3.6C Area Measurement</span>
+      <span class="badge lang" id="langBadge">English</span>
+    </div>
+    <h2 class="question-text" id="stem">Loading your first question…</h2>
+    <div id="directions">Select one answer.</div>
+
+    <div id="stimulus" class="stimulus-wrap" style="display:none;"></div>
+
+    <button type="button" class="visual-toggle" id="structureToggle" onclick="toggleStructureHint()">💡 Need a hint?</button>
+    <div class="visual" id="visual"></div>
+
+    <div class="prompt" id="prompt" style="display:none;"></div>
+
+    <div id="choices"></div>
+
+    <div id="inputWrap" style="display:none;margin-top:12px;">
+      <label for="textAnswer" class="sr-only">Your answer</label>
+      <input id="textAnswer" class="input" type="number" min="1" placeholder="Type your answer here">
+    </div>
+
+    <div class="action-row">
+      <button type="button" id="submitBtn" onclick="submitAnswer()">Check My Answer ✓</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="lockout-inline" id="studentLockoutBox" aria-live="polite">
+      <strong id="studentLockoutTitle">Teacher unlock required</strong>
+      <p class="small" id="studentLockoutMsg">This student needs a teacher check-in before continuing.</p>
+      <button type="button" class="visual-toggle" onclick="toggleInlineUnlock()">Teacher Unlock</button>
+      <div class="unlock-panel" id="inlineUnlockPanel">
+        <label for="inlineTeacherCode" class="sr-only">Teacher code</label>
+        <input id="inlineTeacherCode" class="input" type="password" placeholder="Teacher code" style="margin-top:8px;">
+        <button type="button" class="visual-toggle" onclick="teacherUnlock()" style="margin-top:6px;">Unlock</button>
+      </div>
+    </div>
+  </section>
+
+  <details class="teacher-panel">
+    <summary>🔑 Teacher tools &amp; diagnostics</summary>
+    <aside class="small" aria-label="Teacher diagnostics">
+      <p><strong>SmartScore:</strong> <span id="ssTeacher">0</span> &nbsp; <strong>Streak:</strong> <span id="streakTeacher">0</span> &nbsp; <strong>Total:</strong> <span id="totalTeacher">0</span></p>
+      <p><strong>First-try correct:</strong> <span id="firstTryTeacher">0</span> &nbsp; <strong>2nd try:</strong> <span id="secondTryTeacher">0</span> &nbsp; <strong>3rd+:</strong> <span id="thirdTryTeacher">0</span></p>
+      <hr>
+      <p><strong>Misconception error counts</strong></p>
+      <ul id="patternList"></ul>
+      <p class="small" id="adaptiveMessage"></p>
+      <p class="small" id="coverageStatus"></p>
+      <hr>
+      <h4>Family Exposure</h4>
+      <div class="pre" id="familyExposureLog">—</div>
+      <h4>Coverage Audit</h4>
+      <div class="small" id="coverageAuditLog">—</div>
+      <hr>
+      <h4>Last Item</h4>
+      <div class="pre" id="meta">No item yet.</div>
+    </aside>
+  </details>
+</div>
+</main>
+
+<!-- Almost overlay -->
+<div class="overlay" id="almostOverlay" role="dialog" aria-modal="true" aria-labelledby="almostHeading">
+  <div class="almost-card">
+    <div style="font-size:2.5rem;margin-bottom:8px;">💪</div>
+    <h2 id="almostHeading">So Close!</h2>
+    <div class="small" id="almostMsg" style="margin-bottom:8px;"></div>
+    <div style="font-weight:800;color:#059669;margin-bottom:16px;" id="almostScore"></div>
+    <div class="overlay-actions"><button type="button" onclick="backToPractice()">Keep Practicing →</button></div>
+  </div>
+</div>
+
+<!-- Mastery overlay -->
+<div class="overlay" id="masteryOverlay" role="dialog" aria-modal="true" aria-labelledby="masteryTitle">
+  <div class="overlay-card">
+    <div style="font-size:2.8rem;letter-spacing:6px;margin-bottom:8px;">🏆🌟🎉⭐🔥</div>
+    <h2 id="masteryTitle">YOU DID IT!</h2>
+    <div style="font-size:1.1rem;color:#6b7280;margin-bottom:16px;" id="masteryMessage">You reached mastery of area measurement!</div>
+    <div id="winStatsBox" style="background:#f0fdf4;border-radius:16px;padding:16px;margin:12px 0;text-align:left;">
+      <div id="winStat1" style="font-size:.95rem;color:#14532d;font-weight:700;margin-bottom:6px;"></div>
+      <div id="winStat2" style="font-size:.95rem;color:#14532d;font-weight:700;"></div>
+    </div>
+    <div class="overlay-actions"><button type="button" onclick="continueFromMastery()">Keep Playing 🔁</button></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  TEKS 3.6C Area Measurement Engine
+//  Governed by: teks_engine_contract_bundle_v1.json v1
+//  SOP: STAAR_ENGINE_SOP.md
+//  Shell chunk: 1 of 8  (HTML + CSS + static structure)
+//  JS chunks: 2–8 (to be appended)
+// ═══════════════════════════════════════════════════════════
+
+// ── CHUNK 2: STATE, MODEL, LANGUAGE, UTILITIES ──────────────
+
+let lang = "en";
+function t(en, es) { return lang === "en" ? en : es; }
+
+// Global session state
+let currentItem = null;
+let selected = [];
+let attemptStage = "first";  // "first" | "wrong" | "repeated"
+let currentAttemptCount = 0;
+let scaffoldTier = 0;
+let inChallengeGate = false;
+let challengeGateAnswers = [];
+let challengeGateItems = [];
+let cgIndex = 0;
+
+// Student model
+const studentModel = {
+  total: 0, streak: 0, smartScore: 0,
+  penaltyScore: 0,
+  firstTryCorrect: 0, secondTryCorrect: 0, thirdPlusTryCorrect: 0,
+  repeatedWrongItems: 0, lockout: false,
+  telemetry: [],
+  patternErrors: {
+    perimeter_instead_of_area: 0,
+    counts_only_visible_border_units: 0,
+    rows_columns_ignored_or_swapped: 0,
+    wrong_multiplication_pair: 0,
+    fails_to_infer_full_dimension_pattern: 0,
+    multiselect_misses_second_correct: 0
+  },
+  formatsSeen: new Set(),
+  get mastery() { return this.smartScore; }
+};
+
+// Format stamp contract (3.6C)
+const REQUIRED_FORMATS = [
+  "grid_area", "rows_times_columns", "hidden_dimensions",
+  "pick_all_with_area", "type_the_area"
+];
+// Challenge gate requires these 4 per challenge_gate_contract
+const CHALLENGE_GATE_FORMATS = [
+  "grid_area", "type_the_area", "pick_all_with_area", "hidden_dimensions"
+];
+
+const TEMPLATE_TO_FORMAT = {
+  shaded_grid_to_area_mc_v1:           "grid_area",
+  compare_rectangles_mc_v1:            "grid_area",
+  rows_times_columns_entry_v1:         "type_the_area",
+  partial_border_infer_area_mc_v1:     "hidden_dimensions",
+  tiled_rectangle_hidden_mc_v1:        "hidden_dimensions",
+  choose_all_rectangles_ms_v1:         "pick_all_with_area",
+  direct_area_from_dimensions_mc_v1:   "rows_times_columns"
+};
+
+function markFormatSeen(templateId) {
+  const fmt = TEMPLATE_TO_FORMAT[templateId];
+  if (!fmt) return;
+  studentModel.formatsSeen.add(fmt);
+  const el = document.getElementById("stamp_" + fmt);
+  if (el && !el.classList.contains("seen")) {
+    el.classList.remove("missed");
+    el.classList.add("seen");
+    spawnCelebration(el, "✨");
+  }
+}
+function markFormatMissed(templateId) {
+  const fmt = TEMPLATE_TO_FORMAT[templateId];
+  if (!fmt) return;
+  const el = document.getElementById("stamp_" + fmt);
+  if (el && !el.classList.contains("seen")) el.classList.add("missed");
+}
+function allChallengeGateFormatsSeen() {
+  return CHALLENGE_GATE_FORMATS.every(f => studentModel.formatsSeen.has(f));
+}
+
+// Core utilities
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function unique(arr) { return [...new Set(arr)]; }
+function getWeakestPattern() {
+  const e = Object.entries(studentModel.patternErrors).sort((a, b) => b[1] - a[1]);
+  return e[0][1] > 0 ? e[0][0] : null;
+}
+function spawnCelebration(anchorEl, emoji) {
+  const pop = document.createElement("div");
+  pop.className = "celebrate-pop";
+  pop.textContent = emoji;
+  const r = anchorEl ? anchorEl.getBoundingClientRect() : {left: window.innerWidth/2, top: window.innerHeight/2};
+  pop.style.left = (r.left + r.width / 2) + "px";
+  pop.style.top = (r.top + window.scrollY) + "px";
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 1100);
+}
+
+// ── CHUNK 3: GRID RENDERERS ──────────────────────────────────
+
+function cellPx(rows, cols, max) {
+  return Math.max(14, Math.min(max, Math.floor(240 / Math.max(rows, cols))));
+}
+function renderGridHTML(rows, cols, mode) {
+  // mode: "full" | "hidden_interior" | "partial_border"
+  const sz = cellPx(rows, cols, 30);
+  let html = `<table class="grid-rect">`;
+  for (let r = 0; r < rows; r++) {
+    html += "<tr>";
+    for (let c = 0; c < cols; c++) {
+      let cls = "";
+      if (mode === "hidden_interior") {
+        const border = (r===0||r===rows-1||c===0||c===cols-1);
+        cls = border ? "" : " class=\"hidden-interior\"";
+      } else if (mode === "partial_border") {
+        cls = (r===0||c===0) ? "" : " class=\"partial-hidden\"";
+      }
+      html += `<td${cls} style="width:${sz}px;height:${sz}px;"></td>`;
+    }
+    html += "</tr>";
+  }
+  html += "</table>";
+  return html;
+}
+function renderMiniGrid(rows, cols) {
+  const sz = cellPx(rows, cols, 20);
+  let html = `<table class="mini-grid">`;
+  for (let r = 0; r < rows; r++) {
+    html += "<tr>";
+    for (let c = 0; c < cols; c++)
+      html += `<td style="width:${sz}px;height:${sz}px;"></td>`;
+    html += "</tr>";
+  }
+  return html + "</table>";
+}
+function renderCompareStimulus(quads) {
+  return `<div class="compare-grid-stimulus">` +
+    quads.map(q =>
+      `<div class="compare-rect-item">
+        <div class="compare-rect-label">Rectangle ${q.label}</div>
+        ${renderMiniGrid(q.rows, q.cols)}
+        <div style="font-size:.72rem;color:#6b7280;margin-top:4px;">${q.rows} × ${q.cols}</div>
+       </div>`
+    ).join("") + "</div>";
+}
+
+// ── CHUNK 4: ITEM GENERATORS (7 families) ────────────────────
+
+// Distractor helpers
+function areaDistractors(rows, cols) {
+  const area = rows * cols;
+  const perim = 2 * (rows + cols);
+  const border = 2 * rows + 2 * cols - 4;
+  const addOnly = rows + cols;
+  const candidates = unique([perim, border, addOnly, area - rows, area + cols])
+    .filter(x => x > 0 && x !== area);
+  while (candidates.length < 3) {
+    const v = area + randInt(1, 4) * (Math.random() < .5 ? 1 : -1);
+    if (v > 0 && !candidates.includes(v) && v !== area) candidates.push(v);
+  }
+  return candidates.slice(0, 3);
+}
+function makeMCChoices(area, distractors) {
+  const all = shuffle([area, ...distractors.slice(0, 3)]);
+  if (unique(all).length !== 4) return null;
+  return all.map(v => ({ text: `${v} square units`, correct: v === area }));
+}
+
+// Family 1: shaded_rectangle_on_grid_to_area
+function generateShadedGridMC() {
+  const rows = randInt(2, 9), cols = randInt(2, 9);
+  const area = rows * cols;
+  const choices = makeMCChoices(area, areaDistractors(rows, cols));
+  if (!choices) return null;
+  return {
+    id: `shaded_grid_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "shaded_grid_to_area_mc_v1",
+    family: "shaded_rectangle_on_grid_to_area",
+    itemType: "multiple_choice",
+    pattern: "perimeter_instead_of_area",
+    stem_en: "What is the area of the rectangle shown?",
+    stem_es: "¿Cuál es el área del rectángulo que se muestra?",
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    stimulusHTML: renderGridHTML(rows, cols, "full"),
+    answerKey: { mode: "single_select", correctAnswers: [`${area} square units`] },
+    meta: { rows, cols, area }
+  };
+}
+
+// Family 2: rows_times_squares_per_row_numeric_entry
+function generateRowsTimesColumnsEntry() {
+  const rows = randInt(2, 9), cols = randInt(2, 9);
+  const area = rows * cols;
+  const variants = [
+    { en: `A rectangle has ${rows} rows. Each row has ${cols} unit squares. What is the area of the rectangle in square units?`,
+      es: `Un rectángulo tiene ${rows} filas. Cada fila tiene ${cols} cuadrados de unidad. ¿Cuál es el área del rectángulo en unidades cuadradas?` },
+    { en: `There are ${rows} rows of ${cols} unit squares in a rectangle. What is the area in square units?`,
+      es: `Hay ${rows} filas de ${cols} cuadrados de unidad en un rectángulo. ¿Cuál es el área en unidades cuadradas?` }
+  ];
+  const v = variants[randInt(0, variants.length - 1)];
+  return {
+    id: `rows_cols_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "rows_times_columns_entry_v1",
+    family: "rows_times_squares_per_row_numeric_entry",
+    itemType: "numeric_entry",
+    pattern: "rows_columns_ignored_or_swapped",
+    stem_en: v.en,
+    stem_es: v.es,
+    directions_en: "Type your answer.",
+    directions_es: "Escribe tu respuesta.",
+    stimulusHTML: null,
+    answerKey: { mode: "numeric", correctAnswers: [`${area}`] },
+    meta: { rows, cols, area }
+  };
+}
+
+// Family 3: infer_full_rectangle_from_partial_border_or_unit_clues
+function generatePartialBorderMC() {
+  const rows = randInt(3, 8), cols = randInt(3, 8);
+  const area = rows * cols;
+  const perim = 2*(rows+cols);
+  const border = 2*rows + 2*cols - 4;
+  const wrongInfer = (rows-1)*(cols-1);
+  const ds = unique([perim, border, wrongInfer]).filter(x => x>0 && x!==area).slice(0,3);
+  while (ds.length < 3) {
+    const v = area + randInt(2,5);
+    if (!ds.includes(v) && v !== area) ds.push(v);
+  }
+  const choices = makeMCChoices(area, ds);
+  if (!choices) return null;
+  return {
+    id: `partial_border_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "partial_border_infer_area_mc_v1",
+    family: "infer_full_rectangle_from_partial_border_or_unit_clues",
+    itemType: "multiple_choice",
+    pattern: "fails_to_infer_full_dimension_pattern",
+    stem_en: `The border of a rectangle shows ${cols} unit squares across the top and ${rows} unit squares down the side. What is the area of the full rectangle?`,
+    stem_es: `El borde de un rectángulo muestra ${cols} cuadrados de unidad en la parte superior y ${rows} cuadrados de unidad en el lado. ¿Cuál es el área del rectángulo completo?`,
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    stimulusHTML: renderGridHTML(rows, cols, "partial_border"),
+    answerKey: { mode: "single_select", correctAnswers: [`${area} square units`] },
+    meta: { rows, cols, area }
+  };
+}
+
+// Family 4: choose_all_rectangles_with_target_area  (multiselect)
+const MS_AREA_OPTIONS = [
+  {area:6,  pairs:[[2,3],[3,2]]},
+  {area:8,  pairs:[[2,4],[4,2]]},
+  {area:10, pairs:[[2,5],[5,2]]},
+  {area:12, pairs:[[2,6],[3,4],[4,3],[6,2]]},
+  {area:15, pairs:[[3,5],[5,3]]},
+  {area:16, pairs:[[2,8],[4,4],[8,2]]},
+  {area:18, pairs:[[2,9],[3,6],[6,3],[9,2]]},
+  {area:20, pairs:[[4,5],[5,4]]},
+  {area:24, pairs:[[3,8],[4,6],[6,4],[8,3]]}
+];
+function generateChooseAllMS() {
+  const opt = MS_AREA_OPTIONS[randInt(0, MS_AREA_OPTIONS.length - 1)];
+  const target = opt.area;
+  const validPairs = opt.pairs.filter(([r,c]) => r>=2&&r<=9&&c>=2&&c<=9);
+  if (validPairs.length < 2) return null;
+  const correctPairs = shuffle(validPairs).slice(0, 2);
+  // Wrong pairs: nearby area, different dims
+  const wrongPairs = [];
+  const usedAreas = new Set([target]);
+  for (let tries = 0; tries < 40 && wrongPairs.length < 2; tries++) {
+    const r = randInt(2, 7), c = randInt(2, 7);
+    const a = r * c;
+    if (!usedAreas.has(a)) { usedAreas.add(a); wrongPairs.push([r, c]); }
+  }
+  if (wrongPairs.length < 2) return null;
+  const allPairs = shuffle([
+    ...correctPairs.map(([r,c]) => ({rows:r, cols:c, correct:true})),
+    ...wrongPairs.map(([r,c]) => ({rows:r, cols:c, correct:false}))
+  ]);
+  const choices = allPairs.map(p => ({
+    text: `${p.rows} × ${p.cols}`,
+    correct: p.correct,
+    gridRows: p.rows,
+    gridCols: p.cols
+  }));
+  if (choices.filter(c=>c.correct).length !== 2) return null;
+  const correctAnswers = choices.filter(c=>c.correct).map(c=>c.text);
+  return {
+    id: `choose_all_ms_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "choose_all_rectangles_ms_v1",
+    family: "choose_all_rectangles_with_target_area",
+    itemType: "multiselect",
+    pattern: "multiselect_misses_second_correct",
+    stem_en: `Which rectangles have an area of ${target} square units? Select TWO answers.`,
+    stem_es: `¿Cuáles rectángulos tienen un área de ${target} unidades cuadradas? Selecciona DOS respuestas.`,
+    directions_en: "Select TWO answers.",
+    directions_es: "Selecciona DOS respuestas.",
+    stimulusHTML: null,
+    answerKey: { mode: "multi_select_exact", correctAnswers },
+    meta: { target, pairs: allPairs },
+    choices
+  };
+}
+
+// Family 5: compare_candidate_rectangles_by_area
+function generateCompareRectanglesMC() {
+  const correctRows = randInt(2, 8), correctCols = randInt(2, 8);
+  const target = correctRows * correctCols;
+  const others = [];
+  const usedAreas = new Set([target]);
+  for (let tries = 0; tries < 50 && others.length < 3; tries++) {
+    const r = randInt(2, 8), c = randInt(2, 8);
+    const a = r * c;
+    if (!usedAreas.has(a)) { usedAreas.add(a); others.push({rows:r, cols:c}); }
+  }
+  if (others.length < 3) return null;
+  const labels = ["A","B","C","D"];
+  const quads = shuffle([
+    {rows:correctRows, cols:correctCols, correct:true},
+    ...others.slice(0,3).map(o=>({...o, correct:false}))
+  ]).map((q,i) => ({...q, label:labels[i]}));
+  const correctLabel = quads.find(q=>q.correct).label;
+  const choices = quads.map(q=>({text:`Rectangle ${q.label}`, correct:q.correct}));
+  return {
+    id: `compare_rect_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "compare_rectangles_mc_v1",
+    family: "compare_candidate_rectangles_by_area",
+    itemType: "multiple_choice",
+    pattern: "wrong_multiplication_pair",
+    stem_en: `Which rectangle has an area of ${target} square units?`,
+    stem_es: `¿Cuál rectángulo tiene un área de ${target} unidades cuadradas?`,
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    stimulusHTML: renderCompareStimulus(quads),
+    answerKey: { mode: "single_select", correctAnswers: [`Rectangle ${correctLabel}`] },
+    meta: { target, rows:correctRows, cols:correctCols, quads },
+    choices
+  };
+}
+
+// Family 6: area_from_tiled_rectangle_with_hidden_interior_count
+function generateTiledHiddenMC() {
+  const rows = randInt(3, 8), cols = randInt(3, 8);
+  const area = rows * cols;
+  const borderCount = 2*rows + 2*cols - 4;
+  const ds = unique([borderCount, area+randInt(1,3)*rows, area-rows])
+    .filter(x=>x>0&&x!==area).slice(0,3);
+  while (ds.length < 3) {
+    const v = area + randInt(1,6);
+    if (!ds.includes(v)&&v!==area) ds.push(v);
+  }
+  const choices = makeMCChoices(area, ds);
+  if (!choices) return null;
+  return {
+    id: `tiled_hidden_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "tiled_rectangle_hidden_mc_v1",
+    family: "area_from_tiled_rectangle_with_hidden_interior_count",
+    itemType: "multiple_choice",
+    pattern: "counts_only_visible_border_units",
+    stem_en: "The tile pattern continues inside the rectangle. What is the total area of the rectangle in square units?",
+    stem_es: "El patrón de baldosas continúa dentro del rectángulo. ¿Cuál es el área total del rectángulo en unidades cuadradas?",
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    stimulusHTML: renderGridHTML(rows, cols, "hidden_interior"),
+    answerKey: { mode: "single_select", correctAnswers: [`${area} square units`] },
+    meta: { rows, cols, area, borderCount }
+  };
+}
+
+// Family 7: direct_area_from_described_rows_and_columns
+function generateDirectAreaMC() {
+  const rows = randInt(2, 9), cols = randInt(2, 9);
+  const area = rows * cols;
+  const rowsOnly = rows, colsOnly = cols, addOnly = rows + cols;
+  const perim = 2*(rows+cols);
+  const ds = unique([addOnly, perim, rowsOnly*rowsOnly]).filter(x=>x>0&&x!==area).slice(0,3);
+  while (ds.length < 3) {
+    const v = area + randInt(1,rows+1);
+    if (!ds.includes(v)&&v!==area) ds.push(v);
+  }
+  const choices = makeMCChoices(area, ds);
+  if (!choices) return null;
+  return {
+    id: `direct_area_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "direct_area_from_dimensions_mc_v1",
+    family: "direct_area_from_described_rows_and_columns",
+    itemType: "multiple_choice",
+    pattern: "rows_columns_ignored_or_swapped",
+    stem_en: `A rectangle has ${rows} rows and ${cols} columns of unit squares. What is the area in square units?`,
+    stem_es: `Un rectángulo tiene ${rows} filas y ${cols} columnas de cuadrados de unidad. ¿Cuál es el área en unidades cuadradas?`,
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    stimulusHTML: null,
+    answerKey: { mode: "single_select", correctAnswers: [`${area} square units`] },
+    meta: { rows, cols, area }
+  };
+}
+
+// ── CHUNK 5: VALIDATORS ──────────────────────────────────────
+
+const AREA_TEMPLATE_ALLOWLIST = new Set([
+  "shaded_grid_to_area_mc_v1","rows_times_columns_entry_v1",
+  "partial_border_infer_area_mc_v1","choose_all_rectangles_ms_v1",
+  "compare_rectangles_mc_v1","tiled_rectangle_hidden_mc_v1",
+  "direct_area_from_dimensions_mc_v1"
+]);
+
+function validateItem(item) {
+  const r = { status:"PASS", failedChecks:[] };
+  const fail = m => { r.failedChecks.push(m); r.status="FAIL"; };
+  if (!item || !item.templateId) { fail("missing templateId"); return r; }
+  if (!AREA_TEMPLATE_ALLOWLIST.has(item.templateId)) { fail("templateId not in allowlist: "+item.templateId); return r; }
+  if (!item.answerKey || !Array.isArray(item.answerKey.correctAnswers) || item.answerKey.correctAnswers.length === 0)
+    fail("answerKey.correctAnswers missing or empty");
+  if (item.itemType === "multiple_choice") {
+    if (!item.choices || item.choices.length !== 4) fail("MC must have exactly 4 choices, got "+(item.choices||[]).length);
+    else {
+      const correct = item.choices.filter(c=>c.correct);
+      if (correct.length !== 1) fail("MC must have exactly 1 correct choice, got "+correct.length);
+      if (correct.length === 1 && correct[0].text !== item.answerKey.correctAnswers[0])
+        fail("MC declared key mismatch: "+correct[0].text+" vs "+item.answerKey.correctAnswers[0]);
+    }
+  }
+  if (item.itemType === "multiselect") {
+    if (!item.choices || item.choices.length < 4) fail("multiselect must have ≥4 choices");
+    else {
+      const correct = item.choices.filter(c=>c.correct);
+      if (correct.length !== 2) fail("multiselect must have exactly 2 correct, got "+correct.length);
+      const declaredSet = new Set(item.answerKey.correctAnswers);
+      const markedSet = new Set(correct.map(c=>c.text));
+      if (declaredSet.size !== markedSet.size || [...declaredSet].some(x=>!markedSet.has(x)))
+        fail("multiselect declared key mismatch");
+    }
+  }
+  if (item.itemType === "numeric_entry") {
+    const n = Number(item.answerKey.correctAnswers[0]);
+    if (isNaN(n)||n<=0) fail("numeric_entry answer must be positive number");
+  }
+  return r;
+}
+
+function symbolicValidateItem(item) {
+  const r = { status:"PASS", failedChecks:[] };
+  const fail = m => { r.failedChecks.push(m); r.status="FAIL"; };
+  if (!item||!item.meta) return r;
+  const { rows, cols, area, target } = item.meta;
+  if (item.templateId === "shaded_grid_to_area_mc_v1" ||
+      item.templateId === "partial_border_infer_area_mc_v1" ||
+      item.templateId === "tiled_rectangle_hidden_mc_v1" ||
+      item.templateId === "direct_area_from_dimensions_mc_v1") {
+    if (rows*cols !== area) fail("area=rows×cols invariant violated");
+    const matching = item.choices.filter(c=>c.text===`${area} square units`);
+    if (matching.length !== 1) fail("exactly one choice must equal correct area text");
+  }
+  if (item.templateId === "rows_times_columns_entry_v1") {
+    if (rows*cols !== Number(item.answerKey.correctAnswers[0]))
+      fail("numeric entry answer != rows×cols");
+  }
+  if (item.templateId === "choose_all_rectangles_ms_v1") {
+    const correctChoices = (item.choices||[]).filter(c=>c.correct);
+    for (const ch of correctChoices) {
+      if (ch.gridRows * ch.gridCols !== target) fail("multiselect correct pair area != target");
+    }
+    const wrongChoices = (item.choices||[]).filter(c=>!c.correct);
+    for (const ch of wrongChoices) {
+      if (ch.gridRows * ch.gridCols === target) fail("multiselect wrong pair has same area as target");
+    }
+  }
+  if (item.templateId === "compare_rectangles_mc_v1") {
+    const cq = (item.meta.quads||[]).find(q=>q.correct);
+    if (cq && cq.rows*cq.cols !== target) fail("compare: correct rect area != target");
+    const others = (item.meta.quads||[]).filter(q=>!q.correct);
+    for (const q of others) {
+      if (q.rows*q.cols===target) fail("compare: distractor rect has same area as target");
+    }
+  }
+  return r;
+}
+
+// ── CHUNK 5b: FAMILY REGISTRY + WEIGHTS + CHOOSER ────────────
+
+const AREA_FAMILIES = [
+  "shaded_rectangle_on_grid_to_area",
+  "rows_times_squares_per_row_numeric_entry",
+  "infer_full_rectangle_from_partial_border_or_unit_clues",
+  "choose_all_rectangles_with_target_area",
+  "compare_candidate_rectangles_by_area",
+  "area_from_tiled_rectangle_with_hidden_interior_count",
+  "direct_area_from_described_rows_and_columns"
+];
+
+const FAMILY_WEIGHTS = {
+  shaded_rectangle_on_grid_to_area: 8,
+  rows_times_squares_per_row_numeric_entry: 7,
+  infer_full_rectangle_from_partial_border_or_unit_clues: 7,
+  choose_all_rectangles_with_target_area: 9,
+  compare_candidate_rectangles_by_area: 6,
+  area_from_tiled_rectangle_with_hidden_interior_count: 7,
+  direct_area_from_described_rows_and_columns: 6
+};
+
+const MISCONCEPTION_TO_FAMILY = {
+  perimeter_instead_of_area:              ["shaded_rectangle_on_grid_to_area","compare_candidate_rectangles_by_area"],
+  counts_only_visible_border_units:       ["area_from_tiled_rectangle_with_hidden_interior_count","infer_full_rectangle_from_partial_border_or_unit_clues"],
+  rows_columns_ignored_or_swapped:        ["direct_area_from_described_rows_and_columns","rows_times_squares_per_row_numeric_entry"],
+  wrong_multiplication_pair:              ["shaded_rectangle_on_grid_to_area","direct_area_from_described_rows_and_columns"],
+  fails_to_infer_full_dimension_pattern:  ["infer_full_rectangle_from_partial_border_or_unit_clues","area_from_tiled_rectangle_with_hidden_interior_count"],
+  multiselect_misses_second_correct:      ["choose_all_rectangles_with_target_area"]
+};
+
+const ANTI_STARVATION_WINDOW = 8;
+let familyExposure = Object.fromEntries(AREA_FAMILIES.map(f=>[f,0]));
+let familyLastSeen = Object.fromEntries(AREA_FAMILIES.map(f=>[f,-99]));
+let lastChosenFamily = null;
+let totalItemsGenerated = 0;
+
+function chooseAreaFamily() {
+  // Step 1: Anti-starvation — force unseen family if overdue
+  const starved = AREA_FAMILIES.filter(f => totalItemsGenerated - familyLastSeen[f] >= ANTI_STARVATION_WINDOW);
+  if (starved.length > 0) return starved[Math.floor(Math.random()*starved.length)];
+
+  // Step 2: Misconception priority
+  const weakest = getWeakestPattern();
+  let pool = weakest && studentModel.patternErrors[weakest] >= 2
+    ? (MISCONCEPTION_TO_FAMILY[weakest] || AREA_FAMILIES)
+    : [...AREA_FAMILIES];
+
+  // Step 3: Domination prevention
+  const avgExposure = AREA_FAMILIES.reduce((s,f)=>s+familyExposure[f],0) / AREA_FAMILIES.length;
+  pool = pool.filter(f => familyExposure[f] <= 1.5 * avgExposure + 1);
+  if (pool.length === 0) pool = [...AREA_FAMILIES];
+
+  // Step 4: Dedup last chosen
+  if (pool.length > 1) pool = pool.filter(f => f !== lastChosenFamily);
+  if (pool.length === 0) pool = [...AREA_FAMILIES];
+
+  // Step 5: Weighted random sample
+  const totalWeight = pool.reduce((s,f)=>s+(FAMILY_WEIGHTS[f]||5),0);
+  let r = Math.random() * totalWeight;
+  for (const f of pool) {
+    r -= (FAMILY_WEIGHTS[f]||5);
+    if (r <= 0) return f;
+  }
+  return pool[pool.length-1];
+}
+
+const FAMILY_GENERATORS = {
+  shaded_rectangle_on_grid_to_area:                        generateShadedGridMC,
+  rows_times_squares_per_row_numeric_entry:                generateRowsTimesColumnsEntry,
+  infer_full_rectangle_from_partial_border_or_unit_clues:  generatePartialBorderMC,
+  choose_all_rectangles_with_target_area:                  generateChooseAllMS,
+  compare_candidate_rectangles_by_area:                    generateCompareRectanglesMC,
+  area_from_tiled_rectangle_with_hidden_interior_count:    generateTiledHiddenMC,
+  direct_area_from_described_rows_and_columns:             generateDirectAreaMC
+};
+
+function generateNextItem() {
+  const family = chooseAreaFamily();
+  const gen = FAMILY_GENERATORS[family];
+  for (let i = 0; i < 12; i++) {
+    try {
+      const item = gen();
+      if (!item) continue;
+      const v1 = validateItem(item);
+      const v2 = symbolicValidateItem(item);
+      if (v1.status==="PASS" && v2.status==="PASS") {
+        familyExposure[family]++;
+        familyLastSeen[family] = totalItemsGenerated;
+        lastChosenFamily = family;
+        totalItemsGenerated++;
+        return item;
+      }
+    } catch(e) { /* skip bad generation attempt */ }
+  }
+  // Fallback: try each family in order
+  for (const fb of AREA_FAMILIES) {
+    for (let i=0; i<5; i++) {
+      try {
+        const item = FAMILY_GENERATORS[fb]();
+        if (!item) continue;
+        if (validateItem(item).status==="PASS") {
+          familyExposure[fb]++;
+          familyLastSeen[fb] = totalItemsGenerated;
+          lastChosenFamily = fb;
+          totalItemsGenerated++;
+          return item;
+        }
+      } catch(e) {}
+    }
+  }
+  return null;
+}
+
+// chooseAdaptiveTemplate — invariant: always routes through family router
+function chooseAdaptiveTemplate() { return "__area_family_router__"; }
+
+// ── CHUNK 6: SCAFFOLD ENGINE ─────────────────────────────────
+
+function buildScaffoldTier1(item) {
+  if (!item) return "";
+  const {rows, cols, area} = item.meta || {};
+  const tid = item.templateId || "";
+  const rowWord = t("rows","filas"), colWord = t("columns","columnas");
+  if (tid==="shaded_grid_to_area_mc_v1"||tid==="compare_rectangles_mc_v1") {
+    return `<div class="work-card"><div class="work-title">${t("How to find area","Cómo encontrar el área")}</div>
+      <div class="structure-note">${t("Count the rows. Count the squares in one row. Area = rows × squares per row.","Cuenta las filas. Cuenta los cuadrados en una fila. Área = filas × cuadrados por fila.")}</div></div>`;
+  }
+  if (tid==="rows_times_columns_entry_v1"||tid==="direct_area_from_dimensions_mc_v1") {
+    return `<div class="work-card"><div class="work-title">${t("Row × Column rule","Regla de fila × columna")}</div>
+      <div class="structure-note">${t(`Find the number of rows and the number of squares in each row, then multiply.`,`Encuentra el número de filas y el número de cuadrados en cada fila, luego multiplica.`)}</div></div>`;
+  }
+  if (tid==="partial_border_infer_area_mc_v1") {
+    return `<div class="work-card"><div class="work-title">${t("Use the border clue","Usa la pista del borde")}</div>
+      <div class="structure-note">${t("The top row count = columns. The side count = rows. Multiply both to get the full area.","El conteo de la fila superior = columnas. El conteo del lado = filas. Multiplica ambos para obtener el área completa.")}</div></div>`;
+  }
+  if (tid==="tiled_rectangle_hidden_mc_v1") {
+    return `<div class="work-card"><div class="work-title">${t("The pattern continues","El patrón continúa")}</div>
+      <div class="structure-note">${t("Use the visible border to count the rows and columns, then multiply — do not count border squares only.","Usa el borde visible para contar filas y columnas, luego multiplica — no cuentes solo los cuadrados del borde.")}</div></div>`;
+  }
+  if (tid==="choose_all_rectangles_ms_v1") {
+    return `<div class="work-card"><div class="work-title">${t("Check each rectangle","Revisa cada rectángulo")}</div>
+      <div class="structure-note">${t("Multiply rows × columns for each rectangle. Select both that equal the target area.","Multiplica filas × columnas para cada rectángulo. Selecciona los dos que sean iguales al área objetivo.")}</div></div>`;
+  }
+  return `<div class="work-card"><div class="work-title">${t("Area rule","Regla del área")}</div>
+    <div class="structure-note">${t("Area = rows × squares per row","Área = filas × cuadrados por fila")}</div></div>`;
+}
+
+function buildScaffoldTier2(item) {
+  if (!item) return "";
+  const {rows, cols, area, target} = item.meta || {};
+  const tid = item.templateId || "";
+  if (tid==="shaded_grid_to_area_mc_v1"||tid==="tiled_rectangle_hidden_mc_v1"||
+      tid==="partial_border_infer_area_mc_v1"||tid==="direct_area_from_dimensions_mc_v1") {
+    return `<div class="work-card"><div class="work-title">${t("Worked check","Verificación guiada")}</div>
+      <div class="structure-note">${rows} ${t("rows","filas")} × ${cols} ${t("squares per row","cuadrados por fila")} = <strong>${rows*cols}</strong> ${t("square units","unidades cuadradas")}</div></div>`;
+  }
+  if (tid==="rows_times_columns_entry_v1") {
+    return `<div class="work-card"><div class="work-title">${t("Worked check","Verificación guiada")}</div>
+      <div class="structure-note">${rows} × ${cols} = <strong>${rows*cols}</strong></div></div>`;
+  }
+  if (tid==="choose_all_rectangles_ms_v1") {
+    const pairs = (item.meta.pairs||[]);
+    const worked = pairs.map(p=>`${p.rows}×${p.cols}=${p.rows*p.cols}${p.correct?" ✓":""}`).join("  |  ");
+    return `<div class="work-card"><div class="work-title">${t("Worked check","Verificación guiada")}</div>
+      <div class="structure-note">${worked}</div></div>`;
+  }
+  if (tid==="compare_rectangles_mc_v1") {
+    const quads = (item.meta.quads||[]);
+    const worked = quads.map(q=>`${q.label}: ${q.rows}×${q.cols}=${q.rows*q.cols}${q.correct?" ✓":""}`).join("  |  ");
+    return `<div class="work-card"><div class="work-title">${t("Worked check","Verificación guiada")}</div>
+      <div class="structure-note">${worked}</div></div>`;
+  }
+  return `<div class="work-card"><div class="work-title">${t("Worked check","Verificación guiada")}</div>
+    <div class="structure-note">${t("Multiply rows × columns to get the area.","Multiplica filas × columnas para obtener el área.")}</div></div>`;
+}
+
+function renderScaffold(item, tier) {
+  const visual = document.getElementById("visual");
+  const toggle = document.getElementById("structureToggle");
+  if (!visual) return;
+  if (tier===0){visual.style.display="none"; if(toggle) toggle.textContent=t("💡 Need a hint?","💡 ¿Necesitas una pista?"); return;}
+  let html = buildScaffoldTier1(item);
+  if (tier>=2) html += `<hr style="margin:10px 0;border-color:#e5e7eb">` + buildScaffoldTier2(item);
+  visual.innerHTML = html;
+  visual.style.display = "block";
+  if (toggle) toggle.textContent = t("Hide hint","Ocultar pista");
+}
+
+function toggleStructureHint() {
+  const el = document.getElementById("visual");
+  if (!el) return;
+  if (el.style.display==="none"||!el.style.display){
+    if (scaffoldTier===0) scaffoldTier=1;
+    renderScaffold(currentItem, scaffoldTier);
+  } else {
+    el.style.display="none";
+    const tog = document.getElementById("structureToggle");
+    if (tog) tog.textContent = t("💡 Need a hint?","💡 ¿Necesitas una pista?");
+  }
+}
+
+// ── CHUNK 6b: RENDERER ───────────────────────────────────────
+
+function renderItem(item) {
+  if (!item) return;
+  currentItem = item;
+  selected = [];
+  attemptStage = "first";
+  currentAttemptCount = 0;
+  scaffoldTier = 0;
+
+  document.getElementById("stem").textContent = lang==="en" ? item.stem_en : item.stem_es;
+  document.getElementById("directions").textContent = lang==="en" ? item.directions_en : item.directions_es;
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("feedback").style.background = "#eff6ff";
+  document.getElementById("prompt").style.display = "none";
+  document.getElementById("submitBtn").disabled = false;
+  document.getElementById("studentLockoutBox").style.display = "none";
+
+  // Stimulus
+  const stimDiv = document.getElementById("stimulus");
+  if (item.stimulusHTML) {
+    stimDiv.innerHTML = item.stimulusHTML;
+    stimDiv.style.display = "block";
+  } else {
+    stimDiv.style.display = "none";
+  }
+
+  // Scaffold reset
+  renderScaffold(item, 0);
+
+  // Choices vs numeric entry
+  const choicesDiv = document.getElementById("choices");
+  const inputWrap = document.getElementById("inputWrap");
+  const textAnswer = document.getElementById("textAnswer");
+
+  if (item.itemType === "numeric_entry") {
+    choicesDiv.innerHTML = "";
+    inputWrap.style.display = "block";
+    textAnswer.value = "";
+    textAnswer.focus();
+  } else {
+    inputWrap.style.display = "none";
+    const shape = item.itemType==="multiselect" ? "square" : "circle";
+    choicesDiv.innerHTML = (item.choices||[]).map((ch,i) => {
+      let inner = "";
+      if (ch.gridRows && ch.gridCols) {
+        inner = `<div class="grid-choice-wrap">${renderMiniGrid(ch.gridRows,ch.gridCols)}<div class="grid-dim-label">${ch.gridRows} × ${ch.gridCols}</div></div>`;
+      } else {
+        inner = ch.text;
+      }
+      return `<button type="button" class="choice" data-shape="${shape}" data-index="${i}" onclick="selectChoice(${i})">${inner}</button>`;
+    }).join("");
+  }
+}
+
+function selectChoice(i) {
+  if (!currentItem) return;
+  const btns = document.querySelectorAll("#choices button.choice");
+  if (currentItem.itemType === "multiselect") {
+    const idx = selected.indexOf(i);
+    if (idx === -1) selected.push(i);
+    else selected.splice(idx, 1);
+    btns.forEach((b,bi) => b.classList.toggle("selected", selected.includes(bi)));
+  } else {
+    selected = [i];
+    btns.forEach((b,bi) => b.classList.toggle("selected", bi===i));
+  }
+}
+
+// ── CHUNK 6c: SUBMIT + ADAPTIVE ROUTING ──────────────────────
+
+function submitAnswer() {
+  if (!currentItem) return;
+  const item = currentItem;
+  let isCorrect = false;
+
+  if (item.itemType === "numeric_entry") {
+    const raw = document.getElementById("textAnswer").value.replace(/,/g,"").trim();
+    const typed = parseInt(raw, 10);
+    const correct = parseInt(item.answerKey.correctAnswers[0], 10);
+    isCorrect = (!isNaN(typed) && typed === correct);
+    const inputEl = document.getElementById("textAnswer");
+    inputEl.classList.toggle("answered-correct", isCorrect);
+    inputEl.classList.toggle("answered-wrong", !isCorrect);
+    if (!isCorrect) markFormatMissed(item.templateId);
+  } else {
+    const btns = document.querySelectorAll("#choices button.choice");
+    if (selected.length === 0) return; // nothing selected
+    if (item.itemType === "multiselect") {
+      const selectedTexts = selected.map(i => item.choices[i].text);
+      const correct = new Set(item.answerKey.correctAnswers);
+      const got = new Set(selectedTexts);
+      isCorrect = correct.size===got.size && [...correct].every(x=>got.has(x));
+    } else {
+      isCorrect = item.choices[selected[0]]?.correct === true;
+    }
+    btns.forEach((b,bi) => {
+      if (selected.includes(bi)) {
+        b.classList.add(item.choices[bi].correct ? "correct" : "wrong");
+      } else if (item.choices[bi].correct && !isCorrect) {
+        b.classList.add("correct"); // reveal correct after wrong
+      }
+      b.disabled = true;
+    });
+    if (!isCorrect) markFormatMissed(item.templateId);
+  }
+
+  currentAttemptCount++;
+  document.getElementById("submitBtn").disabled = true;
+
+  if (isCorrect) {
+    // Track attempt tier
+    if (currentAttemptCount === 1) studentModel.firstTryCorrect++;
+    else if (currentAttemptCount === 2) studentModel.secondTryCorrect++;
+    else studentModel.thirdPlusTryCorrect++;
+
+    studentModel.streak++;
+    studentModel.total++;
+    if (studentModel.streak >= 3) {
+      const sb = document.getElementById("streakBanner");
+      document.getElementById("streakCount").textContent = studentModel.streak;
+      sb.classList.add("visible");
+      setTimeout(()=>sb.classList.remove("visible"), 2000);
+    }
+    markFormatSeen(item.templateId);
+    updateSmartScore(true, currentAttemptCount);
+    document.getElementById("feedback").textContent = t("✅ Correct! Great work!","✅ ¡Correcto! ¡Buen trabajo!");
+    document.getElementById("feedback").style.background = "#dcfce7";
+
+    if (inChallengeGate) {
+      challengeGateAnswers.push(true);
+      advanceChallengeGate();
+    } else {
+      setTimeout(generateAndRenderItem, 1200);
+    }
+  } else {
+    studentModel.streak = 0;
+    studentModel.patternErrors[item.pattern] = (studentModel.patternErrors[item.pattern]||0)+1;
+    studentModel.repeatedWrongItems++;
+    attemptStage = "wrong";
+    updateSmartScore(false, currentAttemptCount);
+
+    // Tier 1 scaffold on first wrong
+    scaffoldTier = currentAttemptCount >= 2 ? 2 : 1;
+    renderScaffold(item, scaffoldTier);
+
+    const promptMsg = currentAttemptCount >= 2
+      ? t("Check each row and count the squares carefully.","Revisa cada fila y cuenta los cuadrados con cuidado.")
+      : t("Try again — read the rows and columns.","Inténtalo de nuevo — lee las filas y columnas.");
+    const promptEl = document.getElementById("prompt");
+    promptEl.textContent = promptMsg;
+    promptEl.style.display = "block";
+
+    document.getElementById("feedback").textContent = t("Not quite — try again.","No es correcto — intenta de nuevo.");
+    document.getElementById("feedback").style.background = "#fff7ed";
+
+    // Re-enable submit for retry
+    selected = [];
+    if (item.itemType !== "numeric_entry") {
+      document.querySelectorAll("#choices button.choice").forEach(b=>{b.disabled=false; b.classList.remove("selected","correct","wrong");});
+    } else {
+      document.getElementById("textAnswer").value="";
+      document.getElementById("textAnswer").classList.remove("answered-correct","answered-wrong");
+    }
+    document.getElementById("submitBtn").disabled = false;
+
+    // Lockout after 3 wrong on same item
+    if (studentModel.repeatedWrongItems >= 5) {
+      studentModel.lockout = true;
+      const lb = document.getElementById("studentLockoutBox");
+      lb.style.display = "block";
+      document.getElementById("studentLockoutTitle").textContent = t("Teacher check-in needed","Se necesita revisión del maestro");
+      document.getElementById("studentLockoutMsg").textContent = t("Talk to your teacher before continuing.","Habla con tu maestro antes de continuar.");
+      document.getElementById("submitBtn").disabled = true;
+    }
+
+    if (inChallengeGate) {
+      challengeGateAnswers.push(false);
+      advanceChallengeGate();
+    }
+  }
+  updateTeacherPanel();
+}
+
+function toggleInlineUnlock() {
+  const p = document.getElementById("inlineUnlockPanel");
+  p.classList.toggle("visible");
+}
+function teacherUnlock() {
+  const code = document.getElementById("inlineTeacherCode").value;
+  if (code === "unlock123") {
+    studentModel.lockout = false;
+    studentModel.repeatedWrongItems = 0;
+    document.getElementById("studentLockoutBox").style.display = "none";
+    document.getElementById("submitBtn").disabled = false;
+    generateAndRenderItem();
+  }
+}
+
+// ── CHUNK 6d: SMARTSCORE ─────────────────────────────────────
+
+function updateSmartScore(isCorrect, attempt) {
+  const ss = studentModel.smartScore;
+  let delta = 0;
+  if (isCorrect) {
+    delta = ss < 70 ? (attempt===1?8:4) : ss < 90 ? (attempt===1?5:2) : (attempt===1?4:1);
+  } else {
+    delta = ss < 70 ? -5 : ss < 90 ? -7 : -10;
+  }
+  studentModel.smartScore = Math.max(0, Math.min(100, ss + delta));
+  updateSmartScoreUI();
+  if (studentModel.smartScore >= 100) setTimeout(triggerWin, 500);
+}
+
+function updateSmartScoreUI() {
+  const ss = studentModel.smartScore;
+  document.getElementById("ssNumber").textContent = ss;
+  const fill = document.getElementById("ssFill");
+  fill.style.width = ss + "%";
+  const zone = ss < 70 ? "practice" : ss < 90 ? "proficiency" : ss < 100 ? "challenge" : "mastered";
+  fill.className = "ss-fill " + zone;
+  const badge = document.getElementById("ssZoneBadge");
+  badge.className = "ss-zone-badge " + zone;
+  badge.textContent = {practice:t("Practice Zone","Zona de práctica"),proficiency:t("Proficiency Zone","Zona de dominio"),challenge:t("Challenge Zone","Zona de desafío"),mastered:t("Mastered!","¡Dominado!")}[zone];
+  document.getElementById("ssGoalText").textContent =
+    ss < 70 ? t("Keep practicing — reach 70!","¡Sigue practicando — llega a 70!") :
+    ss < 90 ? t("Great — reach 90 for a challenge!","¡Genial — llega a 90 para un desafío!") :
+    t("You're in the challenge zone!","¡Estás en la zona de desafío!");
+}
+
+// ── CHUNK 6e: CHALLENGE GATE ─────────────────────────────────
+
+function shouldEnterChallengeGate() {
+  return studentModel.smartScore >= 70 && allChallengeGateFormatsSeen() && !inChallengeGate;
+}
+
+function enterChallengeGate() {
+  inChallengeGate = true;
+  challengeGateAnswers = [];
+  challengeGateItems = [];
+  cgIndex = 0;
+  const banner = document.getElementById("checkBanner");
+  banner.classList.add("visible");
+  document.getElementById("checkBannerTitle").textContent = t("⭐ 3.6C Challenge Gate","⭐ 3.6C Puerta de desafío");
+  updateChallengeGateDots();
+  generateAndRenderItem();
+}
+
+function updateChallengeGateDots() {
+  document.getElementById("checkProgress").textContent = t(`Question ${cgIndex+1} of 5`,`Pregunta ${cgIndex+1} de 5`);
+  const dots = Array.from({length:5},(_, i) =>
+    i < challengeGateAnswers.length ? (challengeGateAnswers[i]?"✅":"❌") : "⬜"
+  ).join("");
+  document.getElementById("checkDots").textContent = dots;
+}
+
+function advanceChallengeGate() {
+  cgIndex++;
+  updateChallengeGateDots();
+  if (cgIndex < 5) {
+    setTimeout(generateAndRenderItem, 1200);
+  } else {
+    finishChallengeGate();
+  }
+}
+
+function finishChallengeGate() {
+  inChallengeGate = false;
+  document.getElementById("checkBanner").classList.remove("visible");
+  const correct = challengeGateAnswers.filter(Boolean).length;
+  if (correct >= 4) {
+    studentModel.smartScore = 90;
+    updateSmartScoreUI();
+    document.getElementById("feedback").textContent = t(`🏆 ${correct}/5 — You passed the challenge!`,`🏆 ${correct}/5 — ¡Pasaste el desafío!`);
+    document.getElementById("feedback").style.background = "#dcfce7";
+    setTimeout(generateAndRenderItem, 1800);
+  } else {
+    studentModel.smartScore = Math.max(60, studentModel.smartScore - 10);
+    updateSmartScoreUI();
+    const almostOverlay = document.getElementById("almostOverlay");
+    document.getElementById("almostMsg").textContent = t(`You got ${correct} out of 5. Practice a bit more!`,`Obtuviste ${correct} de 5. ¡Practica un poco más!`);
+    document.getElementById("almostScore").textContent = t(`Need 4 or more to advance.`,"Necesitas 4 o más para avanzar.");
+    almostOverlay.classList.add("visible");
+  }
+}
+
+function backToPractice() {
+  document.getElementById("almostOverlay").classList.remove("visible");
+  generateAndRenderItem();
+}
+
+// ── CHUNK 6f: MASTERY / WIN ──────────────────────────────────
+
+function triggerWin() {
+  const ov = document.getElementById("masteryOverlay");
+  document.getElementById("winStat1").textContent = t(`Total questions: ${studentModel.total}`,`Total de preguntas: ${studentModel.total}`);
+  document.getElementById("winStat2").textContent = t(`First-try correct: ${studentModel.firstTryCorrect}`,`Correcto al primer intento: ${studentModel.firstTryCorrect}`);
+  ov.classList.add("visible");
+}
+function continueFromMastery() {
+  document.getElementById("masteryOverlay").classList.remove("visible");
+  studentModel.smartScore = 80;
+  updateSmartScoreUI();
+  generateAndRenderItem();
+}
+
+// ── CHUNK 6g: TEACHER PANEL + COVERAGE AUDIT ─────────────────
+
+function runtimeCoverageAudit() {
+  const dead = AREA_FAMILIES.filter(f=>familyExposure[f]===0);
+  const auditEl = document.getElementById("coverageAuditLog");
+  if (auditEl) auditEl.textContent = dead.length===0
+    ? "✅ All 7 families exposed."
+    : "⚠️ Dead families: "+dead.join(", ");
+  return dead;
+}
+
+function updateTeacherPanel() {
+  const sm = studentModel;
+  document.getElementById("ssTeacher").textContent = sm.smartScore;
+  document.getElementById("streakTeacher").textContent = sm.streak;
+  document.getElementById("totalTeacher").textContent = sm.total;
+  document.getElementById("firstTryTeacher").textContent = sm.firstTryCorrect;
+  document.getElementById("secondTryTeacher").textContent = sm.secondTryCorrect;
+  document.getElementById("thirdTryTeacher").textContent = sm.thirdPlusTryCorrect;
+
+  // Pattern list
+  const patList = document.getElementById("patternList");
+  if (patList) {
+    patList.innerHTML = Object.entries(sm.patternErrors)
+      .map(([k,v])=>`<li>${k.replace(/_/g," ")}: ${v}</li>`).join("");
+  }
+
+  // Adaptive message
+  const weak = getWeakestPattern();
+  const adMsg = document.getElementById("adaptiveMessage");
+  if (adMsg) adMsg.textContent = weak && sm.patternErrors[weak]>=2
+    ? t(`Routing toward: ${weak.replace(/_/g," ")}`,`Redirigiendo hacia: ${weak.replace(/_/g," ")}`)
+    : t("Balanced selection.","Selección equilibrada.");
+
+  // Family exposure
+  const expLog = document.getElementById("familyExposureLog");
+  if (expLog) expLog.textContent = AREA_FAMILIES.map(f=>`${f}: ${familyExposure[f]}`).join("\n");
+
+  // Coverage
+  const covEl = document.getElementById("coverageStatus");
+  if (covEl) covEl.textContent = t(`Formats seen: ${[...sm.formatsSeen].join(", ")||"none"}`,`Formatos vistos: ${[...sm.formatsSeen].join(", ")||"ninguno"}`);
+
+  // Last item
+  const metaEl = document.getElementById("meta");
+  if (metaEl && currentItem) {
+    metaEl.textContent = JSON.stringify({
+      id: currentItem.id, family: currentItem.family,
+      templateId: currentItem.templateId, itemType: currentItem.itemType,
+      meta: currentItem.meta, answerKey: currentItem.answerKey
+    }, null, 2);
+  }
+
+  runtimeCoverageAudit();
+}
+
+// ── CHUNK 6h: LANGUAGE + ACCESSIBILITY ───────────────────────
+
+function toggleLang() {
+  lang = lang==="en" ? "es" : "en";
+  document.getElementById("langLabel").textContent = lang==="en" ? "Español" : "English";
+  document.getElementById("langBadge").textContent = lang==="en" ? "English" : "Español";
+  if (currentItem) renderItem(currentItem);
+}
+
+function readAloud() {
+  if (!currentItem) return;
+  const text = (lang==="en" ? currentItem.stem_en : currentItem.stem_es) || "";
+  if ("speechSynthesis" in window) {
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = lang==="en" ? "en-US" : "es-US";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utt);
+  }
+}
+
+function resetRuntimeSession() {
+  studentModel.total=0; studentModel.streak=0; studentModel.smartScore=0;
+  studentModel.firstTryCorrect=0; studentModel.secondTryCorrect=0; studentModel.thirdPlusTryCorrect=0;
+  studentModel.repeatedWrongItems=0; studentModel.lockout=false;
+  studentModel.telemetry=[]; studentModel.formatsSeen=new Set();
+  Object.keys(studentModel.patternErrors).forEach(k=>studentModel.patternErrors[k]=0);
+  AREA_FAMILIES.forEach(f=>{familyExposure[f]=0; familyLastSeen[f]=-99;});
+  lastChosenFamily=null; totalItemsGenerated=0;
+  document.querySelectorAll(".stamp").forEach(s=>s.classList.remove("seen","missed"));
+  inChallengeGate=false; challengeGateAnswers=[]; cgIndex=0;
+  document.getElementById("checkBanner").classList.remove("visible");
+  document.getElementById("almostOverlay").classList.remove("visible");
+  document.getElementById("masteryOverlay").classList.remove("visible");
+  try { localStorage.removeItem("staar_3_6c_session"); } catch(e){}
+  updateSmartScoreUI();
+  updateTeacherPanel();
+  generateAndRenderItem();
+}
+
+// ── CHUNK 6i: GENERATE + RENDER DRIVER ───────────────────────
+
+function generateAndRenderItem() {
+  if (shouldEnterChallengeGate()) { enterChallengeGate(); return; }
+  const item = generateNextItem();
+  if (!item) {
+    document.getElementById("stem").textContent = t("Error: could not generate item. Please reload.","Error: no se pudo generar la pregunta. Recarga la página.");
+    return;
+  }
+  renderItem(item);
+  updateTeacherPanel();
+}
+
+// ── CHUNK 6j: BOOT ────────────────────────────────────────────
+
+window.addEventListener('DOMContentLoaded', function() {
+  updateSmartScoreUI();
+  runtimeCoverageAudit();
+  generateAndRenderItem();
+});
+</script>
+</body>
+</html>
