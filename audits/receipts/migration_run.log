@@ -57,3 +57,70 @@ To add an exception for this directory, call:
 [STEP] Imported source files: 9
 [STEP] Checking GitHub auth...
 [OK] Existing GitHub auth found.
+[master (root-commit) d956358] Initial migration from Android Downloads source corpus
+ 36 files changed, 12700 insertions(+)
+ create mode 100644 .claude/README.md
+ create mode 100644 .gitignore
+ create mode 100644 AUTHORITY_MAP.md
+ create mode 100644 CLAUDE.md
+ create mode 100644 MIGRATION_INVENTORY.json
+ create mode 100644 MIGRATION_RECEIPT.md
+ create mode 100644 README.md
+ create mode 100644 REPO_MAP.md
+ create mode 100644 audits/inventory/_inventory.jsonl
+ create mode 100644 audits/inventory/ambiguities.tsv
+ create mode 100644 audits/inventory/classification_log.tsv
+ create mode 100644 audits/inventory/found_files.tsv
+ create mode 100644 audits/inventory/found_source_files.tsv
+ create mode 100644 audits/inventory/missing_files.txt
+ create mode 100644 audits/inventory/missing_source_files.txt
+ create mode 100644 audits/inventory/skipped_source_files.tsv
+ create mode 100644 audits/receipts/migration_run.log
+ create mode 100644 contracts/engine_contracts/COMPANION_CHANGE_MATRIX_v1.json
+ create mode 100644 contracts/engine_contracts/PROMOTION_GATE_v1.json
+ create mode 100644 contracts/engine_contracts/SUBSYSTEM_VALIDATOR_MATRIX_v1.json
+ create mode 100644 contracts/engine_contracts/extract_manifest.json
+ create mode 100644 contracts/engine_contracts/teks_engine_contract_bundle_v1.json
+ create mode 100644 governance/sops/CODING_RELIABILITY_SOP_v1.md
+ create mode 100644 governance/sops/STAAR_ENGINE_SOP.md
+ create mode 100644 prompts/handoffs/CLAUDE_HANDOFF_PROMPT.md
+ create mode 100644 runtimes/html_runtime_files/staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html
+ create mode 100644 source_materials/raw_import/3.6ABC 3.8A 3.4BC.pdf
+ create mode 100644 source_materials/raw_import/CODING_RELIABILITY_SOP_v1.md
+ create mode 100644 source_materials/raw_import/COMPANION_CHANGE_MATRIX_v1.json
+ create mode 100644 source_materials/raw_import/PROMOTION_GATE_v1.json
+ create mode 100644 source_materials/raw_import/STAAR_ENGINE_SOP.md
+ create mode 100644 source_materials/raw_import/SUBSYSTEM_VALIDATOR_MATRIX_v1.json
+ create mode 100644 source_materials/raw_import/extract_manifest.json
+ create mode 100644 source_materials/raw_import/staar_engine_v44_validator_scope_fix_3_8A_stage5c_pictograph_pair.html
+ create mode 100644 source_materials/raw_import/teks_engine_contract_bundle_v1.json
+ create mode 100644 source_materials/released_tests/3.6ABC 3.8A 3.4BC.pdf
+[STEP] Creating or attaching GitHub repo...
+unknown flag: --visibility
+
+Usage:  gh repo create [<name>] [flags]
+
+Flags:
+      --add-readme             Add a README file to the new repository
+  -c, --clone                  Clone the new repository to the current directory
+  -d, --description string     Description of the repository
+      --disable-issues         Disable issues in the new repository
+      --disable-wiki           Disable wiki in the new repository
+  -g, --gitignore string       Specify a gitignore template for the repository
+  -h, --homepage URL           Repository home page URL
+      --include-all-branches   Include all branches from template repository
+      --internal               Make the new repository internal
+  -l, --license string         Specify an Open Source License for the repository
+      --private                Make the new repository private
+      --public                 Make the new repository public
+      --push                   Push local commits to the new repository
+  -r, --remote string          Specify remote name for the new repository
+  -s, --source string          Specify path to local repository to use as source
+  -t, --team name              The name of the organization team to be granted access
+  -p, --template repository    Make the new repository based on a template repository
+  
+
+[FATAL] Failed at line 370.
+[STEP] Imported source files: 9
+[STEP] Checking GitHub auth...
+[OK] Existing GitHub auth found.
