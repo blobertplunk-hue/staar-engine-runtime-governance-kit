@@ -1,0 +1,3897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.2A Place Value Adventure</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 100%);
+  color: #1f2937;
+  margin: 0;
+  padding: 12px;
+  min-height: 100vh;
+}
+.shell { max-width: 720px; margin: 0 auto; }
+.header-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: white; border-radius: 18px; padding: 14px 18px; margin-bottom: 12px;
+  box-shadow: 0 2px 12px rgba(79,70,229,.10); gap: 12px;
+}
+.header-bar h1 { margin: 0; font-size: 1.25rem; color: #4f46e5; font-weight: 800; }
+.header-actions { display: flex; gap: 8px; }
+.icon-btn {
+  background: #f3f4f6; border: none; border-radius: 10px; padding: 8px 12px;
+  cursor: pointer; font-size: .95rem; font-weight: 700; color: #374151;
+  display: flex; align-items: center; gap: 5px;
+}
+.icon-btn:hover { background: #e0e7ff; color: #4f46e5; }
+.star-bar {
+  background: white; border-radius: 16px; padding: 12px 18px; margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06); display: flex; align-items: center;
+  gap: 16px; flex-wrap: wrap;
+}
+.stars { font-size: 1.5rem; letter-spacing: 2px; }
+.stat-pill {
+  background: #f3f4f6; border-radius: 999px; padding: 4px 12px; font-size: .88rem;
+  font-weight: 700; color: #374151; display: flex; align-items: center; gap: 4px;
+}
+.stat-pill.streak { background: #fff7ed; color: #c2410c; }
+.stat-pill.correct { background: #f0fdf4; color: #15803d; }
+.progress-wrap {
+  flex: 1; min-width: 120px; background: #e5e7eb; border-radius: 999px;
+  overflow: hidden; height: 10px;
+}
+.progress-fill {
+  background: linear-gradient(90deg, #4f46e5, #7c3aed); height: 10px;
+  width: 0%; transition: width .4s ease; border-radius: 999px;
+}
+#progressText { width: 100%; font-size: .9rem; color: #6b7280; }
+/* ── SMARTSCORE METER ─────────────────────────────────────────────────── */
+.smartscore-bar {
+  background: white; border-radius: 16px; padding: 14px 18px; margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+}
+.ss-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.ss-number {
+  font-size: 2.4rem; font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.ss-label { font-size: .78rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; }
+.ss-zone-badge {
+  font-size: .8rem; font-weight: 800; padding: 3px 12px; border-radius: 999px;
+}
+.ss-zone-badge.practice { background: #e0e7ff; color: #3730a3; }
+.ss-zone-badge.proficiency { background: #fef3c7; color: #92400e; }
+.ss-zone-badge.challenge { background: #fee2e2; color: #991b1b; }
+.ss-zone-badge.mastered { background: #dcfce7; color: #14532d; }
+.ss-track {
+  background: #e5e7eb; border-radius: 999px; height: 14px; overflow: visible;
+  position: relative; margin-bottom: 6px;
+}
+.ss-fill {
+  height: 14px; border-radius: 999px; transition: width .5s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+}
+.ss-fill.practice { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+.ss-fill.proficiency { background: linear-gradient(90deg, #f59e0b, #f97316); }
+.ss-fill.challenge { background: linear-gradient(90deg, #ef4444, #ec4899); }
+.ss-fill.mastered { background: linear-gradient(90deg, #10b981, #059669); }
+/* Zone markers at 70 and 90 */
+.ss-marker {
+  position: absolute; top: -4px; width: 2px; height: 22px;
+  background: rgba(0,0,0,.15); border-radius: 2px;
+}
+.ss-zones { display: flex; justify-content: space-between; font-size: .72rem; color: #9ca3af; font-weight: 600; margin-top: 2px; }
+
+/* ── FORMAT STAMPS (replaces skill tiles) ─────────────────────────────── */
+.stamps-row {
+  display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+  background: white; border-radius: 14px; padding: 10px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.stamp {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: #f3f4f6; border-radius: 10px; padding: 6px 10px; min-width: 52px;
+  border: 2px solid transparent; transition: all .2s;
+  cursor: default;
+}
+.stamp.seen { background: #f0fdf4; border-color: #86efac; }
+.stamp.missed { background: #fff7ed; border-color: #fcd34d; }
+.stamp-icon { font-size: 1.2rem; line-height: 1; }
+.stamp-label { font-size: .62rem; font-weight: 700; color: #6b7280; text-align: center; line-height: 1.2; }
+.stamp.seen .stamp-label { color: #15803d; }
+.stamp.missed .stamp-label { color: #92400e; }
+
+/* ── STREAK + FEEDBACK ────────────────────────────────────────────────── */
+.streak-banner {
+  display: none; background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: white; border-radius: 12px; padding: 8px 16px; margin-bottom: 8px;
+  font-weight: 800; font-size: .95rem; text-align: center; letter-spacing: .02em;
+}
+.streak-banner.visible { display: block; }
+
+/* ── INLINE CHOICE DROPDOWNS (Cambium-style place-label items) ──────────── */
+.inline-expr {
+  font-size: 1.3rem; font-weight: 700; color: #111827;
+  line-height: 2.2; margin: 10px 0 6px 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+}
+.inline-expr .coeff {
+  font-size: 1.4rem; font-weight: 900; color: #4f46e5;
+  background: #e0e7ff; border-radius: 8px; padding: 2px 10px;
+}
+.inline-expr .op { color: #6b7280; font-size: 1.2rem; }
+select.inline-select {
+  font-size: .95rem; font-weight: 700; color: #1f2937;
+  background: white; border: 2.5px solid #9ca3af;
+  border-radius: 10px; padding: 6px 10px; cursor: pointer;
+  min-width: 130px; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 30px; transition: border-color .15s;
+}
+select.inline-select:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,.2); }
+select.inline-select.answered-correct { border-color: #16a34a; background-color: #f0fdf4; color: #14532d; }
+select.inline-select.answered-wrong { border-color: #dc2626; background-color: #fee2e2; color: #7f1d1d; }
+.answer-bank-label {
+  font-size: .82rem; color: #6b7280; font-style: italic; margin-bottom: 6px;
+}
+@keyframes popIn {
+  0% { transform: scale(0.5) translateY(20px); opacity: 0; }
+  70% { transform: scale(1.15) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+@keyframes floatUp {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-60px); opacity: 0; }
+}
+.celebrate-pop {
+  position: fixed; pointer-events: none; z-index: 9998;
+  font-size: 2rem; animation: floatUp 1s ease forwards;
+}
+@keyframes scoreRing {
+  0% { box-shadow: 0 0 0 0 rgba(79,70,229,.4); }
+  70% { box-shadow: 0 0 0 12px rgba(79,70,229,0); }
+  100% { box-shadow: 0 0 0 0 rgba(79,70,229,0); }
+}
+.ss-number.pulse { animation: scoreRing .6s ease; }
+.question-card {
+  background: white; border-radius: 20px; padding: 22px;
+  box-shadow: 0 4px 20px rgba(79,70,229,.10); margin-bottom: 12px;
+}
+.teks-label, .badge {
+  display: inline-block; background: #fef3c7; color: #92400e; font-size: .78rem;
+  font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-bottom: 12px;
+}
+.badge.lang { background:#e0e7ff; color:#3730a3; margin-left:8px; }
+.question-text {
+  font-size: 1.95rem; font-weight: 800; color: #111827; margin: 0 0 16px 0; line-height: 1.25;
+}
+#directions {
+  font-size: .85rem; color: #6b7280; font-style: italic; margin-bottom: 8px; display: block; width: 100%;
+}
+.visual {
+  background: #f0fdf4; border-radius: 14px; padding: 14px; margin-bottom: 14px;
+}
+.visual-toggle, .support-toggle, button.secondary {
+  background: none; border: 2px solid #d1fae5; border-radius: 10px; padding: 8px 14px;
+  cursor: pointer; font-size: .88rem; font-weight: 600; color: #065f46; margin-bottom: 10px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.visual-toggle:hover, .support-toggle:hover, button.secondary:hover { background: #d1fae5; }
+.prompt {
+  background: #fff7ed; border-left: 4px solid #f59e0b; border-radius: 0 10px 10px 0;
+  padding: 10px 14px; font-size: .92rem; color: #78350f; margin-bottom: 12px; min-height: 0;
+}
+#choices { margin-top: 8px; }
+button.choice {
+  display: flex; align-items: center; width: 100%; text-align: left; margin: 8px 0; padding: 14px 18px;
+  background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer;
+  font-size: 1rem; font-weight: 600; color: #1f2937; transition: border-color .15s, background .15s; line-height: 1.4;
+  gap: 14px;
+}
+/* The shape indicator — set via data-shape="circle" or data-shape="square" */
+button.choice::before {
+  content: '';
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border: 2.5px solid #9ca3af;
+  background: white;
+  display: inline-block;
+}
+button.choice[data-shape="circle"]::before { border-radius: 50%; }
+button.choice[data-shape="square"]::before { border-radius: 4px; }
+button.choice:hover:not(:disabled) { background: #ede9fe; border-color: #a78bfa; }
+button.choice:hover:not(:disabled)::before { border-color: #6d28d9; }
+button.choice.selected { background: #ede9fe; border-color: #6d28d9; color: #4c1d95; }
+button.choice.selected::before { background: #6d28d9; border-color: #6d28d9; }
+button.choice[data-shape="circle"].selected::before { box-shadow: inset 0 0 0 4px white; }
+button.choice[data-shape="square"].selected::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath d='M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.58l7.3-7.3a1 1 0 0 1 1.4 0z'/%3E%3C/svg%3E"); background-size: 14px; background-repeat: no-repeat; background-position: center; }
+button.choice.correct { background: #dcfce7; border-color: #16a34a; color: #14532d; }
+button.choice.correct::before { background: #16a34a; border-color: #16a34a; }
+button.choice.wrong { background: #fee2e2; border-color: #dc2626; color: #7f1d1d; }
+button.choice.wrong::before { background: #dc2626; border-color: #dc2626; }
+button.choice:disabled { cursor: default; opacity: .88; }
+.action-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.action-row > button:first-child {
+  flex: 1; padding: 15px 20px; background: #4f46e5; color: white; border: none; border-radius: 14px;
+  font-size: 1.05rem; font-weight: 800; cursor: pointer; transition: background .15s, transform .1s;
+}
+.action-row > button:first-child:hover:not(:disabled) { background: #4338ca; transform: translateY(-1px); }
+.action-row > button:first-child:disabled { background: #9ca3af; cursor: default; transform: none; }
+.action-row > button:not(:first-child) {
+  padding: 15px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 14px;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+}
+.action-row > button:not(:first-child):hover { background: #e5e7eb; }
+.feedback {
+  border-radius: 14px; padding: 14px 16px; margin-top: 12px; font-size: 1rem; font-weight: 600;
+  min-height: 50px; display: block; line-height: 1.5; background:#eff6ff;
+}
+.input { width:100%; padding:12px; border-radius:12px; border:1px solid #cbd5e1; font-size:1rem; }
+.overlay {
+  display:none; position:fixed; inset:0; background: rgba(15,23,42,.88); z-index:9999;
+  align-items:center; justify-content:center; padding:20px;
+}
+.overlay[style*="flex"], .overlay.visible { display:flex; }
+.overlay-card, .almost-card {
+  max-width: 560px; width:100%; background:white; border-radius:24px; padding:32px 28px; text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+}
+.overlay-card h2, .almost-card h2 { margin:0 0 8px 0; font-size:2rem; font-weight:900; color:#4f46e5; }
+.overlay-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+.overlay-actions button {
+  border:none; border-radius:14px; padding:13px 22px; font-size:1rem; font-weight:800; cursor:pointer;
+}
+.overlay-actions button:first-child { background:#4f46e5; color:white; }
+.overlay-actions button:last-child { background:#f3f4f6; color:#374151; }
+.teacher-panel { display:none; margin-top:12px; }
+details.teacher-panel summary { cursor:pointer; font-weight:700; color:#6b7280; }
+.pre { white-space:pre-wrap; background:#f8fafc; border-radius:12px; padding:12px; overflow:auto; }
+.small { font-size:.92rem; color:#4b5563; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.dev-hidden { display:none !important; }
+@media (max-width: 500px) {
+  .stamps-row { gap: 4px; padding: 8px 10px; }
+  .stamp { min-width: 44px; padding: 5px 7px; }
+  .stamp-icon { font-size: 1rem; }
+  .stamp-label { font-size: .58rem; }
+  .question-text { font-size: 1.25rem; }
+  .header-bar { align-items:flex-start; }
+  .ss-number { font-size: 2rem; }
+}
+
+.check-banner {
+  display: none;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+  border-radius: 16px;
+  padding: 14px 20px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.check-banner.visible { display: block; }
+.check-banner h2 { margin: 0 0 4px 0; font-size: 1.1rem; font-weight: 800; }
+.check-progress { font-size: .95rem; opacity: .95; }
+.check-dots { font-size: 1.2rem; letter-spacing: 4px; margin-top: 6px; }
+
+.almost-card {
+  max-width: 460px;
+  width: 100%;
+  background: white;
+  border-radius: 24px;
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.almost-card h2 { margin: 0 0 8px 0; font-size: 1.6rem; font-weight: 900; color: #92400e; }
+.almost-card .almost-msg { font-size: 1rem; color: #1f2937; margin-bottom: 8px; line-height: 1.6; }
+.almost-card .almost-score { font-size: 1.2rem; font-weight: 800; color: #4f46e5; margin-bottom: 20px; }
+
+
+/* v33 structure-first scaffold system */
+.pv-chart-wrap { margin: 8px 0 10px 0; }
+.pv-chart {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px #e5e7eb;
+}
+.pv-chart th, .pv-chart td {
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  padding: 8px 6px;
+}
+.pv-chart th {
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: .75rem;
+  font-weight: 800;
+}
+.pv-chart td {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #111827;
+  min-height: 42px;
+}
+.pv-sub {
+  display:block;
+  margin-top:4px;
+  font-size:.7rem;
+  color:#6b7280;
+  font-weight:600;
+}
+.work-card, .compare-card, .notation-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 8px 0;
+}
+.work-title {
+  font-size: .82rem;
+  font-weight: 800;
+  color: #374151;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.stacked-work {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.stacked-work th, .stacked-work td {
+  border: 1px solid #d1d5db;
+  text-align: center;
+  padding: 6px 4px;
+}
+.stacked-work th {
+  background: #f3f4f6;
+  font-size: .72rem;
+  color: #4b5563;
+  font-weight: 800;
+}
+.stacked-work td {
+  background: #ffffff;
+  font-size: 1rem;
+  font-weight: 800;
+}
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.compare-good {
+  border: 2px solid #22c55e;
+  border-radius: 12px;
+  padding: 10px;
+  background: #f0fdf4;
+}
+.compare-bad {
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  padding: 10px;
+  background: #fef2f2;
+}
+.compare-label {
+  font-size: .78rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.structure-note {
+  font-size: .86rem;
+  color: #374151;
+  line-height: 1.45;
+}
+.lockout-inline {
+  display:none;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fee2e2;
+  border: 1px solid #dc2626;
+}
+.lockout-inline .unlock-panel {
+  display: none;
+  margin-top: 10px;
+}
+.lockout-inline .unlock-panel.visible {
+  display: block;
+}
+
+</style>
+</head>
+<body>
+<main>
+<div class="shell">
+  <div class="header-bar">
+    <h1>🔢 Place Value Adventure</h1>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" onclick="toggleLang()" aria-label="Switch language">
+        🌐 <span id="langLabel">Español</span>
+      </button>
+      <button type="button" class="icon-btn" onclick="readAloud()" aria-label="Read aloud">🔊</button>
+      <button type="button" class="icon-btn" id="resetSessionBtn" onclick="resetRuntimeSession()" aria-label="Start over">🔄 <span>Start Over</span></button>
+    </div>
+  </div>
+
+
+  <!-- SmartScore meter -->
+  <div class="smartscore-bar" id="smartscoreBar" role="region" aria-label="Your score">
+    <div class="ss-top">
+      <div>
+        <div class="ss-label" id="ssLabel">Place Value Power</div>
+        <div class="ss-number" id="ssNumber">0</div>
+      </div>
+      <div style="text-align:right">
+        <span class="ss-zone-badge practice" id="ssZoneBadge">Practice Zone</span>
+        <div style="font-size:.78rem;color:#6b7280;margin-top:4px;" id="ssGoalText">Reach 70 → Proficiency</div>
+      </div>
+    </div>
+    <div class="ss-track">
+      <div class="ss-fill practice" id="ssFill" style="width:0%"></div>
+      <div class="ss-marker" style="left:70%"></div>
+      <div class="ss-marker" style="left:90%"></div>
+    </div>
+    <div class="ss-zones">
+      <span>0</span><span>Practice</span><span style="margin-left:auto">70 Proficiency</span><span style="margin-left:12px">90 Challenge</span><span style="margin-left:12px">100 ⭐</span>
+    </div>
+    <div class="streak-banner" id="streakBanner">🔥 <span id="streakCount">3</span> in a row!</div>
+  </div>
+
+  <!-- Format stamps: one per STAAR family, lights up when seen -->
+  <div class="stamps-row" id="stampsRow" role="region" aria-label="Question types practiced">
+    <div class="stamp" id="stamp_expanded_form" title="Expanded form"><div class="stamp-icon">📋</div><div class="stamp-label">Expanded<br>Form</div></div>
+    <div class="stamp" id="stamp_notation" title="Expanded notation"><div class="stamp-icon">✖️</div><div class="stamp-label">Notation<br>(×)</div></div>
+    <div class="stamp" id="stamp_unit_words" title="Unit words to number"><div class="stamp-icon">🔤</div><div class="stamp-label">Word<br>Units</div></div>
+    <div class="stamp" id="stamp_overflow" title="Overflow units"><div class="stamp-icon">💥</div><div class="stamp-label">Overflow<br>Units</div></div>
+    <div class="stamp" id="stamp_place_label" title="Place label drag-drop"><div class="stamp-icon">🏷️</div><div class="stamp-label">Label<br>Places</div></div>
+    <div class="stamp" id="stamp_multiselect" title="Pick two equivalent expressions"><div class="stamp-icon">☑️</div><div class="stamp-label">Pick<br>Two</div></div>
+    <div class="stamp" id="stamp_regroup" title="Regrouped forms"><div class="stamp-icon">🔀</div><div class="stamp-label">Regroup</div></div>
+    <div class="stamp" id="stamp_error" title="Error analysis"><div class="stamp-icon">🔍</div><div class="stamp-label">Find<br>Error</div></div>
+    <div class="stamp" id="stamp_truth" title="True or not true"><div class="stamp-icon">✅</div><div class="stamp-label">True or<br>Not?</div></div>
+  </div>
+
+  <div class="check-banner" id="checkBanner" role="status" aria-live="polite">
+    <h2 id="checkBannerTitle">⭐ Challenge Zone</h2>
+    <div class="check-progress" id="checkProgress">Question 1 of 5</div>
+    <div class="check-dots" id="checkDots">⬜⬜⬜⬜⬜</div>
+  </div>
+
+  <section class="question-card" aria-labelledby="stem">
+    <div>
+      <span class="teks-label" id="teksLabel">Place Value</span>
+      <span class="badge lang" id="langBadge">English</span>
+      <span class="badge dev-hidden" id="typeBadge">No item yet</span>
+    </div>
+    <h2 class="question-text" id="stem">Loading your first question...</h2>
+    <div id="directions">Select one answer.</div>
+
+    <button type="button" class="visual-toggle" id="structureToggle" onclick="toggleStructureHint()">💡 Need a hint?</button>
+    <div class="visual" id="visual" style="display:none;"></div>
+
+    <div class="prompt" id="prompt"></div>
+
+    <div id="choices"></div>
+
+    <div id="inputWrap" style="display:none; margin-top:12px;">
+      <label for="textAnswer" class="sr-only">Student answer</label>
+      <input id="textAnswer" class="input" type="text" placeholder="Type answer here">
+    </div>
+
+    <div class="action-row">
+      <button type="button" onclick="submitAnswer()">Check My Answer ✓</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="lockout-inline" id="studentLockoutBox" aria-live="polite">
+      <strong id="studentLockoutTitle">Teacher unlock required</strong>
+      <p class="small" id="studentLockoutMessage">This student needs teacher check-in before continuing.</p>
+      <button type="button" class="secondary" id="showUnlockBtn" aria-expanded="false" aria-controls="inlineUnlockPanel" onclick="toggleInlineUnlock()">Teacher Unlock</button>
+      <div class="unlock-panel" id="inlineUnlockPanel">
+        <label for="inlineTeacherCodeInput" class="sr-only">Teacher code</label>
+        <input id="inlineTeacherCodeInput" class="input" type="password" placeholder="Teacher code" style="margin-top:8px;">
+        <button type="button" class="secondary" onclick="teacherUnlock()">Unlock</button>
+      </div>
+    </div>
+
+
+    <div id="itemIdLine" class="small dev-hidden"></div>
+    <div id="bootStatus" class="small dev-hidden"></div>
+  </section>
+
+  <details class="teacher-panel">
+    <summary>Teacher tools</summary>
+    <aside class="small" aria-label="Teacher and diagnostic tracker">
+      <p><strong>Difficulty:</strong> <span id="difficultyValue"></span></p>
+      <p><strong>Streak:</strong> <span id="streakValue"></span></p>
+      <p><strong>Mastery:</strong> <span id="masteryValue"></span></p>
+      <p><strong>Total Attempted:</strong> <span id="attemptedValue"></span></p>
+      <p><strong>First-Try Correct:</strong> <span id="firstTryValue"></span></p>
+      <p><strong>Second-Try Correct:</strong> <span id="secondTryValue"></span></p>
+      <p><strong>Third+ Try Correct:</strong> <span id="thirdTryValue"></span></p>
+      <p><strong>Penalty Score:</strong> <span id="penaltyValue"></span></p>
+      <hr>
+      <p><strong>Pattern Misses</strong></p>
+      <ul>
+        <li>Place Value Misalignment: <span id="pvmCount"></span></li>
+        <li>Unit-to-Digit Confusion: <span id="udcCount"></span></li>
+        <li>Partial Decomposition Acceptance: <span id="pdaCount"></span></li>
+      </ul>
+      <p class="small" id="adaptiveMessage"></p>
+      <p class="small" id="coverageStatus"></p>
+      <div id="lockoutBox" style="display:none; margin-top:12px; padding:12px; border-radius:12px; background:#fee2e2; border:1px solid #dc2626;">
+        <strong>Teacher unlock required</strong>
+        <p class="small" id="lockoutMessage">This student needs teacher check-in before continuing.</p>
+        <label for="teacherCodeInput" class="sr-only">Teacher code</label>
+        <input id="teacherCodeInput" class="input" type="password" placeholder="Teacher code" style="margin-top:8px;">
+        <button type="button" class="secondary" onclick="teacherUnlock()">Unlock</button>
+      </div>
+      <hr>
+      <h4>Item Data</h4>
+      <div class="pre" id="meta">No item generated yet.</div>
+      <hr>
+      <h4>Family Exposure (v32)</h4>
+      <div class="pre" id="familyExposureLog" style="font-size:.78rem;">—</div>
+      <h4>STAAR Trap Coverage</h4>
+      <div class="small" id="staarTrapCoverage">—</div>
+    </aside>
+  </details>
+</div>
+</main>
+
+
+<div class="overlay" id="almostOverlay" role="dialog" aria-modal="true" aria-labelledby="almostHeading">
+  <div class="almost-card">
+    <div style="font-size:2.5rem;margin-bottom:8px;">💪</div>
+    <h2 id="almostHeading">So Close!</h2>
+    <div class="almost-msg" id="almostMsg">You're really learning this!</div>
+    <div class="almost-score" id="almostScore">You got 3 out of 5.</div>
+    <div style="font-size:.95rem;color:#6b7280;margin-bottom:20px;" id="almostNeeded">
+      Get 4 or more to win the challenge. Keep practicing — you've got this!
+    </div>
+    <div class="overlay-actions">
+      <button type="button" onclick="backToPractice()">Keep Practicing →</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="masteryOverlay" role="dialog" aria-modal="true" aria-labelledby="masteryTitle">
+  <div class="overlay-card" style="text-align:center; padding: 36px 28px;">
+    <div id="winConfetti" style="font-size:2.8rem; letter-spacing:6px; margin-bottom:8px;">🏆🌟🎉⭐🔥</div>
+    <h2 id="masteryTitle" style="font-size:2.4rem; margin:0 0 6px 0;">YOU DID IT!</h2>
+    <div style="font-size:1.1rem; color:#6b7280; margin-bottom:16px;" id="masteryMessage">You reached mastery.</div>
+    <div id="winStatsBox" style="background:#f0fdf4; border-radius:16px; padding:16px; margin:12px 0; text-align:left;">
+      <div id="winStat1" style="font-size:.95rem; color:#14532d; font-weight:700; margin-bottom:6px;"></div>
+      <div id="winStat2" style="font-size:.95rem; color:#14532d; font-weight:700; margin-bottom:6px;"></div>
+      <div id="winStat3" style="font-size:.95rem; color:#14532d; font-weight:700;"></div>
+    </div>
+    <div id="winStampsWon" style="font-size:1.4rem; letter-spacing:4px; margin:10px 0 16px 0;"></div>
+    <div class="overlay-actions">
+      <button type="button" onclick="continueFromMastery()">Keep Playing 🔁</button>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+
+function getStudentSkillName(key){
+  const names = {
+    place_value_misalignment: t("Equivalent forms", "Formas equivalentes"),
+    unit_to_digit_confusion: t("Build the number", "Construir el número"),
+    partial_decomposition_acceptance: t("Check all the parts", "Revisar todas las partes")
+  };
+  return names[key] || key;
+}
+
+function dotsFromCount(count){
+  if (count <= 0) return "—";
+  return "●".repeat(Math.min(5, count));
+}
+
+function studentLabelForItem(item){
+  const map = {
+    compose_from_units_mc_v1: t("Build the Number", "Construir el número"),
+    compose_from_units_mc_v2: t("Build the Number", "Construir el número"),
+    expanded_form_to_standard_mc_v1: t("Expanded Form", "Forma desarrollada"),
+    standard_to_expanded_form_mc_v1: t("Expanded Form", "Forma desarrollada"),
+    standard_to_expanded_notation_mc_v1: t("Expanded Notation", "Notación desarrollada"),
+    missing_part_compose_mc_v1: t("Missing Part", "Parte faltante"),
+    digit_value_compose_mc_v1: t("Digit Value", "Valor del dígito"),
+    equivalence_compose_ms_v1: t("Equivalent Forms", "Formas equivalentes"),
+    released_unit_overflow_compose_mc_v1: t("Build the Number", "Construir el número"),
+    released_equivalent_expression_ms_v1: t("Equivalent Forms", "Formas equivalentes"),
+    released_error_analysis_compose_mc_v1: t("Find the error", "Encontrar el error"),
+    released_truth_judgment_compose_mc_v1: t("Which is true?", "¿Cuál es verdadero?"),
+    released_cross_representation_mismatch_mc_v1: t("Match the representation", "Relaciona la representación"),
+    released_select_correct_notation_mc_v1: t("Expanded notation", "Notación desarrollada"),
+    released_regrouped_equivalent_decomposition_ms_v1: t("Equivalent forms", "Formas equivalentes"),
+    released_regrouped_near_miss_decomposition_mc_v1: t("Check all the parts", "Revisar todas las partes"),
+    released_expanded_notation_discrimination_mc_v1: t("Expanded notation", "Notación desarrollada"),
+    teacher_forensic_partial_plausible_multiselect_ms_v1: t("Equivalent forms", "Formas equivalentes"),
+    equivalent_expression_ms_v1: t("Equivalent Forms", "Formas equivalentes"),
+    decomposition_dragdrop_v1: t("Build with Parts", "Construir con partes")
+  };
+  return map[item.templateId] || t("Place Value", "Valor posicional");
+}
+
+
+let lang = "en";
+let currentItem = null;
+let selected = [];
+let attemptStage = "first";
+let currentAttemptCount = 0;
+let shownQuestionIds = [];
+
+const studentModel = {
+  total: 0,
+  streak: 0,
+  // SmartScore: 0-100, IXL-style asymmetric gains/losses by zone
+  smartScore: 0,
+  difficultyLevel: 1,
+  penaltyScore: 0,
+  firstTryCorrect: 0,
+  secondTryCorrect: 0,
+  thirdPlusTryCorrect: 0,
+  repeatedWrongItems: 0,
+  lockout: false,
+  telemetry: [],
+  patternErrors: {
+    place_value_misalignment: 0,
+    unit_to_digit_confusion: 0,
+    partial_decomposition_acceptance: 0
+  },
+  // Format coverage gate: student must see each required format before Challenge Zone
+  formatsSeen: new Set(),
+  // mastery alias for legacy references
+  get mastery() { return this.smartScore; },
+  set mastery(v) { this.smartScore = v; }
+};
+
+// Formats that must be seen before Challenge Zone unlocks
+const REQUIRED_FORMATS = [
+  "expanded_form",     // expanded form ↔ standard
+  "notation",          // expanded notation ↔ standard
+  "unit_words",        // word-unit to standard
+  "overflow",          // overflow unit compose
+  "place_label",       // drag-drop place label
+  "multiselect",       // pick two equivalent expressions
+  "regroup",           // regrouped-correct or near-miss
+  "error",             // error analysis
+  "truth"              // truth judgment
+];
+
+// Map templateId → format stamp id
+const TEMPLATE_TO_FORMAT = {
+  "expanded_form_to_standard_mc_v1":               "expanded_form",
+  "standard_to_expanded_form_mc_v1":               "expanded_form",
+  "standard_to_expanded_notation_mc_v1":           "notation",
+  "notation_to_standard_mc_v1":                    "notation",
+  "released_select_correct_notation_mc_v1":        "notation",
+  "released_expanded_notation_discrimination_mc_v1":"notation",
+  "compose_from_units_mc_v1":                      "unit_words",
+  "compose_from_units_mc_v2":                      "unit_words",
+  "released_unit_overflow_compose_mc_v1":          "overflow",
+  "decomposition_dragdrop_v1":                     "place_label",
+  "equivalence_compose_ms_v1":                     "multiselect",
+  "released_equivalent_expression_ms_v1":          "multiselect",
+  "teacher_forensic_partial_plausible_multiselect_ms_v1":"multiselect",
+  "released_regrouped_equivalent_decomposition_ms_v1":"regroup",
+  "released_regrouped_equivalent_decomposition_mc_v1":"regroup",
+  "released_regrouped_near_miss_decomposition_mc_v1":"regroup",
+  "released_error_analysis_compose_mc_v1":         "error",
+  "released_truth_judgment_compose_mc_v1":         "truth",
+  "released_cross_representation_mismatch_mc_v1":  "expanded_form"
+};
+
+function markFormatSeen(templateId) {
+  const fmt = TEMPLATE_TO_FORMAT[templateId];
+  if (fmt) {
+    studentModel.formatsSeen.add(fmt);
+    const stampEl = document.getElementById("stamp_" + fmt);
+    if (stampEl && !stampEl.classList.contains("seen")) {
+      stampEl.classList.add("seen");
+      // micro-celebration: format unlocked
+      spawnCelebration(stampEl, "✨");
+    }
+  }
+}
+
+function allFormatsSeenForChallengeZone() {
+  return REQUIRED_FORMATS.every(f => studentModel.formatsSeen.has(f));
+}
+
+// ── 3-TIER FAMILY-AWARE SCAFFOLD ENGINE ──────────────────────────────────
+// Research: IES WWC, CRA framework, Third Space Learning metacognition research
+// Tier 1 (first wrong): Conceptual — what does this question ask? + show-your-work model
+// Tier 2 (second wrong): Procedural — one concrete step with actual numbers
+// Scaffolds are number-aware and family-aware. Hidden until first wrong answer.
+
+let scaffoldTier = 0;
+
+function buildPlaceRow(n, lang_code) {
+  const ps = nonzeroPlaceParts(n);
+  return ps.map(p =>
+    `<span style="background:#e0e7ff;border-radius:6px;padding:3px 10px;margin:2px;display:inline-block;font-weight:800;font-size:1rem">${p.digit}<br><span style="font-size:.65rem;color:#6b7280;font-weight:600">${getPlaceName(p.place, lang_code)}</span></span>`
+  ).join(" ");
+}
+
+function buildScaffoldTier1(item) {
+  if (!item) return "";
+  const n = item.meta?.correctValue || item.meta?.targetNumber || 0;
+  const tid = item.templateId || "";
+  const pvChart = renderPlaceValueChartHTML(n, true);
+  const placeParts = nonzeroPlaceParts(n).map(p => `${p.digit} × ${formatNumber(p.place)} = ${formatNumber(p.value)}`).join("<br>");
+
+  if (tid === "expanded_form_to_standard_mc_v1") {
+    const parts = parseExpressionParts(makeExpandedFormString(n));
+    return `${pvChart}
+      <div class="work-card"><div class="work-title">${lang === "en" ? "Align each part by place" : "Alinea cada parte por valor posicional"}</div>
+      <div class="structure-note">${lang === "en"
+        ? "Write each expanded-form part in the correct column, then read the total number across the chart."
+        : "Escribe cada parte de la forma desarrollada en la columna correcta y luego lee el número total en la tabla."}</div></div>
+      ${renderStackedPlaceWorkHTML(parts)}`;
+  }
+
+  if (tid === "standard_to_expanded_form_mc_v1") {
+    return `${pvChart}
+      <div class="work-card"><div class="work-title">${lang === "en" ? "Build the expanded form by place" : "Construye la forma desarrollada por valor posicional"}</div>
+      <div class="structure-note">${lang === "en"
+        ? `List only the nonzero places. Each place becomes one addend: ${placeParts}`
+        : `Escribe solo los valores posicionales distintos de cero. Cada posición se convierte en un sumando: ${placeParts}`}</div></div>`;
+  }
+
+  if (tid.includes("notation") || tid === "released_select_correct_notation_mc_v1" || tid === "released_expanded_notation_discrimination_mc_v1") {
+    return `${pvChart}${renderNotationContrastHTML(n)}
+      <div class="work-card"><div class="work-title">${lang === "en" ? "Show your work" : "Muestra tu trabajo"}</div>
+      <div class="structure-note">${lang === "en"
+        ? "For notation, each nonzero digit must be written as (digit × place value). Expanded form uses sums only."
+        : "Para la notación, cada dígito distinto de cero debe escribirse como (dígito × valor posicional). La forma desarrollada usa solo sumas."}</div></div>`;
+  }
+
+  if (tid === "compose_from_units_mc_v2" || tid === "released_unit_overflow_compose_mc_v1") {
+    const unitText = item.visual?.text || "";
+    return `<div class="work-card"><div class="work-title">${lang === "en" ? "Convert each unit phrase first" : "Convierte cada frase de unidades primero"}</div>
+      <div class="structure-note">${lang === "en"
+        ? "Do not glue the numbers together. Multiply each count by the value of one unit, then place the totals in the chart."
+        : "No pegues los números. Multiplica cada cantidad por el valor de una unidad y luego coloca los totales en la tabla."}</div>
+      <div class="structure-note" style="margin-top:8px;">${unitText}</div></div>${pvChart}`;
+  }
+
+  if (tid === "decomposition_dragdrop_v1") {
+    return `${pvChart}
+      <div class="work-card"><div class="work-title">${lang === "en" ? "Match coefficient to place" : "Relaciona el coeficiente con la posición"}</div>
+      <div class="structure-note">${lang === "en"
+        ? "Ask: if this chip is 4, what place value makes 4 of that unit fit the target number?"
+        : "Pregunta: si esta ficha es 4, ¿qué valor posicional hace que 4 de esa unidad encajen en el número objetivo?"}</div></div>`;
+  }
+
+  if (tid.includes("equivalent") || tid.includes("multiselect") || tid.includes("equivalence")) {
+    const correctExpr = makeExpandedFormString(n);
+    const nearMiss = correctExpr.split(" + ").slice(0, -1).join(" + ");
+    return `${pvChart}
+      ${renderRegroupComparisonHTML(correctExpr, nearMiss, n)}
+      <div class="work-card"><div class="work-title">${lang === "en" ? "Check every option" : "Revisa cada opción"}</div>
+      <div class="structure-note">${lang === "en"
+        ? `A choice is only equivalent if it still makes ${formatNumber(n)} and every needed place value is present.`
+        : `Una opción solo es equivalente si todavía forma ${formatNumber(n)} y cada valor posicional necesario está presente.`}</div></div>`;
+  }
+
+  if (tid === "released_error_analysis_compose_mc_v1" || tid === "released_truth_judgment_compose_mc_v1" || tid === "released_cross_representation_mismatch_mc_v1") {
+    return `${pvChart}
+      <div class="work-card"><div class="work-title">${lang === "en" ? "Compare structure place by place" : "Compara la estructura valor por valor"}</div>
+      <div class="structure-note">${lang === "en"
+        ? "Before choosing an answer, build the correct place-value structure yourself. Then compare each place to the statement or expression."
+        : "Antes de elegir una respuesta, construye tú mismo la estructura correcta del valor posicional. Luego compara cada posición con el enunciado o la expresión."}</div></div>`;
+  }
+
+  if (tid.includes("regroup")) {
+    const base = makeExpandedFormString(n);
+    const parts = nonzeroPlaceParts(n);
+    const split = parts.find(p => p.digit >= 2) || parts[0];
+    let compare = "";
+    if (split) {
+      const a = split.place;
+      const b = split.value - a;
+      const regrouped = base.replace(formatNumber(split.value), `${formatNumber(a)} + ${formatNumber(b)}`);
+      const nearMiss = base.replace(formatNumber(split.value), `${formatNumber(a)} + ${formatNumber(Math.max(split.place, b - split.place))}`);
+      compare = renderRegroupComparisonHTML(regrouped, nearMiss, n);
+    }
+    return `${pvChart}${compare}
+      <div class="work-card"><div class="work-title">${lang === "en" ? "Regrouping rule" : "Regla de reagrupación"}</div>
+      <div class="structure-note">${lang === "en"
+        ? "A regrouped answer is still correct only if the split parts add back to the exact original place value."
+        : "Una respuesta reagrupada sigue siendo correcta solo si las partes divididas vuelven a sumar el valor posicional exacto."}</div></div>`;
+  }
+
+  return `${pvChart}
+    <div class="work-card"><div class="work-title">${lang === "en" ? "Use the place-value structure" : "Usa la estructura del valor posicional"}</div>
+    <div class="structure-note">${lang === "en"
+      ? "Read the number by place, then check whether the answer keeps those exact place values."
+      : "Lee el número por valor posicional y luego revisa si la respuesta conserva esos valores exactos."}</div></div>`;
+}
+
+function buildScaffoldTier2(item) {
+  if (!item) return "";
+  const n = item.meta?.correctValue || item.meta?.targetNumber || 0;
+  const tid = item.templateId || "";
+
+  if (tid === "expanded_form_to_standard_mc_v1") {
+    const parts = parseExpressionParts(makeExpandedFormString(n));
+    return `<div class="work-card"><div class="work-title">${lang === "en" ? "Worked check" : "Verificación guiada"}</div>
+      <div class="structure-note">${lang === "en"
+        ? "Put each addend into the correct place-value column. Then read the answer across the bottom row."
+        : "Coloca cada sumando en la columna correcta del valor posicional. Luego lee la respuesta en la fila inferior."}</div></div>
+      ${renderStackedPlaceWorkHTML(parts)}`;
+  }
+
+  if (tid === "standard_to_expanded_form_mc_v1") {
+    return `<div class="work-card"><div class="work-title">${lang === "en" ? "Worked check" : "Verificación guiada"}</div>
+      <div class="structure-note">${lang === "en"
+        ? `For ${formatNumber(n)}, the nonzero places become the addends: ${makeExpandedFormString(n)}`
+        : `Para ${formatNumber(n)}, los valores posicionales distintos de cero se convierten en sumandos: ${makeExpandedFormString(n)}`}</div></div>`;
+  }
+
+  if (tid.includes("notation") || tid === "released_select_correct_notation_mc_v1" || tid === "released_expanded_notation_discrimination_mc_v1") {
+    return `${renderNotationContrastHTML(n)}
+      <div class="work-card"><div class="work-title">${lang === "en" ? "Worked check" : "Verificación guiada"}</div>
+      <div class="structure-note">${lang === "en"
+        ? `Correct expanded notation: ${makeExpandedNotationString(n)}`
+        : `Notación desarrollada correcta: ${makeExpandedNotationString(n)}`}</div></div>`;
+  }
+
+  if (tid === "compose_from_units_mc_v2" || tid === "released_unit_overflow_compose_mc_v1") {
+    const steps = item.visual?.text || "";
+    return `<div class="work-card"><div class="work-title">${lang === "en" ? "Worked check" : "Verificación guiada"}</div>
+      <div class="structure-note">${steps}</div>
+      <div class="structure-note" style="margin-top:8px;">${lang === "en"
+        ? `After converting each unit phrase, the total is ${formatNumber(n)}.`
+        : `Después de convertir cada frase de unidades, el total es ${formatNumber(n)}.`}</div></div>
+      ${renderPlaceValueChartHTML(n, true)}`;
+  }
+
+  if (tid === "decomposition_dragdrop_v1") {
+    const answers = (currentItem?.answerKey?.correctAnswers || []).join(", ");
+    return `<div class="work-card"><div class="work-title">${lang === "en" ? "Worked check" : "Verificación guiada"}</div>
+      <div class="structure-note">${lang === "en"
+        ? `The correct place labels are: ${answers}. Check that each coefficient × label value rebuilds ${formatNumber(n)}.`
+        : `Las etiquetas correctas son: ${answers}. Revisa que cada coeficiente × valor de la etiqueta vuelva a construir ${formatNumber(n)}.`}</div></div>`;
+  }
+
+  if (tid.includes("equivalent") || tid.includes("multiselect") || tid.includes("equivalence")) {
+    return `<div class="work-card"><div class="work-title">${lang === "en" ? "Worked check" : "Verificación guiada"}</div>
+      <div class="structure-note">${lang === "en"
+        ? "Mark each choice ✓ only if it still equals the target and includes all required place values. If one place is missing or shifted, it is wrong."
+        : "Marca cada opción ✓ solo si todavía es igual al número objetivo e incluye todos los valores posicionales necesarios. Si falta una posición o está cambiada, está incorrecta."}</div></div>`;
+  }
+
+  if (tid.includes("regroup")) {
+    return `<div class="work-card"><div class="work-title">${lang === "en" ? "Worked check" : "Verificación guiada"}</div>
+      <div class="structure-note">${lang === "en"
+        ? `The correct answer must still total ${formatNumber(n)} after the split. If the regrouped pieces do not add back exactly, the expression is not equivalent.`
+        : `La respuesta correcta todavía debe sumar ${formatNumber(n)} después de dividirse. Si las piezas reagrupadas no vuelven a sumar exactamente, la expresión no es equivalente.`}</div></div>`;
+  }
+
+  return `<div class="work-card"><div class="work-title">${lang === "en" ? "Worked check" : "Verificación guiada"}</div>
+    <div class="structure-note">${lang === "en"
+      ? "Check each place value one by one. The correct answer must preserve the same structure."
+      : "Revisa cada valor posicional uno por uno. La respuesta correcta debe conservar la misma estructura."}</div></div>`;
+}
+
+function renderScaffold(item, tier) {
+  const visual = document.getElementById("visual");
+  const toggle = document.getElementById("structureToggle");
+  if (!visual || !item) return;
+
+  if (tier === 0) {
+    visual.style.display = "none";
+    if (toggle) toggle.textContent = lang === "en" ? "💡 Need a hint?" : "💡 ¿Necesitas una pista?";
+    return;
+  }
+
+  let html = "";
+  if (tier >= 1) html += buildScaffoldTier1(item);
+  if (tier >= 2) html += `<hr style="margin:10px 0;border-color:#e5e7eb"><div style="color:#374151">` + buildScaffoldTier2(item) + `</div>`;
+  visual.innerHTML = html;
+  visual.style.display = "block";
+  if (toggle) toggle.textContent = lang === "en" ? "Hide hint" : "Ocultar pista";
+}
+
+function toggleStructureHint() {
+  const el = document.getElementById("visual");
+  if (!el) return;
+  if (el.style.display === "none" || !el.style.display) {
+    // Manual open — show tier 1 if not yet shown
+    if (scaffoldTier === 0) scaffoldTier = 1;
+    renderScaffold(currentItem, scaffoldTier);
+  } else {
+    el.style.display = "none";
+    const toggle = document.getElementById("structureToggle");
+    if (toggle) toggle.textContent = lang === "en" ? "💡 Need a hint?" : "💡 ¿Necesitas una pista?";
+  }
+}
+
+// Legacy promptEngine kept for orange bar pattern prompts
+const promptEngine = {
+  place_value_misalignment: {
+    wrong: { en:"Which place value is different between the choices?", es:"¿Qué valor posicional es diferente entre las opciones?" },
+    repeated: { en:"Go place by place: ten thousands → thousands → hundreds → tens → ones.", es:"Ve posición por posición: decenas de millar → millares → centenas → decenas → unidades." }
+  },
+  unit_to_digit_confusion: {
+    wrong: { en:"'70 hundreds' means 70 × 100. What does that equal?", es:"'70 centenas' significa 70 × 100. ¿A qué es igual eso?" },
+    repeated: { en:"Multiply count × value of 1 unit first, then add everything.", es:"Primero multiplica cantidad × valor de 1 unidad, luego suma todo." }
+  },
+  partial_decomposition_acceptance: {
+    wrong: { en:"Count the nonzero digits. Your answer needs that many parts.", es:"Cuenta los dígitos distintos de cero. Tu respuesta necesita esa cantidad de partes." },
+    repeated: { en:"Which place value is missing from the answer you chose?", es:"¿Qué valor posicional falta en la respuesta que elegiste?" }
+  }
+};
+
+function getPrompt(pattern) {
+  if (attemptStage === "first") return "";
+  const entry = promptEngine[pattern];
+  if (!entry) return "";
+  const p = entry[attemptStage];
+  return p ? (lang === "en" ? p.en : p.es) : "";
+}
+
+
+// ── CORE UTILITY FUNCTIONS ────────────────────────────────────────────────
+function t(en, es) { return lang === "en" ? en : es; }
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function formatNumber(n) { return Number(n).toLocaleString('en-US'); }
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function unique(arr) { return [...new Set(arr)]; }
+function normalize(s) { return s.toLowerCase().replace(/\s+/g, ' ').trim(); }
+function getWeakestPattern() {
+  const entries = Object.entries(studentModel.patternErrors).sort((a,b) => b[1] - a[1]);
+  return entries[0][1] > 0 ? entries[0][0] : null;
+}
+
+function sanitizeExpr(expr) {
+  return expr.replace(/,/g, "").replace(/\s+/g, "");
+}
+
+function safeEvalArithmetic(expr) {
+  const cleaned = sanitizeExpr(expr);
+  if (!/^[0-9+*()-]+$/.test(cleaned)) return null;
+  try {
+    // restricted arithmetic only
+    return Function('"use strict"; return (' + cleaned + ')')();
+  } catch (e) {
+    return null;
+  }
+}
+
+function evaluateChoiceText(choiceText, item) {
+  if (item.templateId === "compose_from_units_mc_v1") {
+    const val = safeEvalArithmetic(choiceText);
+    return val === item.meta.correctValue;
+  }
+
+  if (item.templateId === "equivalent_expression_ms_v1") {
+    const val = safeEvalArithmetic(choiceText);
+    return val === item.meta.targetNumber;
+  }
+
+  return false;
+}
+
+function symbolicValidateItem(item) {
+  const result = { status:"PASS", failedChecks:[] };
+  function fail(x){ result.failedChecks.push(x); result.status="FAIL"; }
+
+  if (item.templateId === "compose_from_units_mc_v1" || item.templateId === "compose_from_units_mc_v2") {
+    const satisfied = item.choices.filter(c => evaluateChoiceText(c.text, item));
+    if (satisfied.length !== 1) fail("MC symbolic validation failed exclusivity");
+    if (satisfied.length === 1 && satisfied[0].text !== item.answerKey.correctAnswers[0]) {
+      fail("MC declared key does not match symbolic truth");
+    }
+  }
+
+  // Numeric exclusivity is only valid for single-select families whose choice text is plain numeric text.
+  // Text-choice and expression-choice families must not be forced through Number(choice.text).
+  if (item.templateId === "expanded_form_to_standard_mc_v1" || item.templateId === "missing_part_compose_mc_v1" || item.templateId === "digit_value_compose_mc_v1" || item.templateId === "released_unit_overflow_compose_mc_v1" || item.templateId === "released_regrouped_near_miss_decomposition_mc_v1") {
+    const satisfied = item.choices.filter(c => Number(c.text.replace(/,/g,"")) === item.meta.correctValue);
+    if (satisfied.length !== 1) fail("Single-select numeric exclusivity failed");
+  }
+
+  if (item.templateId === "standard_to_expanded_form_mc_v1") {
+    const satisfied = item.choices.filter(c => safeEvalArithmetic(c.text) === item.meta.correctValue);
+    if (satisfied.length !== 1) fail("Standard-to-expanded-form exclusivity failed");
+  }
+
+  if (item.templateId === "standard_to_expanded_notation_mc_v1") {
+    const toEval = txt => safeEvalArithmetic(txt.replace(/×/g, "*").replace(/[()]/g, ""));
+    const satisfied = item.choices.filter(c => toEval(c.text) === item.meta.correctValue);
+    if (satisfied.length !== 1) fail("Expanded-notation exclusivity failed");
+  }
+
+  if (item.templateId === "equivalent_expression_ms_v1" || item.templateId === "equivalence_compose_ms_v1" || item.templateId === "released_equivalent_expression_ms_v1" || item.templateId === "released_regrouped_equivalent_decomposition_ms_v1" || item.templateId === "teacher_forensic_partial_plausible_multiselect_ms_v1") {
+    // Bug 6 fix: use declared correctAnswers as truth source — generator is responsible for
+    // mathematical correctness. Symbolic eval on arbitrary text expressions is unreliable.
+    const declared = [...item.answerKey.correctAnswers].sort();
+    const marked = item.choices.filter(c => c.correct).map(c => c.text).sort();
+    if (JSON.stringify(declared) !== JSON.stringify(marked)) fail("Multiselect declared key does not match marked choices");
+    if (declared.length !== 2) fail("Multiselect must have exactly two correct answers");
+    // Spot-check: at least one declared answer must eval to targetNumber
+    const evalOk = declared.some(txt => safeEvalArithmetic(txt) === item.meta.targetNumber);
+    if (!evalOk) fail("No declared correct answer evaluates to targetNumber");
+  }
+
+  if (item.templateId === "decomposition_dragdrop_v1") {
+    // Bug 1 fix: validate against the item's own declared answers, not a hardcoded string
+    const declared = item.answerKey.correctAnswers;
+    if (!Array.isArray(declared) || declared.length !== 3) fail("Drag/drop must have exactly 3 ordered answers");
+    if (!declared.every(x => item.answerBank.includes(x))) fail("Drag/drop answer not in answer bank");
+    // Verify the declared places actually sum to the target number
+    const placeValues = { "ten thousands":10000, "thousands":1000, "hundreds":100, "tens":10, "ones":1 };
+    const declaredSum = (item.meta.chosenCoeffs || []).reduce((s, c, i) => s + c * (placeValues[declared[i]] || 0), 0);
+    if (item.meta.chosenCoeffs && declaredSum !== item.meta.targetNumber) fail("Drag/drop declared places do not match target number");
+  }
+
+  if (item.templateId === "notation_to_standard_mc_v1") {
+    // Notation → standard: eval the notation expression, check it matches correctValue
+    const toEval = txt => safeEvalArithmetic(txt.replace(/×/g, "*").replace(/[()]/g, ""));
+    const notationVal = toEval(item.meta.notationExpr || "");
+    if (notationVal !== item.meta.correctValue) fail("Notation-to-standard: notation does not evaluate to correctValue");
+    const satisfied = item.choices.filter(c => Number(c.text.replace(/,/g,"")) === item.meta.correctValue);
+    if (satisfied.length !== 1) fail("Notation-to-standard exclusivity failed");
+  }
+
+  return result;
+}
+
+function setStructureVisibility(show) {
+  // Legacy shim — delegates to new scaffold system
+  if (!show) {
+    const el = document.getElementById("visual");
+    if (el) el.style.display = "none";
+    const btn = document.getElementById("structureToggle");
+    if (btn) btn.textContent = lang === "en" ? "💡 Need a hint?" : "💡 ¿Necesitas una pista?";
+  } else {
+    renderScaffold(currentItem, scaffoldTier || 1);
+  }
+}
+
+function shouldLockout() {
+  return studentModel.repeatedWrongItems >= 3;
+}
+
+function applyLockoutIfNeeded() {
+  if (shouldLockout()) {
+    studentModel.lockout = true;
+    setLockoutMessage(
+      "Repeated errors across several questions detected. Teacher check-in is required.",
+      "Se detectaron errores repetidos en varias preguntas. Se requiere revisión del maestro."
+    );
+    syncLockoutUI();
+  }
+}
+
+function teacherUnlock() {
+  const inlineInput = document.getElementById("inlineTeacherCodeInput");
+  const teacherInput = document.getElementById("teacherCodeInput");
+  const value = (inlineInput && inlineInput.value) ? inlineInput.value : ((teacherInput && teacherInput.value) ? teacherInput.value : "");
+  if (!value) return;
+
+  if (value === "teacher") {
+    studentModel.lockout = false;
+    studentModel.repeatedWrongItems = 0;
+    if (inlineInput) inlineInput.value = "";
+    if (teacherInput) teacherInput.value = "";
+    const panel = document.getElementById("inlineUnlockPanel");
+    const btn = document.getElementById("showUnlockBtn");
+    if (panel) panel.classList.remove("visible");
+    if (btn) btn.setAttribute("aria-expanded", "false");
+    syncLockoutUI();
+    saveRuntimeState();
+    updateTracker(lang === "en"
+      ? "Teacher unlock accepted. Adaptive mode resumed."
+      : "Desbloqueo del maestro aceptado. Modo adaptativo reanudado.");
+  } else {
+    setLockoutMessage("Incorrect teacher code.", "Código del maestro incorrecto.");
+  }
+}
+
+
+const REQUIRED_FAMILY_SIGNALS = [
+  "compose_from_units_mc_v2",
+  "released_unit_overflow_compose_mc_v1",
+  "expanded_form_to_standard_mc_v1",
+  "standard_to_expanded_form_mc_v1",
+  "standard_to_expanded_notation_mc_v1",
+  "missing_part_compose_mc_v1",
+  "digit_value_compose_mc_v1",
+  "equivalence_compose_ms_v1",
+  "released_equivalent_expression_ms_v1",
+  "released_error_analysis_compose_mc_v1",
+  "released_truth_judgment_compose_mc_v1",
+  "released_cross_representation_mismatch_mc_v1",
+  "released_select_correct_notation_mc_v1",
+  "released_regrouped_equivalent_decomposition_ms_v1",
+  "released_regrouped_equivalent_decomposition_mc_v1",
+  "released_regrouped_near_miss_decomposition_mc_v1",
+  "released_expanded_notation_discrimination_mc_v1",
+  "teacher_forensic_partial_plausible_multiselect_ms_v1",
+  "teacher_forensic_place_label_mapping",
+  "decomposition_dragdrop_v1"
+];
+
+
+function familyStreakAudit(maxAllowed = 2, windowSize = 20) {
+  const recent = selectionHistory.slice(-windowSize);
+  let maxStreak = 0;
+  let currentStreak = 0;
+  let prev = null;
+  let offender = null;
+
+  for (const fam of recent) {
+    if (fam === prev) {
+      currentStreak += 1;
+    } else {
+      currentStreak = 1;
+      prev = fam;
+    }
+    if (currentStreak > maxStreak) {
+      maxStreak = currentStreak;
+      offender = fam;
+    }
+  }
+
+  const ok = maxStreak <= maxAllowed;
+  return { ok, maxStreak, offender, recent };
+}
+
+function runtimeCoverageAudit() {
+  const src = document.documentElement.innerHTML;
+  const missing = REQUIRED_FAMILY_SIGNALS.filter(sig => !src.includes(sig));
+  const note = document.getElementById("coverageStatus");
+  const streakAudit = familyStreakAudit(2, 20);
+  const exactAudit = exactFamilyExposureAudit(20);
+  if (note) {
+    const coverageText = missing.length
+      ? ("Coverage warning: missing " + missing.length + " family signal(s).")
+      : "Coverage audit: target family signals present.";
+    const streakText = streakAudit.ok
+      ? " | Streak audit: pass"
+      : (" | Streak audit: FAIL (" + streakAudit.offender + " × " + streakAudit.maxStreak + ")");
+    const hardText = exactAudit.ok
+      ? " | Hard exact-family audit: pass"
+      : (" | Hard exact-family audit: FAIL (" + exactAudit.hardDeficits.map(d => d.family + " -" + d.deficit).join(", ") + ")");
+    const spotlightText = " | Spotlight error/truth: "
+      + (exactAudit.counts.released_error_analysis_compose || 0) + "/" + exactAudit.softTargets.released_error_analysis_compose
+      + " & "
+      + (exactAudit.counts.released_truth_judgment_compose || 0) + "/" + exactAudit.softTargets.released_truth_judgment_compose;
+    note.textContent = coverageText + streakText + hardText + spotlightText;
+  }
+  return { missingCount: missing.length, missingSignals: missing, streakAudit, exactAudit };
+}
+
+
+
+const STORAGE_KEY = "mb_3_2a_runtime_state_v33";
+
+function storageAvailable() {
+  try {
+    const k = "__mb_storage_test__";
+    localStorage.setItem(k, "1");
+    localStorage.removeItem(k);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function buildPersistedState() {
+  return {
+    studentModel: {
+      ...studentModel,
+      formatsSeen: Array.from(studentModel.formatsSeen || [])
+    },
+    gameMode,
+    finalCheckAnswers,
+    challengeStreak,
+    currentItem,
+    attemptStage,
+    currentAttemptCount,
+    shownQuestionIds,
+    familyExposure,
+    familyLastSeen,
+    selectionHistory,
+    lastComposeFamily,
+    currentChosenFamily,
+    lang
+  };
+}
+
+function saveRuntimeState() {
+  if (!storageAvailable()) return false;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildPersistedState()));
+    return true;
+  } catch (e) {
+    console.error("SAVE STATE ERROR:", e);
+    return false;
+  }
+}
+
+function restoreRuntimeState() {
+  if (!storageAvailable()) return false;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const state = JSON.parse(raw);
+    if (!state || typeof state !== "object") return false;
+
+    if (state.studentModel && typeof state.studentModel === "object") {
+      Object.assign(studentModel, state.studentModel);
+      studentModel.formatsSeen = new Set(state.studentModel.formatsSeen || []);
+    }
+    if (typeof state.gameMode === "string") gameMode = state.gameMode;
+    if (Array.isArray(state.finalCheckAnswers)) finalCheckAnswers = state.finalCheckAnswers;
+    if (typeof state.challengeStreak === "number") challengeStreak = state.challengeStreak;
+    if (state.currentItem && typeof state.currentItem === "object") currentItem = state.currentItem;
+    if (typeof state.attemptStage === "string") attemptStage = state.attemptStage;
+    if (typeof state.currentAttemptCount === "number") currentAttemptCount = state.currentAttemptCount;
+    if (Array.isArray(state.shownQuestionIds)) shownQuestionIds = state.shownQuestionIds;
+    if (state.familyExposure && typeof state.familyExposure === "object") familyExposure = state.familyExposure;
+    if (state.familyLastSeen && typeof state.familyLastSeen === "object") familyLastSeen = state.familyLastSeen;
+    if (Array.isArray(state.selectionHistory)) selectionHistory = state.selectionHistory;
+    if (typeof state.lastComposeFamily === "string") lastComposeFamily = state.lastComposeFamily;
+    if (typeof state.currentChosenFamily === "string") currentChosenFamily = state.currentChosenFamily;
+    if (typeof state.lang === "string") lang = state.lang;
+    return true;
+  } catch (e) {
+    console.error("RESTORE STATE ERROR:", e);
+    return false;
+  }
+}
+
+
+function getFreshStudentModel() {
+  return {
+    total: 0,
+    streak: 0,
+    smartScore: 0,
+    difficultyLevel: 1,
+    penaltyScore: 0,
+    firstTryCorrect: 0,
+    secondTryCorrect: 0,
+    thirdPlusTryCorrect: 0,
+    repeatedWrongItems: 0,
+    lockout: false,
+    telemetry: [],
+    patternErrors: {
+      place_value_misalignment: 0,
+      unit_to_digit_confusion: 0,
+      partial_decomposition_acceptance: 0
+    },
+    formatsSeen: new Set()
+  };
+}
+
+function resetRuntimeSession() {
+  const dbg = document.getElementById("runtimeDebugStatus");
+  try {
+    if (dbg) dbg.textContent = "Debug: resetting session...";
+    const fresh = getFreshStudentModel();
+
+    // Reset studentModel field-by-field without destroying runtime shape/getters
+    studentModel.total = fresh.total;
+    studentModel.streak = fresh.streak;
+    studentModel.smartScore = fresh.smartScore;
+    studentModel.difficultyLevel = fresh.difficultyLevel;
+    studentModel.penaltyScore = fresh.penaltyScore;
+    studentModel.firstTryCorrect = fresh.firstTryCorrect;
+    studentModel.secondTryCorrect = fresh.secondTryCorrect;
+    studentModel.thirdPlusTryCorrect = fresh.thirdPlusTryCorrect;
+    studentModel.repeatedWrongItems = fresh.repeatedWrongItems;
+    studentModel.lockout = fresh.lockout;
+    studentModel.telemetry = fresh.telemetry;
+    studentModel.patternErrors = fresh.patternErrors;
+    studentModel.formatsSeen = fresh.formatsSeen;
+
+    gameMode = "normal";
+    finalCheckAnswers = [];
+    challengeStreak = 0;
+    currentItem = null;
+    attemptStage = "first";
+    currentAttemptCount = 0;
+    shownQuestionIds = [];
+    familyExposure = {};
+    familyLastSeen = {};
+    selectionHistory = [];
+    lastComposeFamily = null;
+    currentChosenFamily = null;
+    scaffoldTier = 0;
+    selected = [];
+
+    COMPOSE_REPRESENTATION_FAMILIES.forEach(f => {
+      familyExposure[f] = 0;
+      familyLastSeen[f] = -999;
+    });
+
+    const feedback = document.getElementById("feedback");
+    const prompt = document.getElementById("prompt");
+    const support = document.getElementById("support");
+    const visual = document.getElementById("visual");
+    const answer = document.getElementById("answer");
+    const tracker = document.getElementById("tracker");
+    const textAnswer = document.getElementById("textAnswer");
+    const masteryOverlay = document.getElementById("masteryOverlay");
+    const almostOverlay = document.getElementById("almostOverlay");
+    const lockoutPanel = document.getElementById("inlineUnlockPanel");
+    const lockoutBtn = document.getElementById("showUnlockBtn");
+
+    if (feedback) feedback.textContent = "";
+    if (prompt) prompt.textContent = "";
+    if (support) support.innerHTML = "";
+    if (visual) visual.innerHTML = "";
+    if (answer) answer.innerHTML = "";
+    if (tracker) tracker.textContent = "";
+    if (textAnswer) textAnswer.value = "";
+    if (masteryOverlay) masteryOverlay.style.display = "none";
+    if (almostOverlay) almostOverlay.style.display = "none";
+    if (lockoutPanel) lockoutPanel.classList.remove("visible");
+    if (lockoutBtn) lockoutBtn.setAttribute("aria-expanded", "false");
+
+    setLockoutMessage(
+      "This student needs teacher check-in before continuing.",
+      "Este estudiante necesita revisión del maestro antes de continuar."
+    );
+    syncLockoutUI();
+
+    const cleared = clearRuntimeState();
+    if (dbg) dbg.textContent = cleared
+      ? "Debug: state cleared. Restarting with a fresh session."
+      : "Debug: reset continued, but saved state may not have cleared.";
+
+    updateTracker(lang === "en"
+      ? "Session reset. Starting over."
+      : "Sesión reiniciada. Empezando de nuevo.");
+    nextAdaptive();
+  } catch (e) {
+    console.error("RESET SESSION ERROR:", e);
+    if (dbg) dbg.textContent = "Debug: reset failed — " + (e && e.message ? e.message : "unknown error");
+  }
+}
+
+
+function clearRuntimeState() {
+  if (!storageAvailable()) return false;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+    return true;
+  } catch (e) {
+    console.error("CLEAR STATE ERROR:", e);
+    const dbg = document.getElementById("runtimeDebugStatus");
+    if (dbg) dbg.textContent = "Debug: clearRuntimeState failed.";
+    return false;
+  }
+}
+
+function syncLockoutUI() {
+  const teacherBox = document.getElementById("lockoutBox");
+  const studentBox = document.getElementById("studentLockoutBox");
+  if (teacherBox) teacherBox.style.display = studentModel.lockout ? "block" : "none";
+  if (studentBox) studentBox.style.display = studentModel.lockout ? "block" : "none";
+}
+
+function setLockoutMessage(msgEn, msgEs) {
+  const msg = lang === "en" ? msgEn : msgEs;
+  const teacherMsg = document.getElementById("lockoutMessage");
+  const studentMsg = document.getElementById("studentLockoutMessage");
+  if (teacherMsg) teacherMsg.textContent = msg;
+  if (studentMsg) studentMsg.textContent = msg;
+}
+
+function toggleInlineUnlock() {
+  const panel = document.getElementById("inlineUnlockPanel");
+  const btn = document.getElementById("showUnlockBtn");
+  if (!panel || !btn) return;
+  const open = panel.classList.contains("visible");
+  panel.classList.toggle("visible", !open);
+  btn.setAttribute("aria-expanded", !open ? "true" : "false");
+  if (!open) {
+    const input = document.getElementById("inlineTeacherCodeInput");
+    if (input) input.focus();
+  }
+}
+
+function getPlaceColumns() {
+  return [
+    { key: "tt", place: 10000, en: "Ten-Thousands", es: "Decenas de millar" },
+    { key: "th", place: 1000, en: "Thousands", es: "Millares" },
+    { key: "h", place: 100, en: "Hundreds", es: "Centenas" },
+    { key: "t", place: 10, en: "Tens", es: "Decenas" },
+    { key: "o", place: 1, en: "Ones", es: "Unidades" }
+  ];
+}
+
+function getDigitsByPlace(n) {
+  const cols = getPlaceColumns();
+  const digits = String(Math.max(0, Number(n) || 0)).padStart(5, "0").split("").map(Number);
+  const out = {};
+  cols.forEach((c, i) => out[c.key] = digits[i]);
+  return out;
+}
+
+function renderPlaceValueChartHTML(n, showValues=true) {
+  const cols = getPlaceColumns();
+  const digits = getDigitsByPlace(n);
+  const header = cols.map(c => `<th>${lang === "en" ? c.en : c.es}</th>`).join("");
+  const row = cols.map(c => {
+    const d = digits[c.key];
+    const val = d * c.place;
+    return `<td>${d}<span class="pv-sub">${showValues && d ? formatNumber(val) : "—"}</span></td>`;
+  }).join("");
+  return `<div class="pv-chart-wrap"><table class="pv-chart"><thead><tr>${header}</tr></thead><tbody><tr>${row}</tr></tbody></table></div>`;
+}
+
+function parseExpressionParts(expr) {
+  return String(expr || "").split("+").map(s => s.trim()).filter(Boolean).map(part => Number(String(part).replace(/,/g, ""))).filter(x => !Number.isNaN(x));
+}
+
+function renderStackedPlaceWorkHTML(parts) {
+  const cols = getPlaceColumns();
+  const rows = parts.map(part => {
+    const digits = getDigitsByPlace(part);
+    return `<tr>${cols.map(c => `<td>${digits[c.key] || ""}</td>`).join("")}</tr>`;
+  }).join("");
+  const total = parts.reduce((s, p) => s + p, 0);
+  const totalDigits = getDigitsByPlace(total);
+  const header = cols.map(c => `<th>${lang === "en" ? c.en : c.es}</th>`).join("");
+  const totalRow = cols.map(c => `<td>${totalDigits[c.key] || ""}</td>`).join("");
+  return `<div class="work-card">
+    <div class="work-title">${lang === "en" ? "Place-aligned work" : "Trabajo alineado por valor posicional"}</div>
+    <table class="stacked-work"><thead><tr>${header}</tr></thead><tbody>${rows}<tr><td colspan="5" style="border:none;background:#fff;height:4px"></td></tr><tr>${totalRow}</tr></tbody></table>
+  </div>`;
+}
+
+function renderRegroupComparisonHTML(correctExpr, nearMissExpr, targetNumber) {
+  return `<div class="compare-card">
+    <div class="work-title">${lang === "en" ? "Compare the structure" : "Compara la estructura"}</div>
+    <div class="compare-grid">
+      <div class="compare-good">
+        <div class="compare-label">${lang === "en" ? "Equivalent" : "Equivalente"}</div>
+        <div class="structure-note">${correctExpr}</div>
+      </div>
+      <div class="compare-bad">
+        <div class="compare-label">${lang === "en" ? "Near miss" : "Casi correcto"}</div>
+        <div class="structure-note">${nearMissExpr}</div>
+      </div>
+    </div>
+    <div class="structure-note" style="margin-top:8px;">
+      ${lang === "en"
+        ? `Both answers may look similar. Only the one that still totals ${formatNumber(targetNumber)} is correct.`
+        : `Ambas respuestas pueden parecer similares. Solo la que todavía suma ${formatNumber(targetNumber)} es correcta.`}
+    </div>
+  </div>`;
+}
+
+function renderNotationContrastHTML(n) {
+  return `<div class="notation-card">
+    <div class="work-title">${lang === "en" ? "Expanded form vs expanded notation" : "Forma desarrollada vs notación desarrollada"}</div>
+    <div class="compare-grid">
+      <div class="compare-good">
+        <div class="compare-label">${lang === "en" ? "Expanded form" : "Forma desarrollada"}</div>
+        <div class="structure-note">${makeExpandedFormString(n)}</div>
+      </div>
+      <div class="compare-good">
+        <div class="compare-label">${lang === "en" ? "Expanded notation" : "Notación desarrollada"}</div>
+        <div class="structure-note">${makeExpandedNotationString(n)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function updateTracker(message="") {
+  // Teacher panel — safe updates (elements may not exist in all builds)
+  const safe = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  safe("difficultyValue", studentModel.difficultyLevel);
+  safe("streakValue", studentModel.streak);
+  safe("masteryValue", Math.round(studentModel.smartScore) + " / 100 (" + getZone(studentModel.smartScore) + ")");
+  safe("attemptedValue", studentModel.total);
+  safe("firstTryValue", studentModel.firstTryCorrect);
+  safe("secondTryValue", studentModel.secondTryCorrect);
+  safe("thirdTryValue", studentModel.thirdPlusTryCorrect);
+  safe("penaltyValue", studentModel.penaltyScore);
+  safe("pvmCount", studentModel.patternErrors.place_value_misalignment);
+  safe("udcCount", studentModel.patternErrors.unit_to_digit_confusion);
+  safe("pdaCount", studentModel.patternErrors.partial_decomposition_acceptance);
+
+  const gm = (typeof gameMode !== "undefined") ? gameMode : "normal";
+  const gmLabel = gm === "challenge" || gm === "mastery" ? " [Challenge Zone]" : gm === "extension" ? " [Extension]" : "";
+  safe("adaptiveMessage", message + gmLabel);
+
+  const formatsSeenCount = studentModel.formatsSeen ? studentModel.formatsSeen.size : 0;
+  safe("coverageStatus", `Formats seen: ${formatsSeenCount} / ${REQUIRED_FORMATS.length} | ChallengeZone: ${allFormatsSeenForChallengeZone() ? "UNLOCKED" : "LOCKED"}`);
+
+  syncLockoutUI();
+
+  // Family exposure log
+  const exposureLog = document.getElementById("familyExposureLog");
+  if (exposureLog && typeof familyExposure !== "undefined") {
+    const last10 = selectionHistory.slice(-10);
+    const streakFamily = last10.length ? last10[last10.length - 1] : "—";
+    let streakCount = 0;
+    for (let i = last10.length - 1; i >= 0; i--) {
+      if (last10[i] === streakFamily) streakCount++;
+      else break;
+    }
+    const exactAudit = exactFamilyExposureAudit(20);
+    const lines = [
+      `currentChosenFamily: ${currentChosenFamily || "—"}`,
+      `currentStreak: ${streakFamily} × ${streakCount}`,
+      `last10: ${last10.join(" | ") || "—"}`,
+      "----- hard minima audit (last 20) -----"
+    ].concat(
+      Object.entries(exactAudit.hardMinima)
+        .map(([f, minReq]) => `${String(exactAudit.counts[f] || 0).padStart(2)} / ${minReq}  ${f}`)
+    ).concat([
+      `hard deficits: ${exactAudit.hardDeficits.length ? exactAudit.hardDeficits.map(d => `${d.family}(-${d.deficit})`).join(", ") : "none"}`,
+      "----- soft targets spotlight -----",
+      `error-analysis: ${exactAudit.counts.released_error_analysis_compose || 0} / ${exactAudit.softTargets.released_error_analysis_compose}`,
+      `truth-judgment: ${exactAudit.counts.released_truth_judgment_compose || 0} / ${exactAudit.softTargets.released_truth_judgment_compose}`,
+      `standard→expanded: ${exactAudit.counts.standard_to_expanded_form || 0} / ${exactAudit.softTargets.standard_to_expanded_form}`,
+      `expanded→standard: ${exactAudit.counts.expanded_form_to_standard || 0} / ${exactAudit.softTargets.expanded_form_to_standard}`,
+      `notation core: ${(exactAudit.counts.released_expanded_notation_discrimination || 0) + (exactAudit.counts.released_select_correct_notation || 0)} / ${(exactAudit.softTargets.released_expanded_notation_discrimination || 0) + (exactAudit.softTargets.released_select_correct_notation || 0)}`,
+      `soft deficits: ${exactAudit.softDeficits.length ? exactAudit.softDeficits.map(d => `${d.family}(-${d.deficit})`).join(", ") : "none"}`,
+      "----- lifetime family exposure -----"
+    ]).concat(
+      Object.entries(familyExposure)
+        .sort((a, b) => b[1] - a[1])
+        .map(([f, count]) => `${count.toString().padStart(3)} × ${f}`)
+    );
+    exposureLog.textContent = lines.join("\n") || "No data yet.";
+  }
+
+  // STAAR trap coverage
+  const trapCoverageEl = document.getElementById("staarTrapCoverage");
+  if (trapCoverageEl && typeof familyExposure !== "undefined") {
+    const recent = selectionHistory.slice(-20);
+    const bucketCounts = {
+      notation: recent.filter(f => ["standard_to_expanded_notation","released_select_correct_notation","released_expanded_notation_discrimination"].includes(f)).length,
+      regroup: recent.filter(f => ["released_regrouped_equivalent_decomposition","released_regrouped_near_miss_decomposition"].includes(f)).length,
+      partialTrap: recent.filter(f => ["teacher_forensic_partial_plausible_multiselect","released_equivalent_expression_multiselect"].includes(f)).length,
+      mapping: recent.filter(f => ["teacher_forensic_place_label_mapping"].includes(f)).length,
+      overflow: recent.filter(f => ["released_unit_overflow_compose"].includes(f)).length,
+      reasoning: recent.filter(f => ["released_error_analysis_compose","released_truth_judgment_compose","released_cross_representation_mismatch"].includes(f)).length,
+    };
+    const exactAudit = exactFamilyExposureAudit(20);
+    const hardSummary = Object.entries(exactAudit.hardMinima)
+      .map(([f, m]) => `${f}:${exactAudit.counts[f] || 0}/${m}`)
+      .join(" | ");
+    const errorTruthSummary = [
+      `error:${exactAudit.counts.released_error_analysis_compose || 0}/${exactAudit.softTargets.released_error_analysis_compose}`,
+      `truth:${exactAudit.counts.released_truth_judgment_compose || 0}/${exactAudit.softTargets.released_truth_judgment_compose}`
+    ].join(" | ");
+    const hardDefSummary = exactAudit.hardDeficits.length
+      ? (" | hard deficits: " + exactAudit.hardDeficits.map(d => `${d.family}(-${d.deficit})`).join(", "))
+      : " | hard deficits: none";
+    const softDefSummary = exactAudit.softDeficits.length
+      ? (" | soft deficits: " + exactAudit.softDeficits.map(d => `${d.family}(-${d.deficit})`).join(", "))
+      : " | soft deficits: none";
+    trapCoverageEl.textContent = Object.entries(bucketCounts).map(([k, v]) => `${k}: ${v}`).join(" | ")
+      + " || hard exact: " + hardSummary
+      + " || spotlight: " + errorTruthSummary
+      + hardDefSummary + softDefSummary;
+  }
+
+  try { saveRuntimeState(); } catch(e) { console.error("SAVE HOOK ERROR:", e); }
+  const dbg = document.getElementById("runtimeDebugStatus");
+  if (dbg && !String(dbg.textContent || "").includes("failed")) dbg.textContent = "";
+
+  updateGameUI();
+  updateSmartScoreUI();
+}
+
+function validateItem(item) {
+  const result = { status:"PASS", failedChecks:[] };
+  function fail(x){ result.failedChecks.push(x); result.status="FAIL"; }
+
+  const correctTexts = (item.choices || []).filter(c=>c.correct).map(c=>c.text);
+  const uniqueCorrect = [...new Set(correctTexts)];
+  if (uniqueCorrect.length !== correctTexts.length) fail("Duplicate correct answers detected");
+
+  const composeMC = [
+    "compose_from_units_mc_v1",
+    "compose_from_units_mc_v2",
+    "expanded_form_to_standard_mc_v1",
+    "standard_to_expanded_form_mc_v1",
+    "standard_to_expanded_notation_mc_v1",
+    "missing_part_compose_mc_v1",
+    "digit_value_compose_mc_v1",
+    "released_unit_overflow_compose_mc_v1",
+    "released_error_analysis_compose_mc_v1",
+    "released_truth_judgment_compose_mc_v1",
+    "released_cross_representation_mismatch_mc_v1",
+    "released_select_correct_notation_mc_v1",
+    "notation_to_standard_mc_v1",
+    "released_regrouped_near_miss_decomposition_mc_v1",
+    "released_expanded_notation_discrimination_mc_v1",
+    "released_regrouped_equivalent_decomposition_mc_v1",
+    "teacher_forensic_place_label_mapping",
+    "teacher_forensic_partial_plausible_multiselect_ms_v1"
+  ];
+
+  if (item.itemType === "multiple_choice") {
+    if ((item.choices || []).length !== 4) fail("MC must have exactly 4 choices");
+    if (correctTexts.length !== 1) fail("MC must have exactly one correct answer");
+    if (!composeMC.includes(item.templateId)) fail("MC template mismatch");
+  }
+
+  if (item.itemType === "multiselect") {
+    if ((item.choices || []).length < 4 || (item.choices || []).length > 5) fail("Multiselect must have 4 or 5 choices");
+    if (correctTexts.length !== 2) fail("Multiselect must have exactly two correct answers");
+    const declared = [...item.answerKey.correctAnswers].sort();
+    const marked = [...correctTexts].sort();
+    if (JSON.stringify(declared) !== JSON.stringify(marked)) fail("Declared multiselect answer set does not match marked correct choices");
+  }
+
+  if (item.itemType === "drag_and_drop") {
+    if (!Array.isArray(item.answerKey.correctAnswers) || item.answerKey.correctAnswers.length !== 3) fail("Drag/drop must declare ordered three-part answer set");
+    if (!item.answerKey.correctAnswers.every(x => item.answerBank.includes(x))) fail("Ordered answers must exist in answer bank");
+  }
+
+  const symbolic = symbolicValidateItem(item);
+  if (symbolic.status !== "PASS") symbolic.failedChecks.forEach(f => fail(f));
+
+  return result;
+}
+
+
+// ===== COMPOSE NODE REPRESENTATION EXPANSION (C1) =====
+const COMPOSE_REPRESENTATION_FAMILIES = [
+  "unit_language_to_standard",
+  "expanded_form_to_standard",
+  "standard_to_expanded_form",
+  "standard_to_expanded_notation",
+  "missing_part_compose",
+  "digit_value_compose",
+  "equivalence_compose",
+  "released_unit_overflow_compose",
+  "released_equivalent_expression_multiselect",
+  "released_error_analysis_compose",
+  "released_truth_judgment_compose",
+  "released_cross_representation_mismatch",
+  "released_select_correct_notation",
+  "released_regrouped_equivalent_decomposition",
+  "released_regrouped_near_miss_decomposition",
+  "released_expanded_notation_discrimination",
+  "teacher_forensic_partial_plausible_multiselect",
+  "teacher_forensic_place_label_mapping"
+];
+let lastComposeFamily = null;
+
+function formatFactor(n) {
+  return Number(n).toLocaleString("en-US");
+}
+
+
+function getPlaceName(place, language="en") {
+  const en = {10000:"ten-thousands", 1000:"thousands", 100:"hundreds", 10:"tens", 1:"ones"};
+  const es = {10000:"decenas de millar", 1000:"millares", 100:"centenas", 10:"decenas", 1:"unidades"};
+  return language === "en" ? en[place] : es[place];
+}
+
+function nonzeroPlaceParts(n) {
+  const places = [10000, 1000, 100, 10, 1];
+  const digits = String(n).padStart(5, "0").split("").map(Number);
+  return digits
+    .map((d, i) => ({ digit: d, place: places[i], value: d * places[i] }))
+    .filter(p => p.digit > 0);
+}
+
+function makeExpandedFormString(n) {
+  return nonzeroPlaceParts(n).map(p => formatNumber(p.value)).join(" + ");
+}
+
+function makeExpandedNotationString(n) {
+  return nonzeroPlaceParts(n).map(p => `(${p.digit} × ${formatFactor(p.place)})`).join(" + ");
+}
+
+
+// ===== REPRESENTATION COVERAGE + BALANCING (B3 — v32 weight-matrix rewrite) =====
+let familyExposure = {};
+let familyLastSeen = {};   // tracks item-index of last pick per family
+let selectionHistory = []; // rolling family history for quota checks
+let currentChosenFamily = null;
+
+const HARD_EXACT_FAMILY_MINIMA = {
+  standard_to_expanded_form: 1,
+  expanded_form_to_standard: 1,
+  released_expanded_notation_discrimination: 1,
+  released_regrouped_equivalent_decomposition: 1,
+  released_regrouped_near_miss_decomposition: 1,
+  teacher_forensic_partial_plausible_multiselect: 1,
+  released_error_analysis_compose: 1,
+  released_truth_judgment_compose: 1,
+  teacher_forensic_place_label_mapping: 1,
+  released_unit_overflow_compose: 1
+};
+
+const SOFT_EXACT_FAMILY_TARGETS = {
+  standard_to_expanded_form: 2,
+  expanded_form_to_standard: 2,
+  released_expanded_notation_discrimination: 2,
+  released_select_correct_notation: 1,
+  released_regrouped_equivalent_decomposition: 2,
+  released_regrouped_near_miss_decomposition: 2,
+  teacher_forensic_partial_plausible_multiselect: 2,
+  released_error_analysis_compose: 2,
+  released_truth_judgment_compose: 2,
+  teacher_forensic_place_label_mapping: 2,
+  released_unit_overflow_compose: 2
+};
+
+function countFamilyInWindow(familyId, windowSize = 20) {
+  return selectionHistory.slice(-windowSize).filter(f => f === familyId).length;
+}
+
+function exactFamilyExposureAudit(windowSize = 20) {
+  const recent = selectionHistory.slice(-windowSize);
+  const counts = {};
+  const hardDeficits = [];
+  const softDeficits = [];
+
+  const allFamilies = Array.from(new Set([
+    ...Object.keys(HARD_EXACT_FAMILY_MINIMA),
+    ...Object.keys(SOFT_EXACT_FAMILY_TARGETS)
+  ]));
+
+  allFamilies.forEach(f => {
+    counts[f] = recent.filter(x => x === f).length;
+  });
+
+  Object.entries(HARD_EXACT_FAMILY_MINIMA).forEach(([f, minCount]) => {
+    const count = counts[f] || 0;
+    if (count < minCount) {
+      hardDeficits.push({
+        family: f,
+        count,
+        minRequired: minCount,
+        deficit: minCount - count
+      });
+    }
+  });
+
+  Object.entries(SOFT_EXACT_FAMILY_TARGETS).forEach(([f, target]) => {
+    const count = counts[f] || 0;
+    if (count < target) {
+      softDeficits.push({
+        family: f,
+        count,
+        target,
+        deficit: target - count
+      });
+    }
+  });
+
+  return {
+    windowSize,
+    counts,
+    hardMinima: HARD_EXACT_FAMILY_MINIMA,
+    softTargets: SOFT_EXACT_FAMILY_TARGETS,
+    hardDeficits,
+    softDeficits,
+    ok: hardDeficits.length === 0
+  };
+}
+
+COMPOSE_REPRESENTATION_FAMILIES.forEach(f => { familyExposure[f] = 0; familyLastSeen[f] = -999; });
+
+// Anti-starvation window: if a family hasn't appeared in this many items, force it
+const ANTI_STARVATION_WINDOW = 8;
+
+// Instructional weight for each family.
+// Higher = surfaces more often. Weights reflect STAAR trap priority.
+const FAMILY_WEIGHTS = {
+  unit_language_to_standard:                         8,
+  expanded_form_to_standard:                         8,
+  standard_to_expanded_form:                         8,
+  released_regrouped_equivalent_decomposition:       10, // regrouped-correct — now has generator
+  teacher_forensic_partial_plausible_multiselect:    10, // partial-plausible trap
+  released_unit_overflow_compose:                     9,
+  released_regrouped_near_miss_decomposition:         9,
+  equivalence_compose:                                8,
+  released_equivalent_expression_multiselect:         8,
+  released_error_analysis_compose:                    7,
+  released_truth_judgment_compose:                    7,
+  released_cross_representation_mismatch:             7,
+  standard_to_expanded_notation:                      7,
+  released_expanded_notation_discrimination:          8,
+  released_select_correct_notation:                   6,
+  teacher_forensic_place_label_mapping:               5,
+  digit_value_compose:                                5,
+  missing_part_compose:                               5,
+};
+
+// ===== MISCONCEPTION-WEIGHTED TARGETING (B4) =====
+const MISCONCEPTION_TO_FAMILY = {
+  unit_to_digit_confusion: [
+    "unit_language_to_standard",
+    "digit_value_compose",
+    "released_unit_overflow_compose"
+  ],
+  place_value_misalignment: [
+    "standard_to_expanded_form",
+    "standard_to_expanded_notation",
+    "released_select_correct_notation",
+    "released_expanded_notation_discrimination",
+    "teacher_forensic_place_label_mapping",
+    "released_cross_representation_mismatch"
+  ],
+  partial_decomposition_acceptance: [
+    "missing_part_compose",
+    "expanded_form_to_standard",
+    "equivalence_compose",
+    "released_equivalent_expression_multiselect",
+    "released_regrouped_equivalent_decomposition",
+    "released_regrouped_near_miss_decomposition",
+    "teacher_forensic_partial_plausible_multiselect",
+    "released_error_analysis_compose",
+    "released_truth_judgment_compose"
+  ]
+};
+
+function weightedSampleFrom(pool) {
+  // pool: array of family strings. Weights come from FAMILY_WEIGHTS; default 5 if missing.
+  const poolWeights = pool.map(f => FAMILY_WEIGHTS[f] || 5);
+  const total = poolWeights.reduce((s, w) => s + w, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < pool.length; i++) {
+    r -= poolWeights[i];
+    if (r <= 0) return pool[i];
+  }
+  return pool[pool.length - 1];
+}
+
+function chooseComposeFamilyWeighted() {
+  const currentIndex = shownQuestionIds.length;
+  const windowSize = 20;
+  const recent = selectionHistory.slice(-windowSize);
+  const lastTwo = selectionHistory.slice(-2);
+  const cooledFamily = (lastTwo.length === 2 && lastTwo[0] === lastTwo[1]) ? lastTwo[0] : null;
+
+  const BUCKETS = {
+    notation: {
+      families: ["standard_to_expanded_notation", "released_select_correct_notation", "released_expanded_notation_discrimination"],
+      minPer20: 3
+    },
+    regroup: {
+      families: ["released_regrouped_equivalent_decomposition", "released_regrouped_near_miss_decomposition"],
+      minPer20: 3
+    },
+    partialTrap: {
+      families: ["teacher_forensic_partial_plausible_multiselect", "released_equivalent_expression_multiselect"],
+      minPer20: 3
+    },
+    mapping: {
+      families: ["teacher_forensic_place_label_mapping"],
+      minPer20: 2
+    },
+    overflow: {
+      families: ["released_unit_overflow_compose"],
+      minPer20: 2
+    },
+    reasoning: {
+      families: ["released_error_analysis_compose", "released_truth_judgment_compose", "released_cross_representation_mismatch"],
+      minPer20: 3
+    }
+  };
+
+  function countBucket(bucket) {
+    return recent.filter(f => BUCKETS[bucket].families.includes(f)).length;
+  }
+
+  function applyCooldown(pool) {
+    if (!cooledFamily) return pool;
+    const filtered = pool.filter(f => f !== cooledFamily);
+    return filtered.length ? filtered : pool;
+  }
+
+  function commitChosen(chosen) {
+    currentChosenFamily = chosen;
+    lastComposeFamily = chosen;
+    familyExposure[chosen] = (familyExposure[chosen] || 0) + 1;
+    familyLastSeen[chosen] = currentIndex;
+    return chosen;
+  }
+
+  // Step 1: exact-family hard minima first, then soft targets
+  const exactAudit = exactFamilyExposureAudit(windowSize);
+
+  if (exactAudit.hardDeficits.length) {
+    const orderedHard = exactAudit.hardDeficits
+      .sort((a, b) => {
+        if (a.deficit !== b.deficit) return b.deficit - a.deficit;
+        if (a.count !== b.count) return a.count - b.count;
+        return (familyLastSeen[a.family] ?? -999) - (familyLastSeen[b.family] ?? -999);
+      })
+      .map(x => x.family)
+      .filter(f => COMPOSE_REPRESENTATION_FAMILIES.includes(f));
+
+    let candidates = applyCooldown(orderedHard);
+    const deduped = candidates.filter(f => f !== lastComposeFamily);
+    const chosen = (deduped.length ? deduped : candidates)[0];
+    return commitChosen(chosen);
+  }
+
+  // Step 2: soft exact-family target nudging
+  if (exactAudit.softDeficits.length) {
+    const orderedSoft = exactAudit.softDeficits
+      .sort((a, b) => {
+        if (a.deficit !== b.deficit) return b.deficit - a.deficit;
+        if (a.count !== b.count) return a.count - b.count;
+        return (familyLastSeen[a.family] ?? -999) - (familyLastSeen[b.family] ?? -999);
+      })
+      .map(x => x.family)
+      .filter(f => COMPOSE_REPRESENTATION_FAMILIES.includes(f));
+
+    let candidates = applyCooldown(orderedSoft);
+    const deduped = candidates.filter(f => f !== lastComposeFamily);
+    if ((deduped.length ? deduped : candidates).length) {
+      const chosen = (deduped.length ? deduped : candidates)[0];
+      return commitChosen(chosen);
+    }
+  }
+
+  // Step 3: hard bucket quotas
+  const deficitBuckets = Object.keys(BUCKETS).filter(b => countBucket(b) < BUCKETS[b].minPer20);
+  if (deficitBuckets.length) {
+    const bucket = deficitBuckets.sort((a, b) => countBucket(a) - countBucket(b))[0];
+    let candidates = BUCKETS[bucket].families.filter(f => COMPOSE_REPRESENTATION_FAMILIES.includes(f));
+    candidates = applyCooldown(candidates);
+    const deduped = candidates.filter(f => f !== lastComposeFamily);
+    const chosen = weightedSampleFrom(deduped.length ? deduped : candidates);
+    return commitChosen(chosen);
+  }
+
+  // Step 4: missing format forcing
+  if (studentModel.smartScore >= 30 && typeof studentModel.formatsSeen !== "undefined") {
+    const FORMAT_TO_FAMILIES = {
+      expanded_form:  ["expanded_form_to_standard", "standard_to_expanded_form"],
+      notation:       ["standard_to_expanded_notation", "released_select_correct_notation", "released_expanded_notation_discrimination"],
+      unit_words:     ["unit_language_to_standard"],
+      overflow:       ["released_unit_overflow_compose"],
+      place_label:    ["teacher_forensic_place_label_mapping"],
+      multiselect:    ["released_equivalent_expression_multiselect", "equivalence_compose", "teacher_forensic_partial_plausible_multiselect"],
+      regroup:        ["released_regrouped_equivalent_decomposition", "released_regrouped_near_miss_decomposition"],
+      error:          ["released_error_analysis_compose"],
+      truth:          ["released_truth_judgment_compose"]
+    };
+    const unseen = REQUIRED_FORMATS.filter(f => !studentModel.formatsSeen.has(f));
+    if (unseen.length > 0) {
+      const candidates = [];
+      unseen.forEach(fmt => {
+        (FORMAT_TO_FAMILIES[fmt] || []).forEach(fam => {
+          if (COMPOSE_REPRESENTATION_FAMILIES.includes(fam)) {
+            candidates.push({ fam, lastSeen: familyLastSeen[fam] ?? -999 });
+          }
+        });
+      });
+      if (candidates.length) {
+        candidates.sort((a, b) => a.lastSeen - b.lastSeen);
+        let ordered = candidates.map(x => x.fam);
+        ordered = applyCooldown(ordered);
+        const chosen = ordered[0];
+        return commitChosen(chosen);
+      }
+    }
+  }
+
+  // Step 5: misconception-priority restriction
+  const errors = studentModel.patternErrors || {};
+  const topMisconception = Object.entries(errors)
+    .filter(([, count]) => count >= 2)
+    .sort((a, b) => b[1] - a[1])[0];
+
+  let pool = topMisconception
+    ? (MISCONCEPTION_TO_FAMILY[topMisconception[0]] || COMPOSE_REPRESENTATION_FAMILIES)
+    : COMPOSE_REPRESENTATION_FAMILIES;
+
+  // Step 6: anti-starvation
+  const starved = pool.filter(f => (currentIndex - (familyLastSeen[f] ?? -999)) > ANTI_STARVATION_WINDOW);
+  if (starved.length) pool = starved;
+
+  // Step 7: dominance suppression
+  const avgExposure = Object.values(familyExposure).reduce((s, v) => s + v, 0) / COMPOSE_REPRESENTATION_FAMILIES.length || 1;
+  const nonDominated = pool.filter(f => familyExposure[f] <= 1.6 * avgExposure);
+  if (nonDominated.length) pool = nonDominated;
+
+  // Step 8: cooldown + dedupe + weighted sample
+  pool = applyCooldown(pool);
+  const deduped = pool.filter(f => f !== lastComposeFamily);
+  if (deduped.length) pool = deduped;
+
+  const chosen = weightedSampleFrom(pool);
+  return commitChosen(chosen);
+}
+
+
+
+
+
+
+
+function makeSparseNumber() {
+  // Generates 5-digit numbers with at least one zero place — matching actual STAAR difficulty.
+  // Guarantees sparse: randomly zeros out 1–2 places (never all, never ten-thousands).
+  const places = [10000, 1000, 100, 10, 1];
+  let num = 0;
+  // ten-thousands: always nonzero (1–9)
+  num += randInt(1, 9) * 10000;
+  // remaining four places: each has a 40% chance of being zero, but at least one must be nonzero
+  const slots = [1000, 100, 10, 1];
+  let nonzeroCount = 0;
+  const coeffs = slots.map(place => {
+    const zero = Math.random() < 0.4;
+    if (zero) return 0;
+    nonzeroCount++;
+    return randInt(1, 9);
+  });
+  // ensure at least 2 nonzero total (ten-thousands + at least one more)
+  if (nonzeroCount === 0) {
+    const idx = Math.floor(Math.random() * slots.length);
+    coeffs[idx] = randInt(1, 9);
+  }
+  coeffs.forEach((c, i) => { num += c * slots[i]; });
+  return num;
+}
+
+function makeComposeItemFromFamily(family) {
+  // Use sparse numbers ~50% of the time for all families — matches STAAR difficulty
+  const number = Math.random() < 0.5 ? makeSparseNumber() : randInt(20000, 99999);
+  const parts = nonzeroPlaceParts(number);
+  const expandedForm = makeExpandedFormString(number);
+  const expandedNotation = makeExpandedNotationString(number);
+
+  // ── UNIT-LANGUAGE TO STANDARD (STAAR format: five-digit, word-unit form) ──
+  if (family === "unit_language_to_standard") {
+    // Use a sparse 5-digit number. Build STAAR-style word-unit stem.
+    const n = makeSparseNumber();
+    const ps = nonzeroPlaceParts(n);
+    const placeNameEn = { 10000:"ten thousands", 1000:"thousands", 100:"hundreds", 10:"tens", 1:"ones" };
+    const placeNameEs = { 10000:"decenas de millar", 1000:"millares", 100:"centenas", 10:"decenas", 1:"unidades" };
+    const stemPartsEn = ps.map(p => `${p.digit} ${placeNameEn[p.place]}`);
+    const stemPartsEs = ps.map(p => `${p.digit} ${placeNameEs[p.place]}`);
+    const stemEn = stemPartsEn.join(", ");
+    const stemEs = stemPartsEs.join(", ");
+
+    // Distractors: concatenation error, wrong-place shift, off-by-one-place
+    const concat = parseInt(ps.map(p => p.digit).join(""));
+    const shiftedUp = n + ps[ps.length - 1].place * 10; // shift last place up
+    const shiftedDown = Math.abs(n - ps[ps.length - 1].place * 9); // drop last place
+    const raw = unique([
+      formatNumber(n),
+      formatNumber(concat),
+      formatNumber(shiftedUp),
+      formatNumber(shiftedDown)
+    ]).filter(x => x !== "0");
+    if (raw.length !== 4) return null;
+    return {
+      id: "unit_lang_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "compose_from_units_mc_v2",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "unit_to_digit_confusion",
+      stem_en: `A number is made of ${stemEn}. What number is it?`,
+      stem_es: `Un número está formado por ${stemEs}. ¿Qué número es?`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: ps.map(p => `${p.digit} × ${formatFactor(p.place)} = ${formatNumber(p.value)}`).join("; ") },
+      answerKey: { mode:"single_select", correctAnswers:[formatNumber(n)] },
+      meta: { correctValue: n },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(n) }))
+    };
+  }
+
+  if (family === "expanded_form_to_standard") {
+    // Use sparse number so zero-place numbers train the hard case
+    const n = makeSparseNumber();
+    const raw = unique([
+      formatNumber(n),
+      formatNumber(n + 1000),
+      formatNumber(n - 100 > 0 ? n - 100 : n + 100),
+      formatNumber(n + 10)
+    ]);
+    if (raw.length !== 4) return null;
+    // Scramble the expanded form order — matches STAAR 2021/2022 (e.g. 70 + 2 + 900)
+    const efParts = nonzeroPlaceParts(n).map(p => formatNumber(p.value));
+    const scrambled = shuffle(efParts).join(" + ");
+    return {
+      id: "compose_expanded_to_standard_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "expanded_form_to_standard_mc_v1",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "place_value_misalignment",
+      stem_en: `${scrambled} = ?`,
+      stem_es: `${scrambled} = ?`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: nonzeroPlaceParts(n).map(p => formatNumber(p.value)).join("; ") },
+      answerKey: { mode:"single_select", correctAnswers:[formatNumber(n)] },
+      meta: { correctValue: n },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(n) }))
+    };
+  }
+
+  if (family === "standard_to_expanded_form") {
+    // Use sparse numbers to match STAAR difficulty
+    const n = Math.random() < 0.5 ? makeSparseNumber() : randInt(20000, 99999);
+    const ps = nonzeroPlaceParts(n);
+    const ef = makeExpandedFormString(n);
+    const en_str = makeExpandedNotationString(n);
+    // Wrong 1: one place has digit instead of value (e.g. 3 instead of 3,000)
+    const wrong1 = ps.map((p, idx) => idx === Math.floor(ps.length/2) ? String(p.digit) : formatNumber(p.value)).join(" + ");
+    // Wrong 2: missing last (smallest) place — partial decomposition trap
+    const wrong2 = ps.slice(0, -1).map(p => formatNumber(p.value)).join(" + ");
+    // Wrong 3: one place value is off by one order of magnitude (shift error)
+    const shiftIdx = 0;
+    const wrong3 = ps.map((p, idx) => idx === shiftIdx ? formatNumber(p.digit * (p.place * 10 > 99999 ? p.place / 10 : p.place * 10)) : formatNumber(p.value)).join(" + ");
+    // NEVER use expanded notation as a distractor for expanded form items
+    const raw = unique([ef, wrong1, wrong2, wrong3]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "compose_standard_to_expanded_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "standard_to_expanded_form_mc_v1",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "partial_decomposition_acceptance",
+      stem_en: `What is ${formatNumber(n)} in expanded form?`,
+      stem_es: `¿Cuál es la forma desarrollada de ${formatNumber(n)}?`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: `${formatNumber(n)}` },
+      answerKey: { mode:"single_select", correctAnswers:[ef] },
+      meta: { correctValue: n },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === ef }))
+    };
+  }
+
+  if (family === "standard_to_expanded_notation") {
+    const correct = expandedNotation;
+    // INVARIANT: distractors for notation items must be WRONG NOTATIONS, not expanded form.
+    // Expanded form is a valid representation and confuses students into thinking they're right.
+    // Wrong 1: each factor shifted down one place (e.g. ×1,000 → ×100)
+    const wrong1 = nonzeroPlaceParts(number).map(p =>
+      `(${p.digit} × ${formatFactor(Math.max(1, p.place / 10))})`
+    ).join(" + ");
+    // Wrong 2: missing last place entirely (truncated notation)
+    const wrong3 = nonzeroPlaceParts(number).slice(0, -1).map(p =>
+      `(${p.digit} × ${formatFactor(p.place)})`
+    ).join(" + ");
+    // Wrong 3: one coefficient is digit+1 (wrong digit, right structure)
+    const ps = nonzeroPlaceParts(number);
+    const swapIdx = Math.floor(ps.length / 2);
+    const wrong2 = ps.map((p, i) =>
+      i === swapIdx
+        ? `(${Math.min(9, p.digit + 1)} × ${formatFactor(p.place)})`
+        : `(${p.digit} × ${formatFactor(p.place)})`
+    ).join(" + ");
+    const raw = unique([correct, wrong1, wrong2, wrong3]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "compose_expanded_notation_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "standard_to_expanded_notation_mc_v1",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "place_value_misalignment",
+      stem_en: `Which expression represents ${formatNumber(number)} using expanded notation?`,
+      stem_es: `¿Qué expresión representa ${formatNumber(number)} usando notación desarrollada?`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: `${formatNumber(number)}` },
+      answerKey: { mode:"single_select", correctAnswers:[correct] },
+      meta: { correctValue: number },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === correct }))
+    };
+  }
+
+  if (family === "missing_part_compose") {
+    const hidden = parts[Math.floor(Math.random() * parts.length)];
+    const shown = parts.filter(p => p !== hidden).map(p => formatNumber(p.value)).join(" + ");
+    const raw = unique([
+      formatNumber(hidden.value),
+      formatNumber(hidden.place),
+      formatNumber(hidden.digit),
+      formatNumber(hidden.value + (hidden.place >= 10 ? 10 : 1))
+    ]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "compose_missing_part_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "missing_part_compose_mc_v1",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "partial_decomposition_acceptance",
+      stem_en: `${formatNumber(number)} = ${shown} + ___`,
+      stem_es: `${formatNumber(number)} = ${shown} + ___`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: shown.replace(/\s+\+\s+/g, "; ") },
+      answerKey: { mode:"single_select", correctAnswers:[formatNumber(hidden.value)] },
+      meta: { correctValue: hidden.value },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(hidden.value) }))
+    };
+  }
+
+  if (family === "digit_value_compose") {
+    const digitCounts = {};
+    parts.forEach(p => {
+      digitCounts[p.digit] = (digitCounts[p.digit] || 0) + 1;
+    });
+    let chosen = parts.find(p => digitCounts[p.digit] === 1);
+    if (!chosen) chosen = parts[Math.floor(Math.random() * parts.length)];
+    const needsPlaceDisambiguation = digitCounts[chosen.digit] > 1;
+
+    const raw = unique([
+      formatNumber(chosen.value),
+      String(chosen.digit),
+      formatNumber(chosen.digit * 10),
+      formatNumber(chosen.digit * 100)
+    ]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "compose_digit_value_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "digit_value_compose_mc_v1",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "unit_to_digit_confusion",
+      stem_en: needsPlaceDisambiguation
+        ? `What is the value of the ${chosen.digit} in the ${getPlaceName(chosen.place, "en")} place in ${formatNumber(number)}?`
+        : `What is the value of the ${chosen.digit} in ${formatNumber(number)}?`,
+      stem_es: needsPlaceDisambiguation
+        ? `¿Cuál es el valor del ${chosen.digit} en la posición de ${getPlaceName(chosen.place, "es")} en ${formatNumber(number)}?`
+        : `¿Cuál es el valor del ${chosen.digit} en ${formatNumber(number)}?`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: expandedNotation.replace(/\s+\+\s+/g, "; ") },
+      answerKey: { mode:"single_select", correctAnswers:[formatNumber(chosen.value)] },
+      meta: { correctValue: chosen.value, chosenPlace: chosen.place, chosenDigit: chosen.digit },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(chosen.value) }))
+    };
+  }
+
+  if (family === "equivalence_compose") {
+    const tail = parts[parts.length - 1].value;
+    const correct1 = expandedForm;
+    const correct2 = `${formatNumber(number - tail)} + ${formatNumber(tail)}`;
+    const wrong1 = parts.map((p, idx) => idx === 0 ? formatNumber(p.value - 1000) : formatNumber(p.value)).join(" + ");
+    const wrong2 = parts.slice(0, -1).map(p => formatNumber(p.value)).join(" + ");
+    const raw = unique([correct1, correct2, wrong1, wrong2]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "compose_equivalence_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "equivalence_compose_ms_v1",
+      family,
+      itemType: "multiselect",
+      skill: "compose",
+      pattern: "place_value_misalignment",
+      stem_en: `Which expressions are equivalent to ${formatNumber(number)}?`,
+      stem_es: `¿Qué expresiones son equivalentes a ${formatNumber(number)}?`,
+      directions_en: "Select TWO answers.",
+      directions_es: "Selecciona DOS respuestas.",
+      visual: { type:"equation", text: `${formatNumber(number)}` },
+      answerKey: { mode:"multi_select_exact", correctAnswers:[correct1, correct2].sort() },
+      meta: { targetNumber: number },
+      choices: shuffle(raw).map(c => ({ text:c, correct:(c === correct1 || c === correct2) }))
+    };
+  }
+
+  // ── REGROUPED-CORRECT DECOMPOSITION (v32 — was dead, now live) ────────────
+  if (family === "released_regrouped_equivalent_decomposition") {
+    // Pick a number with at least 2 nonzero places so we have something to split
+    let rNumber = randInt(20000, 99999);
+    let rParts = nonzeroPlaceParts(rNumber);
+    let tries = 0;
+    while (rParts.length < 2 && tries < 10) { rNumber = randInt(20000, 99999); rParts = nonzeroPlaceParts(rNumber); tries++; }
+    if (rParts.length < 2) return null;
+
+    // Choose a part to regroup into two same-place addends
+    const splitPart = rParts[Math.floor(Math.random() * rParts.length)];
+    const unitVal = splitPart.place;
+    const maxCoeff = splitPart.digit; // digit × place = value; split the digit
+    if (maxCoeff < 2) return null;
+    const splitA_coeff = randInt(1, maxCoeff - 1);
+    const splitB_coeff = maxCoeff - splitA_coeff;
+    const splitA = splitA_coeff * unitVal;
+    const splitB = splitB_coeff * unitVal;
+    const otherParts = rParts.filter(p => p !== splitPart).map(p => formatNumber(p.value));
+
+    // correct: canonical parts with split substituted
+    const correct1 = [...otherParts, formatNumber(splitA), formatNumber(splitB)].sort().join(" + ");
+    // correct2: original canonical form (valid, just not regrouped)
+    const correct2 = rParts.map(p => formatNumber(p.value)).join(" + ");
+    // wrong1: split is off by one unit
+    const wrong1 = [...otherParts, formatNumber(splitA + unitVal), formatNumber(splitB)].sort().join(" + ");
+    // wrong2: missing the smaller split half
+    const wrong2 = [...otherParts, formatNumber(splitPart.value)].sort().join(" + ") + ` (no split)`;
+    // wrong3: doubled one piece
+    const wrong3 = [...otherParts, formatNumber(splitA * 2), formatNumber(splitB)].sort().join(" + ");
+
+    const raw = unique([correct1, correct2, wrong1, wrong3]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "regrouped_equiv_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "released_regrouped_equivalent_decomposition_ms_v1",
+      family,
+      itemType: "multiselect",
+      skill: "compose",
+      pattern: "partial_decomposition_acceptance",
+      stem_en: `Which expressions are equivalent to ${formatNumber(rNumber)}?`,
+      stem_es: `¿Qué expresiones son equivalentes a ${formatNumber(rNumber)}?`,
+      directions_en: "Select TWO answers.",
+      directions_es: "Selecciona DOS respuestas.",
+      visual: { type:"equation", text: `${formatNumber(rNumber)} = ${formatNumber(splitA)} + ${formatNumber(splitB)} + ...` },
+      answerKey: { mode:"multi_select_exact", correctAnswers:[correct1, correct2].sort() },
+      meta: { targetNumber: rNumber },
+      choices: shuffle(raw).map(c => ({ text:c, correct:(c === correct1 || c === correct2) }))
+    };
+  }
+
+  // ── UNIT OVERFLOW COMPOSE (STAAR 2025 Q24 format) ────────────────────────
+  // Multiple presentation formats so kids are ready for any phrasing STAAR might use
+  if (family === "released_unit_overflow_compose") {
+    // ── Pick a presentation format randomly ──
+    const FORMAT = Math.floor(Math.random() * 6);
+
+    // FORMAT 0: "X hundreds, Y tens, Z ones" — classic Evie-style
+    if (FORMAT === 0) {
+      const hCoeff = randInt(10, 70);
+      const tCoeff = randInt(1, 19);
+      const oCoeff = randInt(1, 19);
+      const correctValue = hCoeff * 100 + tCoeff * 10 + oCoeff;
+      if (correctValue > 99999) return null;
+      const concat = parseInt(`${hCoeff}${tCoeff}${oCoeff}`);
+      const digitOnly = (hCoeff % 10) * 100 + (tCoeff % 10) * 10 + (oCoeff % 10);
+      const noRegroup = hCoeff * 10 + tCoeff + oCoeff; // nonsense but plausible-looking
+      const raw = unique([
+        formatNumber(correctValue),
+        formatNumber(isNaN(concat) ? correctValue + 1000 : concat),
+        formatNumber(digitOnly),
+        formatNumber(correctValue + 1000)
+      ]);
+      if (raw.length !== 4) return null;
+      return {
+        id: "unit_overflow_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+        templateId: "released_unit_overflow_compose_mc_v1",
+        family, itemType: "multiple_choice", skill: "compose", pattern: "unit_to_digit_confusion",
+        stem_en: `A student finds the sum of ${hCoeff} hundreds, ${tCoeff} tens, and ${oCoeff} ones. What number does the student find?`,
+        stem_es: `Un estudiante encuentra la suma de ${hCoeff} centenas, ${tCoeff} decenas y ${oCoeff} unidades. ¿Qué número encuentra?`,
+        directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+        visual: { type:"equation", text: `${hCoeff} × 100 = ${formatNumber(hCoeff*100)}; ${tCoeff} × 10 = ${formatNumber(tCoeff*10)}; ${oCoeff} × 1 = ${oCoeff}` },
+        answerKey: { mode:"single_select", correctAnswers:[formatNumber(correctValue)] },
+        meta: { correctValue },
+        choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(correctValue) }))
+      };
+    }
+
+    // FORMAT 1: "X thousands, Y hundreds" — sparse, two-place overflow
+    if (FORMAT === 1) {
+      const thCoeff = randInt(10, 50);
+      const hCoeff = randInt(1, 19);
+      const correctValue = thCoeff * 1000 + hCoeff * 100;
+      if (correctValue > 99999) return null;
+      const raw = unique([
+        formatNumber(correctValue),
+        formatNumber(thCoeff * 100 + hCoeff * 10),        // shifted down
+        formatNumber(parseInt(`${thCoeff}${hCoeff}00`)),   // concatenation
+        formatNumber(correctValue + 1000)
+      ]);
+      if (raw.length !== 4) return null;
+      return {
+        id: "unit_overflow_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+        templateId: "released_unit_overflow_compose_mc_v1",
+        family, itemType: "multiple_choice", skill: "compose", pattern: "unit_to_digit_confusion",
+        stem_en: `A number is made of ${thCoeff} thousands and ${hCoeff} hundreds. What is the number?`,
+        stem_es: `Un número está formado por ${thCoeff} millares y ${hCoeff} centenas. ¿Qué número es?`,
+        directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+        visual: { type:"equation", text: `${thCoeff} × 1,000 = ${formatNumber(thCoeff*1000)}; ${hCoeff} × 100 = ${formatNumber(hCoeff*100)}` },
+        answerKey: { mode:"single_select", correctAnswers:[formatNumber(correctValue)] },
+        meta: { correctValue },
+        choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(correctValue) }))
+      };
+    }
+
+    // FORMAT 2: Equation style — "What is 30 hundreds + 5 tens?"
+    if (FORMAT === 2) {
+      const hCoeff = randInt(10, 60);
+      const tCoeff = randInt(1, 9);
+      const correctValue = hCoeff * 100 + tCoeff * 10;
+      if (correctValue > 99999) return null;
+      const raw = unique([
+        formatNumber(correctValue),
+        formatNumber(parseInt(`${hCoeff}${tCoeff}0`)),
+        formatNumber(hCoeff * 10 + tCoeff),
+        formatNumber(correctValue + 100)
+      ]);
+      if (raw.length !== 4) return null;
+      return {
+        id: "unit_overflow_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+        templateId: "released_unit_overflow_compose_mc_v1",
+        family, itemType: "multiple_choice", skill: "compose", pattern: "unit_to_digit_confusion",
+        stem_en: `What is the value of ${hCoeff} hundreds + ${tCoeff} tens?`,
+        stem_es: `¿Cuál es el valor de ${hCoeff} centenas + ${tCoeff} decenas?`,
+        directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+        visual: { type:"equation", text: `${hCoeff} hundreds = ${formatNumber(hCoeff*100)}; ${tCoeff} tens = ${formatNumber(tCoeff*10)}` },
+        answerKey: { mode:"single_select", correctAnswers:[formatNumber(correctValue)] },
+        meta: { correctValue },
+        choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(correctValue) }))
+      };
+    }
+
+    // FORMAT 3: "X ten-thousands and Y hundreds" — high-place overflow
+    if (FORMAT === 3) {
+      const ttCoeff = randInt(2, 9);
+      const hCoeff = randInt(10, 40);
+      const correctValue = ttCoeff * 10000 + hCoeff * 100;
+      if (correctValue > 99999) return null;
+      const raw = unique([
+        formatNumber(correctValue),
+        formatNumber(ttCoeff * 1000 + hCoeff * 100),   // ten-thousands treated as thousands
+        formatNumber(parseInt(`${ttCoeff}${hCoeff}00`)),
+        formatNumber(correctValue + 10000)
+      ]);
+      if (raw.length !== 4) return null;
+      return {
+        id: "unit_overflow_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+        templateId: "released_unit_overflow_compose_mc_v1",
+        family, itemType: "multiple_choice", skill: "compose", pattern: "unit_to_digit_confusion",
+        stem_en: `A number has ${ttCoeff} ten-thousands and ${hCoeff} hundreds. What is the standard form?`,
+        stem_es: `Un número tiene ${ttCoeff} decenas de millar y ${hCoeff} centenas. ¿Cuál es la forma estándar?`,
+        directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+        visual: { type:"equation", text: `${ttCoeff} × 10,000 = ${formatNumber(ttCoeff*10000)}; ${hCoeff} × 100 = ${formatNumber(hCoeff*100)}` },
+        answerKey: { mode:"single_select", correctAnswers:[formatNumber(correctValue)] },
+        meta: { correctValue },
+        choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(correctValue) }))
+      };
+    }
+
+    // FORMAT 4: Three-place all-overflow — max STAAR difficulty
+    if (FORMAT === 4) {
+      const thCoeff = randInt(5, 15);
+      const hCoeff = randInt(10, 25);
+      const tCoeff = randInt(10, 20);
+      const correctValue = thCoeff * 1000 + hCoeff * 100 + tCoeff * 10;
+      if (correctValue > 99999) return null;
+      const raw = unique([
+        formatNumber(correctValue),
+        formatNumber(thCoeff * 1000 + hCoeff * 10 + tCoeff),   // swapped tens/hundreds
+        formatNumber(parseInt(`${thCoeff}${hCoeff}${tCoeff}0`)),
+        formatNumber(correctValue + 1000)
+      ]);
+      if (raw.length !== 4) return null;
+      return {
+        id: "unit_overflow_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+        templateId: "released_unit_overflow_compose_mc_v1",
+        family, itemType: "multiple_choice", skill: "compose", pattern: "unit_to_digit_confusion",
+        stem_en: `A student finds the sum of ${thCoeff} thousands, ${hCoeff} hundreds, and ${tCoeff} tens. What number does the student find?`,
+        stem_es: `Un estudiante encuentra la suma de ${thCoeff} millares, ${hCoeff} centenas y ${tCoeff} decenas. ¿Qué número encuentra?`,
+        directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+        visual: { type:"equation", text: `${thCoeff} × 1,000 = ${formatNumber(thCoeff*1000)}; ${hCoeff} × 100 = ${formatNumber(hCoeff*100)}; ${tCoeff} × 10 = ${formatNumber(tCoeff*10)}` },
+        answerKey: { mode:"single_select", correctAnswers:[formatNumber(correctValue)] },
+        meta: { correctValue },
+        choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(correctValue) }))
+      };
+    }
+
+    // FORMAT 5: Ones overflow — unusual but valid STAAR territory
+    if (FORMAT === 5) {
+      const hCoeff = randInt(3, 8);
+      const oCoeff = randInt(10, 30);
+      const correctValue = hCoeff * 100 + oCoeff;
+      if (correctValue > 99999) return null;
+      const raw = unique([
+        formatNumber(correctValue),
+        formatNumber(parseInt(`${hCoeff}${oCoeff}`)),
+        formatNumber(hCoeff * 100 + oCoeff * 10),
+        formatNumber(hCoeff * 10 + oCoeff)
+      ]);
+      if (raw.length !== 4) return null;
+      return {
+        id: "unit_overflow_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+        templateId: "released_unit_overflow_compose_mc_v1",
+        family, itemType: "multiple_choice", skill: "compose", pattern: "unit_to_digit_confusion",
+        stem_en: `A number has ${hCoeff} hundreds and ${oCoeff} ones. What is the standard form?`,
+        stem_es: `Un número tiene ${hCoeff} centenas y ${oCoeff} unidades. ¿Cuál es la forma estándar?`,
+        directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+        visual: { type:"equation", text: `${hCoeff} × 100 = ${formatNumber(hCoeff*100)}; ${oCoeff} × 1 = ${oCoeff}` },
+        answerKey: { mode:"single_select", correctAnswers:[formatNumber(correctValue)] },
+        meta: { correctValue },
+        choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(correctValue) }))
+      };
+    }
+
+    return null; // fallback if FORMAT didn't match
+  }
+
+  // ── ERROR ANALYSIS ────────────────────────────────────────────────────────
+  if (family === "released_error_analysis_compose") {
+    const n = makeSparseNumber();
+    const ps = nonzeroPlaceParts(n);
+    if (ps.length < 2) return null;
+    const droppedIdx = Math.floor(Math.random() * ps.length);
+    const dropped = ps[droppedIdx];
+    const placeNames = { 10000:"ten-thousands", 1000:"thousands", 100:"hundreds", 10:"tens", 1:"ones" };
+    const placeNamesEs = { 10000:"decenas de millar", 1000:"millares", 100:"centenas", 10:"decenas", 1:"unidades" };
+    const studentAnswer = ps.filter((_,i) => i !== droppedIdx).map(p => formatNumber(p.value)).join(" + ");
+    const otherPlace = ps.find((_,i) => i !== droppedIdx);
+    const rawEn = unique([
+      `The ${placeNames[dropped.place]} value is missing.`,
+      `The ${placeNames[otherPlace.place]} value is incorrect.`,
+      `The student added an extra place value.`,
+      `The expression is correct.`
+    ]);
+    if (rawEn.length !== 4) return null;
+    const correctError = `The ${placeNames[dropped.place]} value is missing.`;
+    return {
+      id: "error_analysis_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "released_error_analysis_compose_mc_v1",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "partial_decomposition_acceptance",
+      stem_en: `A student says ${formatNumber(n)} = ${studentAnswer}. What error did the student make?`,
+      stem_es: `Un estudiante dice que ${formatNumber(n)} = ${studentAnswer}. ¿Qué error cometió?`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: `${formatNumber(n)} = ${ps.map(p => formatNumber(p.value)).join(" + ")}` },
+      answerKey: { mode:"single_select", correctAnswers:[correctError] },
+      meta: { correctValue: n },
+      choices: shuffle(rawEn).map(c => ({ text:c, correct:c === correctError }))
+    };
+  }
+
+  // ── TRUTH JUDGMENT — includes NOT-framing variant (STAAR 2019 Q27) ────────
+  if (family === "released_truth_judgment_compose") {
+    const n = makeSparseNumber();
+    const ps = nonzeroPlaceParts(n);
+    if (ps.length < 2) return null;
+    const placeNamesEn = { 10000:"ten thousands", 1000:"thousands", 100:"hundreds", 10:"tens", 1:"ones" };
+    const correctDescEn = "The sum of " + ps.map(p => `${p.digit} ${placeNamesEn[p.place]}`).join(", ");
+    const wrongDesc1En = "The sum of " + ps.map((p,i) => i === ps.length-1
+      ? `${p.digit} ${placeNamesEn[p.place === 10 ? 1 : p.place === 1 ? 10 : p.place]}`
+      : `${p.digit} ${placeNamesEn[p.place]}`).join(", ");
+    const wrongDesc2En = "The sum of " + ps.slice(0,-1).map(p => `${p.digit} ${placeNamesEn[p.place]}`).join(", ");
+    const wrongDesc3En = "The sum of " + ps.map((p,i) => i===0
+      ? `${p.digit+1} ${placeNamesEn[p.place]}`
+      : `${p.digit} ${placeNamesEn[p.place]}`).join(", ");
+    const rawEn = unique([correctDescEn, wrongDesc1En, wrongDesc2En, wrongDesc3En]);
+    if (rawEn.length !== 4) return null;
+    const notFraming = Math.random() < 0.4;
+    // For NOT-framing: correct answer is one of the wrong descriptions
+    const notCorrect = wrongDesc1En;
+    return {
+      id: "truth_judgment_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "released_truth_judgment_compose_mc_v1",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "place_value_misalignment",
+      stem_en: notFraming
+        ? `Which answer choice does NOT describe the number ${formatNumber(n)}?`
+        : `Which statement correctly describes the number ${formatNumber(n)}?`,
+      stem_es: notFraming
+        ? `¿Qué opción NO describe el número ${formatNumber(n)}?`
+        : `¿Qué enunciado describe correctamente el número ${formatNumber(n)}?`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: `${formatNumber(n)} = ${ps.map(p => formatNumber(p.value)).join(" + ")}` },
+      answerKey: { mode:"single_select", correctAnswers: notFraming ? [notCorrect] : [correctDescEn] },
+      meta: { correctValue: n },
+      choices: shuffle(rawEn).map(c => ({
+        text: c,
+        correct: notFraming ? c === notCorrect : c === correctDescEn
+      }))
+    };
+  }
+
+  // ── CROSS-REPRESENTATION MISMATCH ─────────────────────────────────────────
+  if (family === "released_cross_representation_mismatch") {
+    const n = makeSparseNumber();
+    const ps = nonzeroPlaceParts(n);
+    const correct = makeExpandedFormString(n);
+    const wrong1 = ps.map((p,i) => i===ps.length-1
+      ? formatNumber(p.value * 10) : formatNumber(p.value)).join(" + ");
+    const wrong2 = ps.slice(0,-1).map(p => formatNumber(p.value)).join(" + ");
+    const wrong3 = ps.map((p,i) => i===0
+      ? formatNumber(p.value + p.place) : formatNumber(p.value)).join(" + ");
+    const raw = unique([correct, wrong1, wrong2, wrong3]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "cross_rep_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "released_cross_representation_mismatch_mc_v1",
+      family,
+      itemType: "multiple_choice",
+      skill: "compose",
+      pattern: "place_value_misalignment",
+      stem_en: `Which expression is equivalent to ${formatNumber(n)}?`,
+      stem_es: `¿Qué expresión es equivalente a ${formatNumber(n)}?`,
+      directions_en: "Select one answer.",
+      directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: `${formatNumber(n)}` },
+      answerKey: { mode:"single_select", correctAnswers:[correct] },
+      meta: { correctValue: n },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === correct }))
+    };
+  }
+
+  // ── SELECT CORRECT NOTATION — dual direction (Bug 3 fix: STAAR 2015/2018) ─
+  if (family === "released_select_correct_notation") {
+    const FORMAT = Math.floor(Math.random() * 2);
+    const n = makeSparseNumber();
+    const ps = nonzeroPlaceParts(n);
+    const notation = makeExpandedNotationString(n);
+    const form = makeExpandedFormString(n);
+
+    if (FORMAT === 0) {
+      // Direction A: standard → notation (which expression shows expanded notation?)
+      const wrong1 = form;
+      const wrong2 = ps.map(p => `(${p.digit} × ${formatFactor(Math.max(1, p.place/10))})`).join(" + ");
+      const wrong3 = ps.slice(0,-1).map(p => `(${p.digit} × ${formatFactor(p.place)})`).join(" + ");
+      const raw = unique([notation, wrong1, wrong2, wrong3]);
+      if (raw.length !== 4) return null;
+      return {
+        id: "select_notation_a_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+        templateId: "released_select_correct_notation_mc_v1",
+        family, itemType: "multiple_choice", skill: "compose", pattern: "place_value_misalignment",
+        stem_en: `Which expression shows the expanded notation for ${formatNumber(n)}?`,
+        stem_es: `¿Qué expresión muestra la notación desarrollada de ${formatNumber(n)}?`,
+        directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+        visual: { type:"equation", text: `${formatNumber(n)}` },
+        answerKey: { mode:"single_select", correctAnswers:[notation] },
+        meta: { correctValue: n },
+        choices: shuffle(raw).map(c => ({ text:c, correct:c === notation }))
+      };
+    }
+
+    // Direction B: notation → standard (STAAR 2015 Q1, 2018 Q21 exact format)
+    const wrong1 = formatNumber(n + ps[0].place);
+    const wrong2 = formatNumber(n - ps[ps.length-1].value + ps[ps.length-1].place);
+    const wrong3 = formatNumber(ps.slice(0,-1).reduce((s,p) => s + p.value, 0));
+    const raw = unique([formatNumber(n), wrong1, wrong2, wrong3]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "notation_to_std_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "notation_to_standard_mc_v1",
+      family, itemType: "multiple_choice", skill: "compose", pattern: "place_value_misalignment",
+      stem_en: `The expanded notation of a number is shown.\n${notation}\nWhat is the standard form of this number?`,
+      stem_es: `Se muestra la notación desarrollada de un número.\n${notation}\n¿Cuál es la forma estándar?`,
+      directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: notation },
+      answerKey: { mode:"single_select", correctAnswers:[formatNumber(n)] },
+      meta: { correctValue: n, notationExpr: notation },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === formatNumber(n) }))
+    };
+  }
+
+  // ── REGROUPED NEAR-MISS DECOMPOSITION ────────────────────────────────────
+  if (family === "released_regrouped_near_miss_decomposition") {
+    const n = randInt(20000, 99999);
+    const ps = nonzeroPlaceParts(n);
+    if (ps.length < 2) return null;
+    const splitPart = ps[Math.floor(Math.random() * ps.length)];
+    const unitVal = splitPart.place;
+    if (splitPart.digit < 2) return null;
+    const splitA = randInt(1, splitPart.digit - 1) * unitVal;
+    const splitB = splitPart.value - splitA;
+    const others = ps.filter(p => p !== splitPart).map(p => formatNumber(p.value));
+    const correct = [...others, formatNumber(splitA), formatNumber(splitB)].sort().join(" + ");
+    const nearMiss1 = [...others, formatNumber(splitA + unitVal), formatNumber(splitB)].sort().join(" + ");
+    const nearMiss2 = [...others, formatNumber(splitA), formatNumber(splitB + unitVal)].sort().join(" + ");
+    const wrong3 = ps.map(p => formatNumber(p.value)).join(" + ");
+    const raw = unique([correct, nearMiss1, nearMiss2, wrong3]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "near_miss_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "released_regrouped_near_miss_decomposition_mc_v1",
+      family, itemType: "multiple_choice", skill: "compose", pattern: "partial_decomposition_acceptance",
+      stem_en: `Which expression is equivalent to ${formatNumber(n)}?`,
+      stem_es: `¿Qué expresión es equivalente a ${formatNumber(n)}?`,
+      directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: `${formatNumber(n)} = ${ps.map(p => formatNumber(p.value)).join(" + ")}` },
+      answerKey: { mode:"single_select", correctAnswers:[correct] },
+      meta: { correctValue: n },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === correct }))
+    };
+  }
+
+  // ── EXPANDED NOTATION DISCRIMINATION ─────────────────────────────────────
+  if (family === "released_expanded_notation_discrimination") {
+    const n = makeSparseNumber();
+    const ps = nonzeroPlaceParts(n);
+    const correct = makeExpandedNotationString(n);
+    const form = makeExpandedFormString(n);
+    const mixed = ps.map((p,i) =>
+      i % 2 === 0 ? `(${p.digit} × ${formatFactor(p.place)})` : formatNumber(p.value)
+    ).join(" + ");
+    const shifted = ps.map((p,i) =>
+      i === ps.length-1
+        ? `(${p.digit} × ${formatFactor(Math.min(99999, p.place * 10))})`
+        : `(${p.digit} × ${formatFactor(p.place)})`
+    ).join(" + ");
+    const raw = unique([correct, form, mixed, shifted]);
+    if (raw.length !== 4) return null;
+    return {
+      id: "notation_disc_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "released_expanded_notation_discrimination_mc_v1",
+      family, itemType: "multiple_choice", skill: "compose", pattern: "place_value_misalignment",
+      stem_en: `Which expression represents ${formatNumber(n)} using expanded notation?`,
+      stem_es: `¿Qué expresión representa ${formatNumber(n)} usando notación desarrollada?`,
+      directions_en: "Select one answer. Expanded notation uses (digit × place value).",
+      directions_es: "Selecciona una respuesta. La notación desarrollada usa (dígito × valor posicional).",
+      visual: { type:"equation", text: `Expanded form: ${form}` },
+      answerKey: { mode:"single_select", correctAnswers:[correct] },
+      meta: { correctValue: n },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === correct }))
+    };
+  }
+
+  // ── RELEASED EQUIVALENT EXPRESSION MULTISELECT (Bug 2 fix — was dead) ────
+  if (family === "released_equivalent_expression_multiselect") {
+    const n = makeSparseNumber();
+    const ps = nonzeroPlaceParts(n);
+    if (ps.length < 2) return null;
+    const correct1 = ps.map(p => formatNumber(p.value)).join(" + ");
+    const correct2 = [formatNumber(ps[0].value + ps[1].value), ...ps.slice(2).map(p => formatNumber(p.value))].join(" + ");
+    if (correct1 === correct2) return null;
+    const trap1 = [formatNumber(ps[0].value + 1000), ...ps.slice(1).map(p => formatNumber(p.value))].join(" + ");
+    const trap2 = [...ps.slice(0,-1).map(p => formatNumber(p.value)), formatNumber(ps[ps.length-1].value + ps[ps.length-1].place)].join(" + ");
+    const trap3 = ps.slice(0,-1).map(p => formatNumber(p.value)).join(" + ");
+    const allOpts = shuffle(unique([correct1, correct2, trap1, trap2, trap3])).slice(0,5);
+    const correctAnswers = allOpts.filter(c => c === correct1 || c === correct2);
+    if (correctAnswers.length !== 2) return null;
+    return {
+      id: "equiv_expr_ms_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "released_equivalent_expression_ms_v1",
+      family, itemType: "multiselect", skill: "compose", pattern: "partial_decomposition_acceptance",
+      stem_en: `Which expressions are equivalent to ${formatNumber(n)}?`,
+      stem_es: `¿Qué expresiones son equivalentes a ${formatNumber(n)}?`,
+      directions_en: "Select TWO answers.", directions_es: "Selecciona DOS respuestas.",
+      visual: { type:"equation", text: `${formatNumber(n)}` },
+      answerKey: { mode:"multi_select_exact", correctAnswers:[...correctAnswers].sort() },
+      meta: { targetNumber: n },
+      choices: allOpts.map(c => ({ text:c, correct:correctAnswers.includes(c) }))
+    };
+  }
+
+  // ── PARTIAL-PLAUSIBLE MULTISELECT (STAAR 2025 Q1 format) ─────────────────
+  if (family === "teacher_forensic_partial_plausible_multiselect") {
+    const n = makeSparseNumber();
+    const ps = nonzeroPlaceParts(n);
+    if (ps.length < 2) return null;
+    const canonical = ps.map(p => formatNumber(p.value)).join(" + ");
+    const grouped = [formatNumber(ps[0].value + ps[1].value), ...ps.slice(2).map(p => formatNumber(p.value))].join(" + ");
+    const trap1 = [formatNumber(ps[0].value + 1000), ...ps.slice(1).map(p => formatNumber(p.value))].join(" + ");
+    const trap2 = [...ps.slice(0,-1).map(p => formatNumber(p.value)), formatNumber(ps[ps.length-1].value + ps[ps.length-1].place)].join(" + ");
+    const trap3 = ps.slice(0,-1).map(p => formatNumber(p.value)).join(" + ");
+    const allOpts = shuffle(unique([canonical, grouped, trap1, trap2, trap3])).slice(0, 5);
+    const correctAnswers = allOpts.filter(c => c === canonical || c === grouped);
+    if (correctAnswers.length !== 2) return null;
+    return {
+      id: "partial_plausible_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "teacher_forensic_partial_plausible_multiselect_ms_v1",
+      family, itemType: "multiselect", skill: "compose", pattern: "partial_decomposition_acceptance",
+      stem_en: `Which expressions are equivalent to ${formatNumber(n)}?`,
+      stem_es: `¿Qué expresiones son equivalentes a ${formatNumber(n)}?`,
+      directions_en: "Select TWO answers.", directions_es: "Selecciona DOS respuestas.",
+      visual: { type:"equation", text: `${formatNumber(n)}` },
+      answerKey: { mode:"multi_select_exact", correctAnswers:[...correctAnswers].sort() },
+      meta: { targetNumber: n },
+      choices: allOpts.map(c => ({ text:c, correct:correctAnswers.includes(c) }))
+    };
+  }
+
+  // ── REGROUPED-CORRECT DECOMPOSITION (Bug 4 fix: MC + MS variants) ────────
+  if (family === "released_regrouped_equivalent_decomposition") {
+    const useMS = Math.random() < 0.5;
+    let rNumber = randInt(20000, 99999);
+    let rParts = nonzeroPlaceParts(rNumber);
+    let tries = 0;
+    while (rParts.length < 2 && tries < 10) { rNumber = randInt(20000, 99999); rParts = nonzeroPlaceParts(rNumber); tries++; }
+    if (rParts.length < 2) return null;
+    const splitPart = rParts[Math.floor(Math.random() * rParts.length)];
+    const unitVal = splitPart.place;
+    if (splitPart.digit < 2) return null;
+    const splitA_coeff = randInt(1, splitPart.digit - 1);
+    const splitA = splitA_coeff * unitVal;
+    const splitB = splitPart.value - splitA;
+    const others = rParts.filter(p => p !== splitPart).map(p => formatNumber(p.value));
+    const regroupedCorrect = [...others, formatNumber(splitA), formatNumber(splitB)].sort().join(" + ");
+    const canonicalForm   = rParts.map(p => formatNumber(p.value)).join(" + ");
+    const wrongOff        = [...others, formatNumber(splitA + unitVal), formatNumber(splitB)].sort().join(" + ");
+    const wrongDoubled    = [...others, formatNumber(splitA * 2), formatNumber(splitB)].sort().join(" + ");
+
+    if (useMS) {
+      const raw = unique([regroupedCorrect, canonicalForm, wrongOff, wrongDoubled]);
+      if (raw.length !== 4) return null;
+      const correctAnswers = [regroupedCorrect, canonicalForm];
+      return {
+        id: "regrouped_ms_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+        templateId: "released_regrouped_equivalent_decomposition_ms_v1",
+        family, itemType: "multiselect", skill: "compose", pattern: "partial_decomposition_acceptance",
+        stem_en: `Which expressions are equivalent to ${formatNumber(rNumber)}?`,
+        stem_es: `¿Qué expresiones son equivalentes a ${formatNumber(rNumber)}?`,
+        directions_en: "Select TWO answers.", directions_es: "Selecciona DOS respuestas.",
+        visual: { type:"equation", text: `${formatNumber(rNumber)} = ${canonicalForm}` },
+        answerKey: { mode:"multi_select_exact", correctAnswers:[...correctAnswers].sort() },
+        meta: { targetNumber: rNumber },
+        choices: shuffle(raw).map(c => ({ text:c, correct:correctAnswers.includes(c) }))
+      };
+    }
+    // Single-select MC — STAAR 2016 Q13 format
+    const wrongMissing = others.length > 0 ? [...others, formatNumber(splitPart.value)].sort().join(" + ") : wrongDoubled;
+    const raw = unique([regroupedCorrect, wrongOff, wrongDoubled, wrongMissing]).slice(0,4);
+    if (raw.length !== 4) return null;
+    return {
+      id: "regrouped_mc_" + Date.now() + "_" + Math.floor(Math.random()*10000),
+      templateId: "released_regrouped_equivalent_decomposition_mc_v1",
+      family, itemType: "multiple_choice", skill: "compose", pattern: "partial_decomposition_acceptance",
+      stem_en: `Which expression is equivalent to ${formatNumber(rNumber)}?`,
+      stem_es: `¿Qué expresión es equivalente a ${formatNumber(rNumber)}?`,
+      directions_en: "Select one answer.", directions_es: "Selecciona una respuesta.",
+      visual: { type:"equation", text: `${formatNumber(rNumber)} = ${canonicalForm}` },
+      answerKey: { mode:"single_select", correctAnswers:[regroupedCorrect] },
+      meta: { correctValue: rNumber },
+      choices: shuffle(raw).map(c => ({ text:c, correct:c === regroupedCorrect }))
+    };
+  }
+
+  // ── PLACE-LABEL MAPPING: route to dedicated drag-drop generator ───────────
+  if (family === "teacher_forensic_place_label_mapping") {
+    return { __delegateTo: "decomposition_dragdrop_v1" };
+  }
+
+  return null;
+}
+
+function makeComposeFromUnitsMC() {
+  const hundreds = randInt(11, 95), tens = randInt(1, 9), ones = randInt(1, 9);
+  const correctValue = hundreds * 100 + tens * 10 + ones;
+  const distractors = unique([
+    formatNumber(hundreds * 1000 + tens * 10 + ones),
+    formatNumber(hundreds * 100 + tens + ones),
+    formatNumber(parseInt(`${hundreds}${tens}${ones}`))
+  ]).filter(x => x !== formatNumber(correctValue)).slice(0,3);
+
+  const choices = shuffle([formatNumber(correctValue), ...distractors]).map(c => ({ text:c, correct:c === formatNumber(correctValue) }));
+  const item = {
+    id: "compose_" + Date.now(),
+    templateId: "compose_from_units_mc_v1",
+    itemType: "multiple_choice",
+    pattern: "unit_to_digit_confusion",
+    stem_en: `A number is made of ${hundreds} hundreds, ${tens} tens, and ${ones} ones. What number is it?`,
+    stem_es: `Un número está formado por ${hundreds} centenas, ${tens} decenas y ${ones} unidades. ¿Qué número es?`,
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    visual: { type:"equation", text:`${hundreds} × 100 = ${hundreds*100}; ${tens} × 10 = ${tens*10}; ${ones} × 1 = ${ones}` },
+    answerKey: { mode:"single_select", correctAnswers:[formatNumber(correctValue)] },
+    meta: { correctValue: correctValue },
+    choices
+  };
+  item.validation = validateItem(item);
+  return item;
+}
+
+function makeEquivalentExpressionMS() {
+  const tt = randInt(1,9), th = randInt(1,9), h = randInt(0,9), tns = randInt(1,9);
+  const number = tt*10000 + th*1000 + h*100 + tns*10;
+  const correct1 = `${formatNumber(tt*10000)} + ${formatNumber(th*1000)} + ${formatNumber(h*100)} + ${formatNumber(tns*10)}`;
+  const correct2 = `${formatNumber((tt*10000)+(th*1000)+(h*100))} + ${formatNumber(tns*10)}`;
+  const wrong1 = `${formatNumber((tt*10000)+(th*1000)+(h*100))} + ${formatNumber(tns*100)}`;
+  const wrong2 = `${formatNumber(tt*10000)} + ${formatNumber(th*1000)} + ${formatNumber(tns*10)}`;
+  const wrong3 = `${formatNumber(tt*10000)} + ${formatNumber(th*100)} + ${formatNumber(h*100)} + ${formatNumber(tns*10)}`;
+  const allChoices = shuffle(unique([correct1, correct2, wrong1, wrong2, wrong3])).slice(0,5);
+  const correctAnswers = allChoices.filter(c => c === correct1 || c === correct2);
+
+  const item = {
+    id: "equiv_" + Date.now(),
+    templateId: "equivalent_expression_ms_v1",
+    itemType: "multiselect",
+    pattern: "place_value_misalignment",
+    stem_en: `Which expressions are equivalent to ${formatNumber(number)}?`,
+    stem_es: `¿Qué expresiones son equivalentes a ${formatNumber(number)}?`,
+    directions_en: "Select TWO answers.",
+    directions_es: "Selecciona DOS respuestas.",
+    visual: { type:"equation", text:`${formatNumber(number)} = ${formatNumber(tt*10000)} + ${formatNumber(th*1000)} + ${formatNumber(h*100)} + ${formatNumber(tns*10)}` },
+    answerKey: { mode:"multi_select_exact", correctAnswers:[...correctAnswers].sort() },
+    meta: { targetNumber: number },
+    choices: allChoices.map(c => ({ text:c, correct: correctAnswers.includes(c) }))
+  };
+  item.validation = validateItem(item);
+  return item;
+}
+
+function makeDecompositionDragDrop() {
+  const placePool = [
+    { label: "ten thousands", es: "decenas de millar", value: 10000 },
+    { label: "thousands", es: "millares", value: 1000 },
+    { label: "hundreds", es: "centenas", value: 100 },
+    { label: "tens", es: "decenas", value: 10 },
+    { label: "ones", es: "unidades", value: 1 }
+  ];
+  // Use sparse numbers — matches STAAR 2024 Q30 (40,280 = 4 ten-thousands + 2 hundreds + 8 tens)
+  const sparseN = makeSparseNumber();
+  const sparseParts = nonzeroPlaceParts(sparseN);
+  // Take up to 3 nonzero parts (STAAR always uses exactly 3 coefficient slots)
+  const useParts = sparseParts.slice(0, 3);
+  if (useParts.length < 2) {
+    // fallback to random 3 places if sparse gave <2
+    const chosenPlaces = shuffle(placePool).slice(0, 3).sort((a, b) => b.value - a.value);
+    const coeffs = chosenPlaces.map(() => randInt(1, 9));
+    const number = coeffs.reduce((sum, c, i) => sum + c * chosenPlaces[i].value, 0);
+    const answerBank = placePool.map(p => p.label);
+    const item = {
+      id: "drag_" + Date.now(),
+      templateId: "decomposition_dragdrop_v1",
+      itemType: "drag_and_drop",
+      pattern: "place_value_misalignment",
+      stem_en: `Create an expression equivalent to ${formatNumber(number)}.`,
+      stem_es: `Crea una expresión equivalente a ${formatNumber(number)}.`,
+      directions_en: "Enter the correct place names in order, separated by commas.",
+      directions_es: "Escribe los nombres de posición correctos en orden, separados por comas.",
+      visual: { type:"equation", text: coeffs.map((c,i) => `${c} [___]`).join(" + ") },
+      answerBank,
+      answerBankEs: placePool.map(p => p.es),
+      answerKey: { mode:"ordered_text_list", correctAnswers: chosenPlaces.map(p => p.label) },
+      meta: { targetNumber: number, chosenCoeffs: coeffs, released_style: "place_label_mapping", chosenPlaces: chosenPlaces.map(p => p.label) }
+    };
+    item.validation = validateItem(item);
+    return item;
+  }
+
+  const chosenPlaces = useParts.map(p => placePool.find(pp => pp.value === p.place));
+  const coeffs = useParts.map(p => p.digit);
+  const number = sparseN;
+  const answerBank = placePool.map(p => p.label);
+  const visualText = coeffs.map(c => `${c} [___]`).join(" + ");
+
+  const item = {
+    id: "drag_" + Date.now(),
+    templateId: "decomposition_dragdrop_v1",
+    itemType: "drag_and_drop",
+    pattern: "place_value_misalignment",
+    stem_en: `Create an expression equivalent to ${formatNumber(number)}.`,
+    stem_es: `Crea una expresión equivalente a ${formatNumber(number)}.`,
+    directions_en: "Enter the correct place names in order, separated by commas.",
+    directions_es: "Escribe los nombres de posición correctos en orden, separados por comas.",
+    visual: { type:"equation", text: visualText },
+    answerBank,
+    answerBankEs: placePool.map(p => p.es),
+    answerKey: { mode:"ordered_text_list", correctAnswers: chosenPlaces.map(p => p.label) },
+    meta: {
+      targetNumber: number,
+      chosenCoeffs: coeffs,
+      released_style: "place_label_mapping",
+      chosenPlaces: chosenPlaces.map(p => p.label)
+    }
+  };
+  item.validation = validateItem(item);
+  return item;
+}
+
+function generateFrom(templateId) {
+  attemptStage = "first";
+  selected = [];
+  currentAttemptCount = 0;
+
+  if (templateId === "__compose_family_router__") {
+    let item = null;
+    let tries = 0;
+    let lastAttemptedFamily = null;
+    while (!item && tries < 20) {
+      const chosenFamily = chooseComposeFamilyWeighted();
+      lastAttemptedFamily = chosenFamily;
+      const raw = makeComposeItemFromFamily(chosenFamily);
+      // Handle place-label mapping delegation
+      if (raw && raw.__delegateTo === "decomposition_dragdrop_v1") {
+        item = makeDecompositionDragDrop();
+      } else {
+        item = raw;
+      }
+      if (item) {
+        item.validation = validateItem(item);
+        if (item.validation.status !== "PASS") item = null;
+      }
+      tries++;
+    }
+    if (!item) {
+      const bootEl = document.getElementById("bootStatus");
+      if (bootEl) bootEl.textContent = "Generate: compose-family fallback to base item (last attempted: " + (lastAttemptedFamily || "unknown") + ")";
+    }
+    currentItem = item || makeComposeFromUnitsMC();
+  } else if (templateId === "compose_from_units_mc_v1") {
+    currentItem = makeComposeFromUnitsMC();
+  } else if (templateId === "equivalent_expression_ms_v1") {
+    currentItem = makeEquivalentExpressionMS();
+  } else if (templateId === "decomposition_dragdrop_v1") {
+    currentItem = makeDecompositionDragDrop();
+  } else {
+    currentItem = makeComposeFromUnitsMC();
+  }
+
+  shownQuestionIds.push(currentItem.id);
+  const exposureKey = currentChosenFamily || currentItem.family || currentItem.templateId || "unknown";
+  selectionHistory.push(exposureKey);
+  if (selectionHistory.length > 40) selectionHistory = selectionHistory.slice(-40);
+  renderItem(currentItem);
+  const bootEl2 = document.getElementById("bootStatus");
+  if (bootEl2) bootEl2.textContent = "Generate: rendered " + (currentItem.templateId || "unknown-template") + " [" + (currentItem.id || "no-id") + "]";
+  updateTracker(t("A new generated item is ready.", "Un nuevo problema generado está listo."));
+}
+
+function chooseAdaptiveTemplate() {
+  // v32: All paths route through the family router regardless of cognitive node.
+  // The cognitive node is used inside chooseComposeFamilyWeighted for weighting,
+  // not as a gate that bypasses 15 of 18 families.
+  return "__compose_family_router__";
+}
+
+function renderItem(item) {
+  const typeBadge = document.getElementById("typeBadge");
+  if (typeBadge) typeBadge.textContent = `${item.itemType} | ${item.templateId} | ${item.validation.status}`;
+  const langBadge = document.getElementById("langBadge");
+  if (langBadge) langBadge.textContent = lang === "en" ? "English" : "Español";
+  const teksLabel = document.getElementById("teksLabel");
+  if (teksLabel) teksLabel.textContent = studentLabelForItem(item);
+  document.getElementById("stem").textContent = lang === "en" ? item.stem_en : item.stem_es;
+  document.getElementById("directions").textContent = lang === "en" ? item.directions_en : item.directions_es;
+  document.getElementById("itemIdLine").textContent = "Item ID: " + item.id;
+
+  // Reset scaffold system for new item
+  scaffoldTier = 0;
+  const visualEl = document.getElementById("visual");
+  if (visualEl) { visualEl.innerHTML = ""; visualEl.style.display = "none"; }
+  const structBtn = document.getElementById("structureToggle");
+  if (structBtn) structBtn.textContent = lang === "en" ? "💡 Need a hint?" : "💡 ¿Necesitas una pista?";
+
+  document.getElementById("prompt").textContent = "";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("meta").textContent = JSON.stringify(item, null, 2);
+
+  const choicesWrap = document.getElementById("choices");
+  const inputWrap = document.getElementById("inputWrap");
+  const textAnswer = document.getElementById("textAnswer");
+  choicesWrap.innerHTML = "";
+  inputWrap.style.display = "none";
+  textAnswer.value = "";
+  selected = [];
+
+  if (item.itemType === "multiple_choice" || item.itemType === "multiselect") {
+    const shape = item.itemType === "multiselect" ? "square" : "circle";
+    item.choices.forEach((ans, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "choice";
+      btn.setAttribute("data-shape", shape);
+      btn.setAttribute("aria-pressed","false");
+      btn.textContent = ans.text;
+      btn.onclick = () => {
+        if (item.itemType === "multiselect") {
+          if (selected.includes(idx)) {
+            selected = selected.filter(x => x !== idx);
+            btn.classList.remove("selected");
+            btn.setAttribute("aria-pressed","false");
+          } else {
+            selected.push(idx);
+            btn.classList.add("selected");
+            btn.setAttribute("aria-pressed","true");
+          }
+        } else {
+          selected = [idx];
+          [...document.querySelectorAll("button.choice")].forEach(x => {
+            x.classList.remove("selected");
+            x.setAttribute("aria-pressed","false");
+          });
+          btn.classList.add("selected");
+          btn.setAttribute("aria-pressed","true");
+        }
+      };
+      choicesWrap.appendChild(btn);
+    });
+  } else if (item.itemType === "drag_and_drop") {
+    // Cambium-style inline choice: expression with dropdown selects for each blank
+    inputWrap.style.display = "none"; // hide old text input entirely
+    textAnswer.value = "";
+
+    const bank = lang === "en" ? item.answerBank : (item.answerBankEs || item.answerBank);
+    const coeffs = item.meta.chosenCoeffs || [];
+    const numBlanks = item.answerKey.correctAnswers.length;
+
+    // Build "N [dropdown] + N [dropdown] + ..." expression inline
+    const exprDiv = document.createElement("div");
+    exprDiv.className = "inline-expr";
+    exprDiv.id = "inlineExpr";
+
+    for (let i = 0; i < numBlanks; i++) {
+      if (i > 0) {
+        const op = document.createElement("span");
+        op.className = "op"; op.textContent = "+";
+        exprDiv.appendChild(op);
+      }
+      // Coefficient chip
+      const coeff = document.createElement("span");
+      coeff.className = "coeff";
+      coeff.textContent = coeffs[i] !== undefined ? coeffs[i] : "?";
+      exprDiv.appendChild(coeff);
+
+      // Dropdown select
+      const sel = document.createElement("select");
+      sel.className = "inline-select";
+      sel.id = "inlineSel_" + i;
+      sel.setAttribute("aria-label", lang === "en" ? "Place name for blank " + (i+1) : "Nombre de posición " + (i+1));
+
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = lang === "en" ? "— choose —" : "— elige —";
+      sel.appendChild(placeholder);
+
+      bank.forEach(word => {
+        const opt = document.createElement("option");
+        opt.value = word;
+        opt.textContent = word;
+        sel.appendChild(opt);
+      });
+
+      exprDiv.appendChild(sel);
+    }
+
+    // Bank hint label (small, below expression)
+    const bankLabel = document.createElement("div");
+    bankLabel.className = "answer-bank-label";
+    bankLabel.textContent = lang === "en"
+      ? "Choose a place name for each blank. Not all will be used."
+      : "Elige un nombre de posición para cada espacio. No se usarán todos.";
+
+    choicesWrap.appendChild(exprDiv);
+    choicesWrap.appendChild(bankLabel);
+  } else {
+    // fallback text input (should not normally fire)
+    inputWrap.style.display = "block";
+    const bank = document.createElement("div");
+    bank.className = "small";
+    const words = lang === "en" ? item.answerBank : item.answerBankEs;
+    bank.textContent = (lang === "en" ? "Answer bank: " : "Banco de respuestas: ") + words.join(", ");
+    choicesWrap.appendChild(bank);
+  }
+}
+
+// ── SMARTSCORE ENGINE ────────────────────────────────────────────────────
+// Three zones matching IXL SmartScore behavior:
+// Practice (0-69):     big gains on correct (+8 first, +5 second, +2 third), small drops (-3)
+// Proficiency (70-89): medium gains (+5/+3/+1), medium drops (-5)
+// Challenge (90-99):   small gains (+2/+1), large drops (-6 to -10), requires streak to reach 100
+// Score never goes below 0. Mastery (100) requires sustained correct streak in Challenge Zone.
+
+function getZone(score) {
+  if (score >= 100) return "mastered";
+  if (score >= 90) return "challenge";
+  if (score >= 70) return "proficiency";
+  return "practice";
+}
+
+function ssGain(zone, attemptCount) {
+  if (zone === "practice")    return attemptCount === 1 ? 8 : attemptCount === 2 ? 5 : 2;
+  if (zone === "proficiency") return attemptCount === 1 ? 5 : attemptCount === 2 ? 3 : 1;
+  if (zone === "challenge")   return attemptCount === 1 ? 2 : 1;
+  return 0;
+}
+
+function ssLoss(zone, attemptCount) {
+  if (zone === "practice")    return 3;
+  if (zone === "proficiency") return 5;
+  if (zone === "challenge")   return attemptCount >= 2 ? 10 : 7;
+  return 5;
+}
+
+function updateStudentModel(correct, pattern, attemptCount) {
+  const zone = getZone(studentModel.smartScore);
+
+  if (correct) {
+    studentModel.total += 1;
+    studentModel.streak += 1;
+
+    const gain = ssGain(zone, attemptCount);
+    studentModel.smartScore = Math.min(100, studentModel.smartScore + gain);
+
+    if (attemptCount === 1) studentModel.firstTryCorrect += 1;
+    else if (attemptCount === 2) { studentModel.secondTryCorrect += 1; studentModel.penaltyScore += 1; }
+    else { studentModel.thirdPlusTryCorrect += 1; studentModel.penaltyScore += 2; }
+
+    if (studentModel.patternErrors[pattern] > 0) studentModel.patternErrors[pattern] -= 1;
+    if (studentModel.streak >= 3 && studentModel.difficultyLevel < 3 && attemptCount === 1) {
+      studentModel.difficultyLevel += 1;
+    }
+
+    // Streak micro-celebration
+    if (studentModel.streak === 3 || studentModel.streak === 5 || studentModel.streak % 10 === 0) {
+      showStreakBanner(studentModel.streak);
+      spawnCelebrationBurst();
+    }
+
+  } else {
+    currentAttemptCount += 1;
+    studentModel.streak = 0;
+    studentModel.patternErrors[pattern] += 1;
+    studentModel.penaltyScore += currentAttemptCount >= 2 ? 2 : 1;
+
+    const loss = ssLoss(zone, currentAttemptCount);
+    studentModel.smartScore = Math.max(0, studentModel.smartScore - loss);
+
+    if (zone === "challenge") {
+      // Mark this format as needing more work
+      const fmt = TEMPLATE_TO_FORMAT[currentItem?.templateId];
+      if (fmt) {
+        const stampEl = document.getElementById("stamp_" + fmt);
+        if (stampEl) stampEl.classList.add("missed");
+      }
+    }
+
+    if (studentModel.patternErrors[pattern] >= 2 && studentModel.difficultyLevel > 1) {
+      studentModel.difficultyLevel -= 1;
+    }
+  }
+
+  if (!Array.isArray(studentModel.telemetry)) {
+    console.error("MODEL SHAPE ERROR: telemetry missing");
+    const dbg = document.getElementById("runtimeDebugStatus");
+    if (dbg) dbg.textContent = "Debug: studentModel.telemetry missing.";
+    studentModel.telemetry = [];
+  }
+  studentModel.telemetry.push({
+    itemId: currentItem ? currentItem.id : null,
+    pattern, correct,
+    attemptCount: correct ? attemptCount : currentAttemptCount,
+    smartScore: studentModel.smartScore,
+    zone: getZone(studentModel.smartScore),
+    difficultyLevel: studentModel.difficultyLevel,
+    timestamp: Date.now()
+  });
+
+  updateSmartScoreUI();
+}
+
+function submitAnswer() {
+  if (!currentItem || studentModel.lockout || isAdvancing) return;
+  let correct = false;
+  const solvedAttemptNumber = currentAttemptCount + 1;
+
+  if (currentItem.itemType === "multiple_choice") {
+    correct = selected.length === 1 && currentItem.choices[selected[0]].correct;
+  } else if (currentItem.itemType === "multiselect") {
+    const selectedSet = [...selected].sort((a,b) => a - b);
+    const correctSet = currentItem.choices
+      .map((choice, idx) => choice.correct ? idx : null)
+      .filter(idx => idx !== null)
+      .sort((a,b) => a - b);
+    correct = JSON.stringify(selectedSet) === JSON.stringify(correctSet);
+  } else if (currentItem.itemType === "drag_and_drop") {
+    // Read answers from inline select dropdowns
+    const numBlanks = currentItem.answerKey.correctAnswers.length;
+    const userAnswers = [];
+    for (let i = 0; i < numBlanks; i++) {
+      const sel = document.getElementById("inlineSel_" + i);
+      userAnswers.push(sel ? normalize(sel.value) : "");
+    }
+    const expected = currentItem.answerKey.correctAnswers.map(x => normalize(x));
+    correct = JSON.stringify(userAnswers) === JSON.stringify(expected);
+
+    // Visual feedback: color each dropdown
+    for (let i = 0; i < numBlanks; i++) {
+      const sel = document.getElementById("inlineSel_" + i);
+      if (!sel) continue;
+      sel.disabled = true;
+      const isCorrectSlot = normalize(sel.value) === expected[i];
+      sel.classList.remove("answered-correct", "answered-wrong");
+      sel.classList.add(isCorrectSlot ? "answered-correct" : "answered-wrong");
+    }
+  }
+
+  if (currentItem.itemType === "multiple_choice" || currentItem.itemType === "multiselect") {
+    [...document.querySelectorAll("button.choice")].forEach((btn, idx) => {
+      btn.classList.remove("correct", "wrong");
+      if (selected.includes(idx) && !currentItem.choices[idx].correct) btn.classList.add("wrong");
+      if (correct && currentItem.choices[idx].correct) btn.classList.add("correct");
+    });
+  }
+
+  // Mark this format as seen regardless of correctness
+  if (currentItem) markFormatSeen(currentItem.templateId);
+
+  // CHALLENGE ZONE MODE: score and move on, no remediation loop
+  if (gameMode === "challenge" || gameMode === "mastery") {
+    updateStudentModel(correct, currentItem.pattern, solvedAttemptNumber);
+    currentAttemptCount = 0;
+    document.getElementById("prompt").textContent = "";
+    document.getElementById("feedback").textContent = correct
+      ? t("✅ Got it! Keep going.", "✅ ¡Correcto! Sigue.")
+      : t("❌ Not this time. Score dropped — keep pushing!", "❌ Esta vez no. El puntaje bajó — ¡sigue esforzándote!");
+    handleMasteryProgress(correct);
+    updateTracker(correct
+      ? t("Challenge Zone item correct.", "Correcto en la zona desafío.")
+      : t("Challenge Zone item missed.", "Fallado en la zona desafío."));
+    if (gameMode === "won" || document.getElementById("almostOverlay").style.display === "flex") {
+      return;
+    }
+    setTimeout(() => nextAdaptive(), 1000);
+    return;
+  }
+
+  if (correct) {
+    updateStudentModel(true, currentItem.pattern, solvedAttemptNumber);
+    currentAttemptCount = 0;
+    document.getElementById("prompt").textContent = "";
+
+    const zone = getZone(studentModel.smartScore);
+    const gain = ssGain(zone === "mastered" ? "challenge" : zone, solvedAttemptNumber);
+    const zoneMsg = zone === "proficiency"
+      ? t("📈 Moving up!", "📈 ¡Subiendo!")
+      : zone === "challenge"
+        ? t("🔥 In the Challenge Zone!", "🔥 ¡En la zona desafío!")
+        : "";
+
+    let msg = "";
+    if (solvedAttemptNumber === 1) msg = t("✅ Correct! +" + gain + " points.", "✅ ¡Correcto! +" + gain + " puntos.");
+    else if (solvedAttemptNumber === 2) msg = t("✅ Got it on try 2. +" + gain + " points.", "✅ Lo lograste en el 2.° intento. +" + gain + " puntos.");
+    else msg = t("✅ Correct. Keep practicing to build speed.", "✅ Correcto. Sigue practicando para mejorar.");
+    if (zoneMsg) msg += "  " + zoneMsg;
+
+    document.getElementById("feedback").textContent = msg;
+    updateTracker(t("Next item selected based on your current needs.", "El siguiente problema se selecciona según tus necesidades actuales."));
+
+    if (shouldEnterChallengeZone()) {
+      setTimeout(() => {
+        enterMasteryMode();
+        nextAdaptive();
+      }, 1100);
+    } else {
+      // Show hint if formats still needed
+      const formatsLeft = REQUIRED_FORMATS.filter(f => !studentModel.formatsSeen.has(f)).length;
+      if (formatsLeft > 0 && studentModel.smartScore >= 70) {
+        const hint = document.getElementById("feedback");
+        if (hint) hint.textContent += t(` (Try all question types — ${formatsLeft} left!)`, ` (¡Prueba todos los tipos — faltan ${formatsLeft}!)`);
+      }
+      advanceToNextItem();
+    }
+  } else {
+    updateStudentModel(false, currentItem.pattern, solvedAttemptNumber);
+    attemptStage = attemptStage === "first" ? "wrong" : "repeated";
+
+    // Advance scaffold tier and render the appropriate hint
+    scaffoldTier = Math.min(2, scaffoldTier + 1);
+    renderScaffold(currentItem, scaffoldTier);
+
+    document.getElementById("prompt").textContent = getPrompt(currentItem.pattern);
+    if (currentAttemptCount >= 2) {
+      studentModel.repeatedWrongItems += 1;
+    }
+    applyLockoutIfNeeded();
+
+    // Re-enable drag-drop selects so student can fix their answer
+    if (currentItem.itemType === "drag_and_drop") {
+      const numBlanks = currentItem.answerKey.correctAnswers.length;
+      for (let i = 0; i < numBlanks; i++) {
+        const sel = document.getElementById("inlineSel_" + i);
+        if (sel) sel.disabled = false;
+      }
+    }
+
+    const zone = getZone(studentModel.smartScore);
+    const loss = ssLoss(zone, currentAttemptCount);
+    const punitiveMsg = studentModel.lockout
+      ? t("You are locked until a teacher unlocks the activity.", "Estás bloqueado hasta que un maestro desbloquee la actividad.")
+      : (currentAttemptCount >= 2
+          ? t("❌ Try again. -" + loss + " points. The step-by-step hint is now showing.", "❌ Inténtalo otra vez. -" + loss + " puntos. Ahora se muestra el paso a paso.")
+          : t("❌ Not quite. Check the hint — it shows how to think through this.", "❌ No del todo. Revisa la pista — te muestra cómo pensar en esto."));
+    document.getElementById("feedback").textContent = punitiveMsg;
+    updateTracker(t("Hint is visible. Correct this item to continue.", "La pista está visible. Corrige este problema para continuar."));
+  }
+}
+
+
+let autoAdvanceTimer = null;
+let isAdvancing = false;
+
+function advanceToNextItem() {
+  if (autoAdvanceTimer) {
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
+  }
+  isAdvancing = true;
+  const previousId = currentItem ? currentItem.id : null;
+
+  // freeze controls briefly so the transition cannot be double-fired
+  [...document.querySelectorAll("button.choice, button")].forEach(btn => btn.disabled = true);
+
+  autoAdvanceTimer = setTimeout(() => {
+    if (gameMode === "won") {
+      [...document.querySelectorAll("button.choice, button")].forEach(btn => btn.disabled = false);
+      isAdvancing = false;
+      autoAdvanceTimer = null;
+      return;
+    }
+    let attempts = 0;
+    let advanced = false;
+
+    while (attempts < 3 && !advanced) {
+      const nextTemplate = chooseAdaptiveTemplate();
+      const before = currentItem ? currentItem.id : null;
+      generateFrom(nextTemplate);
+      const after = currentItem ? currentItem.id : null;
+      if (after && after !== previousId && after !== before) {
+        advanced = true;
+      }
+      attempts++;
+    }
+
+    // final fallback: force one more generation even if the id check is stubborn
+    if (!advanced) {
+      const nextTemplate = chooseAdaptiveTemplate();
+      generateFrom(nextTemplate);
+    }
+
+    [...document.querySelectorAll("button.choice, button")].forEach(btn => btn.disabled = false);
+    isAdvancing = false;
+    autoAdvanceTimer = null;
+  }, 900);
+}
+
+function nextAdaptive() {
+  if (studentModel.lockout || isAdvancing) {
+    updateTracker(lang === "en"
+      ? "Waiting for the next item..."
+      : "Esperando el siguiente problema...");
+    return;
+  }
+  const nextTemplate = chooseAdaptiveTemplate();
+  generateFrom(nextTemplate);
+}
+
+function toggleLang() {
+  lang = lang === "en" ? "es" : "en";
+  const lbl = document.getElementById("langLabel");
+  if (lbl) lbl.textContent = lang === "en" ? "Español" : "English";
+  if (currentItem) renderItem(currentItem);
+  updateTracker();
+}
+
+function readAloud() {
+  if (!currentItem) return;
+  const text = document.getElementById("stem").textContent + ". " + document.getElementById("directions").textContent + ". " + document.getElementById("prompt").textContent;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = lang === "en" ? "en-US" : "es-US";
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+
+// ===== COGNITIVE STATE CORE (B1) =====
+const KNOWLEDGE_GRAPH = {
+  compose: [],
+  decompose: ["compose"],
+  equivalence: ["decompose"],
+  abstraction: ["equivalence"]
+};
+
+let cognitiveState = {
+  node: "compose",
+  mastery: { compose: 0, decompose: 0, equivalence: 0, abstraction: 0 },
+  attempts: { compose: 0, decompose: 0, equivalence: 0, abstraction: 0 },
+  scaffold: false
+};
+
+function canAccessNode(node){
+  return (KNOWLEDGE_GRAPH[node] || []).every(p => (cognitiveState.mastery[p] || 0) >= 0.8 && (cognitiveState.attempts[p] || 0) >= 5);
+}
+
+
+// ── SMARTSCORE UI ─────────────────────────────────────────────────────────
+function updateSmartScoreUI() {
+  const score = studentModel.smartScore;
+  const zone = getZone(score);
+  const numEl = document.getElementById("ssNumber");
+  const fillEl = document.getElementById("ssFill");
+  const badgeEl = document.getElementById("ssZoneBadge");
+  const goalEl = document.getElementById("ssGoalText");
+
+  if (numEl) numEl.textContent = Math.round(score);
+  if (fillEl) {
+    fillEl.style.width = Math.min(100, score) + "%";
+    fillEl.className = "ss-fill " + zone;
+  }
+  if (badgeEl) {
+    const labels = { practice: t("Practice Zone","Zona práctica"), proficiency: t("Proficiency","Dominio"), challenge: t("Challenge Zone","Zona desafío"), mastered: t("⭐ Mastered!","⭐ ¡Dominado!") };
+    badgeEl.textContent = labels[zone] || zone;
+    badgeEl.className = "ss-zone-badge " + zone;
+  }
+  if (goalEl) {
+    if (zone === "practice") goalEl.textContent = t("Reach 70 → Proficiency","Llega a 70 → Dominio");
+    else if (zone === "proficiency") {
+      const formatsLeft = REQUIRED_FORMATS.filter(f => !studentModel.formatsSeen.has(f)).length;
+      goalEl.textContent = formatsLeft > 0
+        ? t(`Try ${formatsLeft} more question type${formatsLeft===1?"":"s"} first!`, `¡Prueba ${formatsLeft} tipo${formatsLeft===1?"":"s"} más primero!`)
+        : t("Reach 90 → Challenge Zone","Llega a 90 → Zona desafío");
+    }
+    else if (zone === "challenge") goalEl.textContent = t("Stay strong → reach 100!","¡Mantente fuerte → llega a 100!");
+    else goalEl.textContent = t("You mastered it!","¡Lo dominaste!");
+  }
+
+  // Update teacher panel mastery value too
+  const mv = document.getElementById("masteryValue");
+  if (mv) mv.textContent = Math.round(score) + " (" + zone + ")";
+}
+
+function spawnCelebration(anchorEl, emoji) {
+  try {
+    const rect = anchorEl ? anchorEl.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight/2 };
+    const el = document.createElement("div");
+    el.className = "celebrate-pop";
+    el.textContent = emoji;
+    el.style.left = (rect.left + rect.width/2 - 16) + "px";
+    el.style.top = (rect.top + window.scrollY) + "px";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1100);
+  } catch(e) {}
+}
+
+function spawnCelebrationBurst() {
+  const emojis = ["⭐","🎉","✨","🔥","💪","🏆"];
+  for (let i = 0; i < 4; i++) {
+    setTimeout(() => {
+      const el = document.createElement("div");
+      el.className = "celebrate-pop";
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = (100 + Math.random() * (window.innerWidth - 200)) + "px";
+      el.style.top = (window.scrollY + 100 + Math.random() * 200) + "px";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1100);
+    }, i * 120);
+  }
+}
+
+function showStreakBanner(streak) {
+  const banner = document.getElementById("streakBanner");
+  const cnt = document.getElementById("streakCount");
+  if (!banner) return;
+  if (cnt) cnt.textContent = streak;
+  banner.classList.add("visible");
+  setTimeout(() => banner.classList.remove("visible"), 2500);
+}
+
+// ── MASTERY SYSTEM — SMARTSCORE + COVERAGE GATE ──────────────────────────
+const GAME_CONFIG = {
+  CHALLENGE_ZONE_THRESHOLD: 90,
+  MASTERY_SCORE: 100,
+  CHALLENGE_REQUIRED_STREAK: 3,  // must get 3 in a row in Challenge Zone to win
+  FINAL_CHECK_TOTAL: 5,
+  FINAL_CHECK_REQUIRED: 4
+};
+
+let gameMode = "normal"; // normal | challenge | won | extension
+let celebrationShown = false;
+let finalCheckAnswers = [];
+let challengeStreak = 0; // consecutive correct in Challenge Zone
+
+function shouldEnterChallengeZone() {
+  return gameMode === "normal"
+    && studentModel.smartScore >= GAME_CONFIG.CHALLENGE_ZONE_THRESHOLD
+    && allFormatsSeenForChallengeZone()
+    && studentModel.total >= 12;
+}
+
+function updateCheckBanner() {
+  const done = finalCheckAnswers.length;
+  const total = GAME_CONFIG.FINAL_CHECK_TOTAL;
+  const progress = document.getElementById("checkProgress");
+  const dots = document.getElementById("checkDots");
+  const title = document.getElementById("checkBannerTitle");
+  if (title) title.textContent = lang === "en" ? "🔥 Challenge Zone" : "🔥 Zona desafío";
+  if (progress) progress.textContent = lang === "en"
+    ? `Question ${Math.min(done + 1, total)} of ${total}`
+    : `Pregunta ${Math.min(done + 1, total)} de ${total}`;
+  if (dots) {
+    dots.textContent = finalCheckAnswers.map(ok => ok ? "✅" : "❌")
+      .concat(Array(total - done).fill("⬜")).join(" ");
+  }
+}
+
+function updateGameUI() {
+  const ssBar = document.getElementById("smartscoreBar");
+  const checkBanner = document.getElementById("checkBanner");
+  if (gameMode === "challenge" || gameMode === "mastery") {
+    if (ssBar) ssBar.style.opacity = ".6";
+    if (checkBanner) checkBanner.classList.add("visible");
+    updateCheckBanner();
+  } else {
+    if (ssBar) ssBar.style.opacity = "1";
+    if (checkBanner) checkBanner.classList.remove("visible");
+  }
+}
+
+function enterMasteryMode() {
+  if (gameMode !== "normal") return;
+  gameMode = "challenge";
+  challengeStreak = 0;
+  celebrationShown = false;
+  finalCheckAnswers = [];
+  updateGameUI();
+  updateTracker(lang === "en"
+    ? "Challenge Zone unlocked! Get 4 out of 5 to reach mastery."
+    : "¡Zona desafío desbloqueada! Obtén 4 de 5 para dominar.");
+}
+
+function showMasteryOverlay(title, message) {
+  const overlay = document.getElementById("masteryOverlay");
+  const titleEl = document.getElementById("masteryTitle");
+  const messageEl = document.getElementById("masteryMessage");
+  // Only overwrite if caller provides content — triggerWin populates these directly
+  if (titleEl && title) titleEl.textContent = title;
+  if (messageEl && message) messageEl.textContent = message;
+  if (overlay) overlay.style.display = "flex";
+}
+
+function hideMasteryOverlay() {
+  const overlay = document.getElementById("masteryOverlay");
+  if (overlay) overlay.style.display = "none";
+}
+
+function showAlmostOverlay(correct, total) {
+  const overlay = document.getElementById("almostOverlay");
+  const msg = document.getElementById("almostMsg");
+  const score = document.getElementById("almostScore");
+  const needed = document.getElementById("almostNeeded");
+  if (msg) msg.textContent = lang === "en"
+    ? (correct === 3 ? "So close! You almost won the Final Check." : "You are building real place-value power.")
+    : (correct === 3 ? "¡Qué cerca! Casi ganaste la verificación final." : "Estás construyendo un verdadero dominio del valor posicional.");
+  if (score) score.textContent = lang === "en"
+    ? `You got ${correct} out of ${total}.`
+    : `Obtuviste ${correct} de ${total}.`;
+  if (needed) needed.textContent = lang === "en"
+    ? `Get ${GAME_CONFIG.FINAL_CHECK_REQUIRED} or more to win the challenge. Keep practicing — you've got this!`
+    : `Obtén ${GAME_CONFIG.FINAL_CHECK_REQUIRED} o más para ganar el reto. Sigue practicando — ¡tú puedes!`;
+  if (overlay) overlay.style.display = "flex";
+}
+
+function hideAlmostOverlay() {
+  const overlay = document.getElementById("almostOverlay");
+  if (overlay) overlay.style.display = "none";
+}
+
+function finishFinalCheck() {
+  const correct = finalCheckAnswers.filter(Boolean).length;
+  const total = GAME_CONFIG.FINAL_CHECK_TOTAL;
+  if (correct >= GAME_CONFIG.FINAL_CHECK_REQUIRED) {
+    // Only win if score is still in Challenge Zone
+    if (studentModel.smartScore >= 90) {
+      triggerWin(correct, total);
+    } else {
+      // Score dropped below 90 during challenge — send back to practice
+      gameMode = "normal";
+      finalCheckAnswers = [];
+      updateGameUI();
+      updateTracker(t("Score dropped below 90. Keep practicing to get back to the Challenge Zone!", "El puntaje bajó. ¡Sigue practicando para volver a la zona desafío!"));
+      nextAdaptive();
+    }
+  } else {
+    gameMode = "normal";
+    // Meaningful SmartScore drop for failing the Challenge Zone
+    studentModel.smartScore = Math.max(70, studentModel.smartScore - 8);
+    finalCheckAnswers = [];
+    updateGameUI();
+    showAlmostOverlay(correct, total);
+    updateTracker(t("Challenge Zone complete. Keep practicing and try again.", "Zona desafío completada. Sigue practicando e inténtalo otra vez."));
+  }
+}
+
+function handleMasteryProgress(correct) {
+  if (gameMode !== "challenge" && gameMode !== "mastery") return;
+  finalCheckAnswers.push(!!correct);
+  updateCheckBanner();
+  if (finalCheckAnswers.length >= GAME_CONFIG.FINAL_CHECK_TOTAL) {
+    finishFinalCheck();
+  }
+}
+
+function triggerWin(correctCount, totalCount) {
+  gameMode = "won";
+  studentModel.smartScore = 100;
+  celebrationShown = true;
+  updateGameUI();
+  updateSmartScoreUI();
+
+  // Burst celebrations
+  spawnCelebrationBurst();
+  setTimeout(spawnCelebrationBurst, 350);
+  setTimeout(spawnCelebrationBurst, 700);
+  setTimeout(spawnCelebrationBurst, 1050);
+
+  // Personalized win stats
+  const totalAttempted = studentModel.total;
+  const firstTry = studentModel.firstTryCorrect;
+  const firstTryPct = totalAttempted > 0 ? Math.round((firstTry / totalAttempted) * 100) : 0;
+  const stampsEarned = studentModel.formatsSeen ? studentModel.formatsSeen.size : 0;
+
+  const titleEl = document.getElementById("masteryTitle");
+  const msgEl = document.getElementById("masteryMessage");
+  const stat1 = document.getElementById("winStat1");
+  const stat2 = document.getElementById("winStat2");
+  const stat3 = document.getElementById("winStat3");
+  const stampsEl = document.getElementById("winStampsWon");
+
+  const titles = [
+    "🏆 PLACE VALUE CHAMPION!",
+    "⭐ 100 — YOU CRUSHED IT!",
+    "🔥 PLACE VALUE MASTER!",
+    "🌟 PERFECT SCORE — 100!"
+  ];
+  if (titleEl) titleEl.textContent = lang === "en"
+    ? titles[Math.floor(Math.random() * titles.length)]
+    : "🏆 ¡CAMPEÓN DEL VALOR POSICIONAL!";
+
+  if (msgEl) msgEl.textContent = lang === "en"
+    ? `${correctCount} out of ${totalCount} in the Challenge Zone. You proved you know every type of place value question STAAR has ever used.`
+    : `${correctCount} de ${totalCount} en la zona desafío. ¡Demostraste que sabes cada tipo de pregunta!`;
+
+  if (stat1) stat1.textContent = lang === "en"
+    ? `✅ ${firstTry} questions correct on the very first try`
+    : `✅ ${firstTry} preguntas correctas al primer intento`;
+
+  if (stat2) stat2.textContent = lang === "en"
+    ? `📊 ${firstTryPct}% first-try accuracy across ${totalAttempted} questions`
+    : `📊 ${firstTryPct}% de precisión al primer intento en ${totalAttempted} preguntas`;
+
+  if (stat3) stat3.textContent = lang === "en"
+    ? `🏷️ All ${stampsEarned} question types practiced — fully STAAR-ready!`
+    : `🏷️ ¡${stampsEarned} tipos de preguntas practicados — ¡listo para STAAR!`;
+
+  // Show all stamps as trophies
+  if (stampsEl) stampsEl.textContent = "📋✖️🔤💥🏷️☑️🔀🔍✅";
+
+  showMasteryOverlay("", "");
+  updateTracker(t("YOU REACHED 100! Place Value Master!", "¡LLEGASTE A 100! ¡Maestro del valor posicional!"));
+}
+
+function continueFromMastery() {
+  hideMasteryOverlay();
+  finalCheckAnswers = [];
+  gameMode = "normal";
+  celebrationShown = false;
+  updateGameUI();
+  updateTracker(t("Continue Mode — mixed practice.", "Modo continuar — práctica mixta."));
+  nextAdaptive();
+}
+
+function startExtensionMode() {
+  hideMasteryOverlay();
+  celebrationShown = false;
+  launchExtensionMode();
+}
+
+function launchExtensionMode() {
+  finalCheckAnswers = [];
+  gameMode = "extension";
+  cognitiveState.node = "abstraction";
+  updateGameUI();
+  updateTracker(lang === "en"
+    ? "Challenge Mode started. Expect harder and deeper questions."
+    : "Modo desafío iniciado. Espera preguntas más difíciles y profundas.");
+  nextAdaptive();
+}
+
+function backToPractice() {
+  hideAlmostOverlay();
+  finalCheckAnswers = [];
+  gameMode = "normal";
+  updateGameUI();
+  updateTracker(lang === "en"
+    ? "Practice mode resumed."
+    : "Modo práctica reanudado.");
+  nextAdaptive();
+}
+
+function updateNodeProgress(correct){
+  const n = cognitiveState.node;
+  const a = cognitiveState.attempts[n] + 1;
+  const prev = cognitiveState.mastery[n];
+  const next = ((prev * (a - 1)) + (correct ? 1 : 0)) / a;
+  cognitiveState.attempts[n] = a;
+  cognitiveState.mastery[n] = next;
+  cognitiveState.scaffold = !correct && a >= 2;
+}
+
+function nextNode(){
+  const order = ["compose","decompose","equivalence","abstraction"];
+  for (const n of order){
+    if (canAccessNode(n) && (cognitiveState.mastery[n] < 0.8 || cognitiveState.attempts[n] < 5)){
+      return n;
+    }
+  }
+  return "compose";
+}
+
+
+// ===== B1 OBSERVER (non-invasive) =====
+(function(){
+  const origCheck = window.checkAnswer;
+  if (typeof origCheck === "function"){
+    window.checkAnswer = function(){
+      const res = origCheck.apply(this, arguments);
+      const after = window.__lastCorrect === true;
+      updateNodeProgress(after);
+      handleMasteryProgress(after);
+      if (gameMode === "normal" && shouldEnterChallengeZone()) enterMasteryMode();
+      if (cognitiveState.mastery[cognitiveState.node] >= 0.8 && cognitiveState.attempts[cognitiveState.node] >= 5){
+        cognitiveState.node = nextNode();
+      }
+      return res;
+    }
+  }
+})();
+
+
+function bootRuntime() {
+  try {
+    const bootEl = document.getElementById("bootStatus");
+    if (bootEl) bootEl.textContent = "Boot: starting";
+    const restored = restoreRuntimeState();
+    if (restored && currentItem) {
+      if (bootEl) bootEl.textContent = "Boot: restored saved session";
+      const lbl = document.getElementById("langLabel");
+      if (lbl) lbl.textContent = lang === "en" ? "Español" : "English";
+      renderItem(currentItem);
+      updateTracker(lang === "en" ? "Saved session restored." : "Sesión guardada restaurada.");
+    } else {
+      updateTracker(lang === "en" ? "Adaptive mode started." : "Modo adaptativo iniciado.");
+      nextAdaptive();
+    }
+    if (!currentItem) {
+      if (bootEl) bootEl.textContent = "Boot: failed to generate item";
+      updateTracker(lang === "en" ? "Error: item not generated" : "Error: no se generó un problema");
+      console.error("BOOT ERROR: item not generated");
+      return;
+    }
+    if (bootEl) bootEl.textContent = (bootEl.textContent || "Boot: item generated") + " (" + (currentItem.id || "no-id") + ")";
+    try { runtimeCoverageAudit(); } catch(e) { console.error("COVERAGE AUDIT ERROR:", e); }
+    try { updateGameUI(); } catch(e) { console.error("GAME UI ERROR:", e); }
+    syncLockoutUI();
+  } catch (e) {
+    const bootEl = document.getElementById("bootStatus");
+    if (bootEl) bootEl.textContent = "Boot: exception during startup";
+    updateTracker(lang === "en" ? "Error during startup" : "Error durante el inicio");
+    console.error("BOOT ERROR:", e);
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bootRuntime, { once: true });
+} else {
+  bootRuntime();
+}
+
+
+</script>
+</html>
