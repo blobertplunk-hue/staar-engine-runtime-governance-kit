@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.6B Quadrilaterals Lab</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#fdf4ff 0%,#eff6ff 100%);color:#1f2937;margin:0;padding:12px;min-height:100vh;}
+.shell{max-width:720px;margin:0 auto;}
+.header-bar{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:14px 18px;margin-bottom:12px;box-shadow:0 2px 12px rgba(124,58,237,.10);gap:12px;}
+.header-bar h1{margin:0;font-size:1.2rem;color:#7c3aed;font-weight:800;}
+.header-actions{display:flex;gap:8px;}
+.icon-btn{background:#f3f4f6;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:.95rem;font-weight:700;color:#374151;display:flex;align-items:center;gap:5px;}
+.icon-btn:hover{background:#ede9fe;color:#7c3aed;}
+/* SmartScore */
+.smartscore-bar{background:white;border-radius:16px;padding:14px 18px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.ss-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.ss-number{font-size:2.4rem;font-weight:900;line-height:1;background:linear-gradient(135deg,#7c3aed,#6d28d9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ss-label{font-size:.78rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;}
+.ss-zone-badge{font-size:.8rem;font-weight:800;padding:3px 12px;border-radius:999px;}
+.ss-zone-badge.practice{background:#ede9fe;color:#4c1d95;}
+.ss-zone-badge.proficiency{background:#fef3c7;color:#92400e;}
+.ss-zone-badge.challenge{background:#fee2e2;color:#991b1b;}
+.ss-zone-badge.mastered{background:#dcfce7;color:#14532d;}
+.ss-track{background:#e5e7eb;border-radius:999px;height:14px;overflow:visible;position:relative;margin-bottom:6px;}
+.ss-fill{height:14px;border-radius:999px;transition:width .5s cubic-bezier(.34,1.56,.64,1);}
+.ss-fill.practice{background:linear-gradient(90deg,#8b5cf6,#7c3aed);}
+.ss-fill.proficiency{background:linear-gradient(90deg,#f59e0b,#f97316);}
+.ss-fill.challenge{background:linear-gradient(90deg,#ef4444,#ec4899);}
+.ss-fill.mastered{background:linear-gradient(90deg,#10b981,#059669);}
+.ss-marker{position:absolute;top:-4px;width:2px;height:22px;background:rgba(0,0,0,.15);border-radius:2px;}
+.ss-zones{display:flex;justify-content:space-between;font-size:.72rem;color:#9ca3af;font-weight:600;margin-top:2px;}
+.streak-banner{display:none;background:linear-gradient(135deg,#f59e0b,#f97316);color:white;border-radius:12px;padding:8px 16px;margin-top:8px;font-weight:800;font-size:.95rem;text-align:center;}
+.streak-banner.visible{display:block;}
+/* Format stamps */
+.stamps-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;background:white;border-radius:14px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.stamp{display:flex;flex-direction:column;align-items:center;gap:2px;background:#f3f4f6;border-radius:10px;padding:6px 10px;min-width:52px;border:2px solid transparent;transition:all .2s;cursor:default;}
+.stamp.seen{background:#f5f3ff;border-color:#c4b5fd;}
+.stamp.missed{background:#fff7ed;border-color:#fcd34d;}
+.stamp-icon{font-size:1.2rem;line-height:1;}
+.stamp-label{font-size:.62rem;font-weight:700;color:#6b7280;text-align:center;line-height:1.2;}
+.stamp.seen .stamp-label{color:#5b21b6;}
+.stamp.missed .stamp-label{color:#92400e;}
+/* Challenge banner */
+.check-banner{display:none;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border-radius:16px;padding:14px 20px;margin-bottom:12px;text-align:center;}
+.check-banner.visible{display:block;}
+.check-banner h2{margin:0 0 4px 0;font-size:1.1rem;font-weight:800;}
+.check-progress{font-size:.95rem;opacity:.95;}
+.check-dots{font-size:1.2rem;letter-spacing:4px;margin-top:6px;}
+/* Question card */
+.question-card{background:white;border-radius:20px;padding:22px;box-shadow:0 4px 20px rgba(124,58,237,.10);margin-bottom:12px;}
+.teks-label,.badge{display:inline-block;background:#ede9fe;color:#4c1d95;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:12px;}
+.badge.lang{background:#e0e7ff;color:#3730a3;margin-left:8px;}
+.question-text{font-size:1.1rem;font-weight:800;color:#111827;margin:0 0 16px 0;line-height:1.3;}
+#directions{font-size:.85rem;color:#6b7280;font-style:italic;margin-bottom:8px;display:block;}
+.stimulus-wrap{background:#faf5ff;border-radius:14px;padding:14px;margin-bottom:14px;}
+.visual-toggle{background:none;border:2px solid #ede9fe;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:.88rem;font-weight:600;color:#5b21b6;margin-bottom:10px;display:inline-flex;align-items:center;gap:6px;}
+.visual-toggle:hover{background:#ede9fe;}
+.visual{background:#faf5ff;border-radius:14px;padding:14px;margin-bottom:14px;display:none;}
+.prompt{background:#fff7ed;border-left:4px solid #f59e0b;border-radius:0 10px 10px 0;padding:10px 14px;font-size:.92rem;color:#78350f;margin-bottom:12px;}
+/* Shape board (hotspot) */
+.shape-board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0;}
+.shape-cell{background:#f9fafb;border:2.5px solid #e5e7eb;border-radius:12px;padding:10px 6px 6px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;user-select:none;}
+.shape-cell:hover{background:#ede9fe;border-color:#a78bfa;}
+.shape-cell.selected{background:#ede9fe;border-color:#7c3aed;}
+.shape-cell.correct-reveal{background:#dcfce7;border-color:#16a34a;cursor:default;}
+.shape-cell.wrong-reveal{background:#fee2e2;border-color:#dc2626;cursor:default;}
+.shape-cell.disabled-cell{cursor:default;opacity:.8;}
+.shape-cell-label{font-size:.78rem;font-weight:800;color:#6b7280;margin-top:4px;}
+/* Labeled strip for nonexample family */
+.labeled-strip{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0;}
+.strip-item{background:#f9fafb;border:2px solid #e5e7eb;border-radius:10px;padding:8px 6px 4px;text-align:center;min-width:80px;}
+.strip-label{font-size:.85rem;font-weight:800;color:#374151;margin-top:4px;}
+/* Choice group (for choose-set family) */
+.choice-shape-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;pointer-events:none;}
+/* Choice buttons */
+#choices{margin-top:8px;}
+button.choice{display:flex;align-items:center;width:100%;text-align:left;margin:8px 0;padding:12px 16px;background:#f9fafb;border:2px solid #e5e7eb;border-radius:12px;cursor:pointer;font-size:1rem;font-weight:600;color:#1f2937;transition:border-color .15s,background .15s;line-height:1.4;gap:12px;}
+button.choice::before{content:'';flex-shrink:0;width:22px;height:22px;border:2.5px solid #9ca3af;background:white;display:inline-block;}
+button.choice[data-shape="circle"]::before{border-radius:50%;}
+button.choice[data-shape="square"]::before{border-radius:4px;}
+button.choice:hover:not(:disabled){background:#ede9fe;border-color:#a78bfa;}
+button.choice:hover:not(:disabled)::before{border-color:#7c3aed;}
+button.choice.selected{background:#ede9fe;border-color:#7c3aed;color:#3b0764;}
+button.choice.selected::before{background:#7c3aed;border-color:#7c3aed;}
+button.choice[data-shape="circle"].selected::before{box-shadow:inset 0 0 0 4px white;}
+button.choice.correct{background:#dcfce7;border-color:#16a34a;color:#14532d;}
+button.choice.correct::before{background:#16a34a;border-color:#16a34a;}
+button.choice.wrong{background:#fee2e2;border-color:#dc2626;color:#7f1d1d;}
+button.choice.wrong::before{background:#dc2626;border-color:#dc2626;}
+button.choice:disabled{cursor:default;opacity:.88;}
+/* Action row */
+.action-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.action-row>button:first-child{flex:1;padding:15px 20px;background:#7c3aed;color:white;border:none;border-radius:14px;font-size:1.05rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s;}
+.action-row>button:first-child:hover:not(:disabled){background:#6d28d9;transform:translateY(-1px);}
+.action-row>button:first-child:disabled{background:#9ca3af;cursor:default;transform:none;}
+.feedback{border-radius:14px;padding:14px 16px;margin-top:12px;font-size:1rem;font-weight:600;min-height:50px;display:block;line-height:1.5;background:#eff6ff;}
+/* Scaffold */
+.work-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px;margin:8px 0;}
+.work-title{font-size:.82rem;font-weight:800;color:#374151;margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
+.structure-note{font-size:.86rem;color:#374151;line-height:1.5;}
+/* Lockout */
+.lockout-inline{display:none;margin-top:12px;padding:12px;border-radius:12px;background:#fee2e2;border:1px solid #dc2626;}
+.lockout-inline .unlock-panel{display:none;margin-top:10px;}
+.lockout-inline .unlock-panel.visible{display:block;}
+.input{width:100%;padding:10px;border-radius:10px;border:2px solid #d1d5db;font-size:1rem;font-weight:600;}
+.input:focus{outline:none;border-color:#7c3aed;}
+/* Overlays */
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.88);z-index:9999;align-items:center;justify-content:center;padding:20px;}
+.overlay.visible{display:flex;}
+.overlay-card{max-width:560px;width:100%;background:white;border-radius:24px;padding:32px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.overlay-card h2{margin:0 0 8px 0;font-size:2rem;font-weight:900;color:#7c3aed;}
+.overlay-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+.overlay-actions button{border:none;border-radius:14px;padding:13px 22px;font-size:1rem;font-weight:800;cursor:pointer;}
+.overlay-actions button:first-child{background:#7c3aed;color:white;}
+.overlay-actions button:last-child{background:#f3f4f6;color:#374151;}
+.almost-card{max-width:460px;width:100%;background:white;border-radius:24px;padding:28px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.almost-card h2{margin:0 0 8px 0;font-size:1.6rem;font-weight:900;color:#92400e;}
+/* Teacher panel */
+.teacher-panel{display:block;margin-top:12px;}
+details.teacher-panel summary{cursor:pointer;font-weight:700;color:#6b7280;}
+.pre{white-space:pre-wrap;background:#f8fafc;border-radius:12px;padding:12px;overflow:auto;font-size:.8rem;}
+.small{font-size:.92rem;color:#4b5563;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+@keyframes floatUp{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-60px);opacity:0;}}
+.celebrate-pop{position:fixed;pointer-events:none;z-index:9998;font-size:2rem;animation:floatUp 1s ease forwards;}
+@media(max-width:500px){.shape-board{grid-template-columns:repeat(2,1fr);}.question-text{font-size:.98rem;}.ss-number{font-size:2rem;}}
+</style>
+</head>
+<body>
+<main>
+<div class="shell">
+  <div class="header-bar">
+    <h1>🔷 TEKS 3.6B Quadrilaterals Lab</h1>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" onclick="toggleLang()">🌐 <span id="langLabel">Español</span></button>
+      <button type="button" class="icon-btn" onclick="readAloud()">🔊</button>
+      <button type="button" class="icon-btn" onclick="resetRuntimeSession()">🔄 <span>Start Over</span></button>
+    </div>
+  </div>
+
+  <div class="smartscore-bar" id="smartscoreBar" role="region" aria-label="Your score">
+    <div class="ss-top">
+      <div>
+        <div class="ss-label" id="ssLabel">3.6B Shape Power</div>
+        <div class="ss-number" id="ssNumber">0</div>
+      </div>
+      <div style="text-align:right">
+        <span class="ss-zone-badge practice" id="ssZoneBadge">Practice Zone</span>
+        <div style="font-size:.78rem;color:#6b7280;margin-top:4px;" id="ssGoalText">Get ready for shape practice</div>
+      </div>
+    </div>
+    <div class="ss-track">
+      <div class="ss-fill practice" id="ssFill" style="width:0%"></div>
+      <div class="ss-marker" style="left:70%"></div>
+      <div class="ss-marker" style="left:90%"></div>
+    </div>
+    <div class="ss-zones"><span>0</span><span>Practice</span><span style="margin-left:auto">70 Proficiency</span><span style="margin-left:12px">90 Challenge</span><span style="margin-left:12px">100 ⭐</span></div>
+    <div class="streak-banner" id="streakBanner">🔥 <span id="streakCount">3</span> in a row!</div>
+  </div>
+
+  <!-- 4 format stamps per 3.6B format_stamp_contract -->
+  <div class="stamps-row" id="stampsRow" role="region" aria-label="3.6B format coverage">
+    <div class="stamp" id="stamp_pick_quadrilaterals"><div class="stamp-icon">🖱️</div><div class="stamp-label">Pick<br>Quads</div></div>
+    <div class="stamp" id="stamp_best_name"><div class="stamp-icon">🏷️</div><div class="stamp-label">Best<br>Name</div></div>
+    <div class="stamp" id="stamp_find_the_nonexample"><div class="stamp-icon">🚫</div><div class="stamp-label">Find<br>Nonexample</div></div>
+    <div class="stamp" id="stamp_which_set_works"><div class="stamp-icon">🗂️</div><div class="stamp-label">Which<br>Set Works</div></div>
+  </div>
+
+  <div class="check-banner" id="checkBanner" role="status" aria-live="polite">
+    <h2 id="checkBannerTitle">⭐ 3.6B Challenge Gate</h2>
+    <div class="check-progress" id="checkProgress">Question 1 of 5</div>
+    <div class="check-dots" id="checkDots">⬜⬜⬜⬜⬜</div>
+  </div>
+
+  <section class="question-card" aria-labelledby="stem">
+    <div>
+      <span class="teks-label">TEKS 3.6B Quadrilaterals</span>
+      <span class="badge lang" id="langBadge">English</span>
+    </div>
+    <h2 class="question-text" id="stem">Loading your first question…</h2>
+    <div id="directions">Select one answer.</div>
+
+    <div id="stimulus" class="stimulus-wrap" style="display:none;"></div>
+
+    <button type="button" class="visual-toggle" id="structureToggle" onclick="toggleStructureHint()">💡 Need a hint?</button>
+    <div class="visual" id="visual"></div>
+
+    <div class="prompt" id="prompt" style="display:none;"></div>
+
+    <div id="choices"></div>
+
+    <div class="action-row">
+      <button type="button" id="submitBtn" onclick="submitAnswer()">Check My Answer ✓</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="lockout-inline" id="studentLockoutBox">
+      <strong id="studentLockoutTitle">Teacher check-in needed</strong>
+      <p class="small" id="studentLockoutMsg">Talk to your teacher before continuing.</p>
+      <button type="button" class="visual-toggle" onclick="toggleInlineUnlock()">Teacher Unlock</button>
+      <div class="unlock-panel" id="inlineUnlockPanel">
+        <input id="inlineTeacherCode" class="input" type="password" placeholder="Teacher code" style="margin-top:8px;">
+        <button type="button" class="visual-toggle" onclick="teacherUnlock()" style="margin-top:6px;">Unlock</button>
+      </div>
+    </div>
+  </section>
+
+  <details class="teacher-panel">
+    <summary>🔑 Teacher tools &amp; diagnostics</summary>
+    <aside class="small">
+      <p><strong>SmartScore:</strong> <span id="ssTeacher">0</span> &nbsp; <strong>Streak:</strong> <span id="streakTeacher">0</span> &nbsp; <strong>Total:</strong> <span id="totalTeacher">0</span></p>
+      <p><strong>1st-try correct:</strong> <span id="firstTryTeacher">0</span> &nbsp; <strong>2nd:</strong> <span id="secondTryTeacher">0</span> &nbsp; <strong>3rd+:</strong> <span id="thirdTryTeacher">0</span></p>
+      <hr>
+      <p><strong>Misconception error counts</strong></p>
+      <ul id="patternList"></ul>
+      <p class="small" id="adaptiveMessage"></p>
+      <p class="small" id="coverageStatus"></p>
+      <hr>
+      <h4>Family Exposure</h4>
+      <div class="pre" id="familyExposureLog">—</div>
+      <h4>Coverage Audit</h4>
+      <div class="small" id="coverageAuditLog">—</div>
+      <hr>
+      <h4>Last Item</h4>
+      <div class="pre" id="meta">No item yet.</div>
+    </aside>
+  </details>
+</div>
+</main>
+
+<div class="overlay" id="almostOverlay" role="dialog" aria-modal="true">
+  <div class="almost-card">
+    <div style="font-size:2.5rem;margin-bottom:8px;">💪</div>
+    <h2>So Close!</h2>
+    <div class="small" id="almostMsg" style="margin-bottom:8px;"></div>
+    <div style="font-weight:800;color:#7c3aed;margin-bottom:16px;" id="almostScore"></div>
+    <div class="overlay-actions"><button type="button" onclick="backToPractice()">Keep Practicing →</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="masteryOverlay" role="dialog" aria-modal="true">
+  <div class="overlay-card">
+    <div style="font-size:2.8rem;letter-spacing:6px;margin-bottom:8px;">🏆🌟🎉⭐🔥</div>
+    <h2 id="masteryTitle">YOU DID IT!</h2>
+    <div style="font-size:1.1rem;color:#6b7280;margin-bottom:16px;" id="masteryMessage">You mastered quadrilateral classification!</div>
+    <div id="winStatsBox" style="background:#faf5ff;border-radius:16px;padding:16px;margin:12px 0;text-align:left;">
+      <div id="winStat1" style="font-size:.95rem;color:#5b21b6;font-weight:700;margin-bottom:6px;"></div>
+      <div id="winStat2" style="font-size:.95rem;color:#5b21b6;font-weight:700;"></div>
+    </div>
+    <div class="overlay-actions"><button type="button" onclick="continueFromMastery()">Keep Playing 🔁</button></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  TEKS 3.6B Quadrilaterals Engine
+//  Governed by: teks_engine_contract_bundle_v1.json v1
+//  SOP: STAAR_ENGINE_SOP.md
+// ═══════════════════════════════════════════════════════════
+// ── CHUNK 2: STATE, SHAPE DEFS, UTILITIES ────────────────────
+
+let lang = "en";
+function t(en,es){ return lang==="en"?en:es; }
+
+let currentItem = null;
+let selected = [];
+let selectedHotspotIds = [];
+let attemptStage = "first";
+let currentAttemptCount = 0;
+let scaffoldTier = 0;
+let inChallengeGate = false;
+let challengeGateAnswers = [];
+let cgIndex = 0;
+
+const studentModel = {
+  total:0, streak:0, smartScore:0,
+  firstTryCorrect:0, secondTryCorrect:0, thirdPlusTryCorrect:0,
+  repeatedWrongItems:0, lockout:false, telemetry:[],
+  patternErrors:{
+    counts_four_sides_incorrectly:0,
+    slanted_figure_classification_error:0,
+    subset_confusion:0,
+    accepts_near_quadrilateral_distractor:0,
+    misses_nonexample_by_visual_resemblance:0
+  },
+  formatsSeen: new Set()
+};
+
+// Challenge gate requires these 3 per challenge_gate_contract
+const CHALLENGE_GATE_FORMATS = ["pick_quadrilaterals","which_set_works","find_the_nonexample"];
+const REQUIRED_FORMATS = ["pick_quadrilaterals","best_name","find_the_nonexample","which_set_works"];
+
+const TEMPLATE_TO_FORMAT = {
+  select_two_quads_hotspot_v1:       "pick_quadrilaterals",
+  best_name_for_figure_mc_v1:        "best_name",
+  choose_set_all_belong_mc_v1:       "which_set_works",
+  find_nonexample_mc_v1:             "find_the_nonexample",
+  group_descriptor_mc_v1:            "which_set_works"
+};
+
+// ── SHAPE DEFINITIONS ────────────────────────────────────────
+// Each shape: SVG path in 100×80 viewBox, classification flags
+const SHAPE_DEFS = {
+  square:{
+    path:"M18,8 L82,8 L82,72 L18,72 Z",
+    name_en:"square", name_es:"cuadrado",
+    isQuad:true, isParallelogram:true, isRectangle:true, isRhombus:true, isSquare:true, isTrapezoid:false,
+    fill:"#bfdbfe", stroke:"#1e40af"
+  },
+  rectangle:{
+    path:"M5,22 L95,22 L95,58 L5,58 Z",
+    name_en:"rectangle", name_es:"rectángulo",
+    isQuad:true, isParallelogram:true, isRectangle:true, isRhombus:false, isSquare:false, isTrapezoid:false,
+    fill:"#a5f3fc", stroke:"#0e7490"
+  },
+  rhombus:{
+    path:"M50,6 L90,40 L50,74 L10,40 Z",
+    name_en:"rhombus", name_es:"rombo",
+    isQuad:true, isParallelogram:true, isRectangle:false, isRhombus:true, isSquare:false, isTrapezoid:false,
+    fill:"#ddd6fe", stroke:"#5b21b6"
+  },
+  parallelogram:{
+    path:"M28,14 L92,14 L72,66 L8,66 Z",
+    name_en:"parallelogram", name_es:"paralelogramo",
+    isQuad:true, isParallelogram:true, isRectangle:false, isRhombus:false, isSquare:false, isTrapezoid:false,
+    fill:"#fbcfe8", stroke:"#9d174d"
+  },
+  trapezoid:{
+    path:"M22,14 L78,14 L94,66 L6,66 Z",
+    name_en:"trapezoid", name_es:"trapecio",
+    isQuad:true, isParallelogram:false, isRectangle:false, isRhombus:false, isSquare:false, isTrapezoid:true,
+    fill:"#fde68a", stroke:"#92400e"
+  },
+  triangle:{
+    path:"M50,6 L93,74 L7,74 Z",
+    name_en:"triangle", name_es:"triángulo",
+    isQuad:false, isParallelogram:false, isRectangle:false, isRhombus:false, isSquare:false, isTrapezoid:false,
+    fill:"#d1fae5", stroke:"#065f46"
+  },
+  pentagon:{
+    path:"M50,5 L92,33 L77,78 L23,78 L8,33 Z",
+    name_en:"pentagon", name_es:"pentágono",
+    isQuad:false, isParallelogram:false, isRectangle:false, isRhombus:false, isSquare:false, isTrapezoid:false,
+    fill:"#fee2e2", stroke:"#991b1b"
+  },
+  hexagon:{
+    path:"M50,4 L88,26 L88,64 L50,76 L12,64 L12,26 Z",
+    name_en:"hexagon", name_es:"hexágono",
+    isQuad:false, isParallelogram:false, isRectangle:false, isRhombus:false, isSquare:false, isTrapezoid:false,
+    fill:"#fef3c7", stroke:"#92400e"
+  }
+};
+
+const QUAD_KEYS   = ["square","rectangle","rhombus","parallelogram","trapezoid"];
+const NONQUAD_KEYS= ["triangle","pentagon","hexagon"];
+const ALL_SHAPE_KEYS = [...QUAD_KEYS,...NONQUAD_KEYS];
+
+// Subtype test helpers
+function isInCategory(shapeKey, cat) {
+  const d = SHAPE_DEFS[shapeKey];
+  if (!d) return false;
+  if (cat==="quadrilateral") return d.isQuad;
+  if (cat==="parallelogram") return d.isParallelogram;
+  if (cat==="rectangle")     return d.isRectangle;
+  if (cat==="rhombus")       return d.isRhombus;
+  if (cat==="square")        return d.isSquare;
+  if (cat==="trapezoid")     return d.isTrapezoid;
+  return false;
+}
+
+// ── UTILITIES ────────────────────────────────────────────────
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function unique(arr){ return [...new Set(arr)]; }
+function getWeakestPattern(){
+  const e=Object.entries(studentModel.patternErrors).sort((a,b)=>b[1]-a[1]);
+  return e[0][1]>0?e[0][0]:null;
+}
+function spawnCelebration(anchorEl,emoji){
+  const pop=document.createElement("div"); pop.className="celebrate-pop"; pop.textContent=emoji;
+  const r=anchorEl?anchorEl.getBoundingClientRect():{left:window.innerWidth/2,top:200};
+  pop.style.left=(r.left+r.width/2)+"px"; pop.style.top=(r.top+window.scrollY)+"px";
+  document.body.appendChild(pop); setTimeout(()=>pop.remove(),1100);
+}
+
+function markFormatSeen(templateId){
+  const fmt=TEMPLATE_TO_FORMAT[templateId]; if(!fmt) return;
+  studentModel.formatsSeen.add(fmt);
+  const el=document.getElementById("stamp_"+fmt);
+  if(el&&!el.classList.contains("seen")){ el.classList.remove("missed"); el.classList.add("seen"); spawnCelebration(el,"✨"); }
+}
+function markFormatMissed(templateId){
+  const fmt=TEMPLATE_TO_FORMAT[templateId]; if(!fmt) return;
+  const el=document.getElementById("stamp_"+fmt);
+  if(el&&!el.classList.contains("seen")) el.classList.add("missed");
+}
+function allChallengeGateFormatsSeen(){
+  return CHALLENGE_GATE_FORMATS.every(f=>studentModel.formatsSeen.has(f));
+}
+
+// ── CHUNK 3: SVG RENDERERS ────────────────────────────────────
+
+function shapeSVG(key, w, h, overrideFill) {
+  const d = SHAPE_DEFS[key];
+  if (!d) return "";
+  const fill = overrideFill || d.fill;
+  return `<svg viewBox="0 0 100 80" width="${w}" height="${h}" style="display:block;margin:0 auto;"><path d="${d.path}" fill="${fill}" stroke="${d.stroke}" stroke-width="2.5" stroke-linejoin="round"/></svg>`;
+}
+
+function shapeName(key) {
+  const d = SHAPE_DEFS[key];
+  if (!d) return key;
+  return lang==="en" ? d.name_en : d.name_es;
+}
+
+// Board renderer for hotspot family
+function renderShapeBoard(shapes) {
+  // shapes: [{id, key, label}]
+  return `<div class="shape-board" id="shapeboard">` +
+    shapes.map(s =>
+      `<div class="shape-cell" id="sc_${s.id}" data-sid="${s.id}" onclick="hotspotClick('${s.id}')">
+        ${shapeSVG(s.key, 80, 64)}
+        <div class="shape-cell-label">${s.label}</div>
+       </div>`
+    ).join("") + `</div>`;
+}
+
+// Strip renderer for nonexample family (4 shapes in a row)
+function renderLabeledStrip(shapes) {
+  return `<div class="labeled-strip">` +
+    shapes.map(s =>
+      `<div class="strip-item">
+        ${shapeSVG(s.key, 72, 58)}
+        <div class="strip-label">${s.label}</div>
+       </div>`
+    ).join("") + `</div>`;
+}
+
+// Mini inline group renderer for choose-set choices
+function renderShapeGroup(keys, svgW, svgH) {
+  return `<div class="choice-shape-row">` +
+    keys.map(k => shapeSVG(k, svgW, svgH)).join("") +
+    `</div>`;
+}
+
+// ── CHUNK 4: ITEM GENERATORS (5 families) ────────────────────
+
+// Family 1: select_two_quads_hotspot_v1
+// Board: 2 quads + 4 non-quads, select exactly 2 (the quads)
+function generateSelectTwoQuadsHotspot() {
+  const quadPool  = shuffle([...QUAD_KEYS]).slice(0, 2);
+  const nonPool   = shuffle([...NONQUAD_KEYS, ...NONQUAD_KEYS]).slice(0, 4);
+  const allShapes = shuffle([
+    ...quadPool.map(k=>({key:k, isCorrect:true})),
+    ...nonPool.map(k=>({key:k, isCorrect:false}))
+  ]);
+  const labels = ["A","B","C","D","E","F"];
+  const shapes = allShapes.map((s,i)=>({id:`s${i}`, key:s.key, label:labels[i], isCorrect:s.isCorrect}));
+  const correctIds = shapes.filter(s=>s.isCorrect).map(s=>s.id);
+  if (correctIds.length !== 2) return null;
+  return {
+    id: `hotspot_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "select_two_quads_hotspot_v1",
+    family: "select_two_quadrilaterals_from_mixed_board",
+    itemType: "hotspot",
+    pattern: "counts_four_sides_incorrectly",
+    stem_en: "Select TWO shapes that are quadrilaterals.",
+    stem_es: "Selecciona DOS figuras que sean cuadriláteros.",
+    directions_en: "Select TWO answers.",
+    directions_es: "Selecciona DOS respuestas.",
+    boardShapes: shapes,
+    answerKey: { mode:"hotspot_exact", correctIds, requiredCount:2 },
+    meta: { shapes, correctIds }
+  };
+}
+
+// Family 2: best_name_for_figure_mc_v1
+// Show one quad shape, ask for its best name from 4 quad-type names
+const BEST_NAME_SCENARIOS = [
+  { shapeKey:"rhombus",      correctName:"rhombus",       distractors:["rectangle","trapezoid","square"] },
+  { shapeKey:"parallelogram",correctName:"parallelogram",  distractors:["rectangle","rhombus","trapezoid"] },
+  { shapeKey:"trapezoid",    correctName:"trapezoid",      distractors:["parallelogram","rhombus","rectangle"] },
+  { shapeKey:"rectangle",    correctName:"rectangle",      distractors:["trapezoid","rhombus","parallelogram"] },
+  { shapeKey:"square",       correctName:"square",         distractors:["rhombus","rectangle","trapezoid"] }
+];
+function generateBestNameMC() {
+  const sc = BEST_NAME_SCENARIOS[randInt(0, BEST_NAME_SCENARIOS.length-1)];
+  const allChoices = shuffle([sc.correctName, ...sc.distractors.slice(0,3)]);
+  const choices = allChoices.map(name=>({
+    text: lang==="en" ? name : (SHAPE_DEFS[name]?.name_es||name),
+    correct: name===sc.correctName,
+    nameKey: name
+  }));
+  if (choices.filter(c=>c.correct).length!==1) return null;
+  const correctText = choices.find(c=>c.correct).text;
+  const shapeNameEn = SHAPE_DEFS[sc.shapeKey]?.name_en || sc.shapeKey;
+  return {
+    id: `best_name_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "best_name_for_figure_mc_v1",
+    family: "identify_correct_descriptor_for_puzzle_piece_figures",
+    itemType: "multiple_choice",
+    pattern: "subset_confusion",
+    stem_en: `A puzzle piece is in the shape shown. What is the best name for this figure?`,
+    stem_es: `Una pieza de rompecabezas tiene la forma que se muestra. ¿Cuál es el mejor nombre para esta figura?`,
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    stimulusShapeKey: sc.shapeKey,
+    answerKey: { mode:"single_select", correctAnswers:[correctText] },
+    meta: { shapeKey:sc.shapeKey, correctName:sc.correctName },
+    choices
+  };
+}
+
+// Family 3: choose_set_all_belong_mc_v1
+// 4 choice groups of 3 shapes each; one group has all members of target category
+const SET_SCENARIOS = [
+  { category:"parallelogram", members:["square","rectangle","rhombus","parallelogram"], nonMembers:["trapezoid","triangle","pentagon","hexagon"] },
+  { category:"trapezoid",     members:["trapezoid"],                                    nonMembers:["square","rectangle","rhombus","parallelogram","triangle","pentagon"] },
+  { category:"rectangle",     members:["square","rectangle"],                           nonMembers:["rhombus","parallelogram","trapezoid","triangle"] },
+  { category:"rhombus",       members:["square","rhombus"],                             nonMembers:["rectangle","parallelogram","trapezoid","triangle"] }
+];
+function generateChooseSetMC() {
+  const sc = SET_SCENARIOS[randInt(0, SET_SCENARIOS.length-1)];
+  // Build one correct group (3 shapes all from members)
+  if (sc.members.length < 3) {
+    // pad with duplicates (same shape different orientation is acceptable for Grade 3)
+    while (sc.members.length < 3) sc.members.push(sc.members[0]);
+  }
+  const correctKeys = shuffle([...sc.members]).slice(0, 3);
+  // Build 3 wrong groups (each has at least 1 non-member of target category)
+  const wrongGroups = [];
+  for (let g=0; g<3; g++) {
+    const nonM = shuffle([...sc.nonMembers]).slice(0,1);
+    const mem  = shuffle([...sc.members]).slice(0, 2);
+    wrongGroups.push(shuffle([...nonM, ...mem]).slice(0,3));
+  }
+  const catNameEn = sc.category.charAt(0).toUpperCase()+sc.category.slice(1)+"s";
+  const catNameEs = {
+    parallelogram:"paralelogramos", trapezoid:"trapecios",
+    rectangle:"rectángulos", rhombus:"rombos"
+  }[sc.category] || sc.category;
+  const allGroups = shuffle([
+    { keys:correctKeys, correct:true },
+    ...wrongGroups.map(keys=>({ keys, correct:false }))
+  ]);
+  const labels = ["A","B","C","D"];
+  const choices = allGroups.map((g,i)=>({
+    text: `Group ${labels[i]}`,
+    correct: g.correct,
+    groupKeys: g.keys
+  }));
+  if (choices.filter(c=>c.correct).length!==1) return null;
+  const correctText = choices.find(c=>c.correct).text;
+  return {
+    id: `choose_set_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "choose_set_all_belong_mc_v1",
+    family: "choose_set_where_all_figures_belong_to_named_quadrilateral_subclasses",
+    itemType: "multiple_choice",
+    pattern: "subset_confusion",
+    stem_en: `Which group shows ONLY ${catNameEn}?`,
+    stem_es: `¿Cuál grupo muestra SOLO ${catNameEs}?`,
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    stimulusHTML: null,
+    answerKey: { mode:"single_select", correctAnswers:[correctText] },
+    meta: { category:sc.category, groups:allGroups },
+    choices
+  };
+}
+
+// Family 4: find_nonexample_mc_v1
+// Show 4 shapes (A-D) in a labeled strip; 3 belong to category, 1 does not
+const NONEXAMPLE_SCENARIOS = [
+  { category:"quadrilateral", members:QUAD_KEYS, nonMembers:NONQUAD_KEYS },
+  { category:"parallelogram", members:["square","rectangle","rhombus","parallelogram"], nonMembers:["trapezoid","triangle","pentagon"] },
+  { category:"rectangle",     members:["square","rectangle"], nonMembers:["rhombus","parallelogram","trapezoid","triangle"] }
+];
+function generateFindNonexampleMC() {
+  const sc = NONEXAMPLE_SCENARIOS[randInt(0, NONEXAMPLE_SCENARIOS.length-1)];
+  const memberPool    = shuffle([...sc.members]);
+  const nonMemberPool = shuffle([...sc.nonMembers]);
+  if (memberPool.length < 3 || nonMemberPool.length < 1) return null;
+  const memberKeys   = memberPool.slice(0,3);
+  const nonMemberKey = nonMemberPool[0];
+  const labels = ["A","B","C","D"];
+  const positions = shuffle([0,1,2,3]);
+  const nonExIdx = positions[0]; // nonexample goes at this position
+  const stripKeys = ["","","",""];
+  let mi = 0;
+  for (let i=0; i<4; i++) {
+    if (i===nonExIdx) stripKeys[i]=nonMemberKey;
+    else { stripKeys[i]=memberKeys[mi]; mi++; }
+  }
+  const strip = stripKeys.map((k,i)=>({key:k, label:labels[i]}));
+  const correctLabel = labels[nonExIdx];
+  const choices = labels.map((lbl,i)=>({
+    text:`Figure ${lbl}`, correct: i===nonExIdx
+  }));
+  const catNameEn = sc.category.charAt(0).toUpperCase()+sc.category.slice(1)+"s";
+  const catNameEs = {quadrilateral:"cuadriláteros",parallelogram:"paralelogramos",rectangle:"rectángulos"}[sc.category]||sc.category;
+  return {
+    id: `nonexample_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "find_nonexample_mc_v1",
+    family: "identify_nonexample_among_labeled_figures",
+    itemType: "multiple_choice",
+    pattern: "misses_nonexample_by_visual_resemblance",
+    stem_en: `These figures are supposed to be ${catNameEn}. Which figure is NOT a ${sc.category}?`,
+    stem_es: `Se supone que estas figuras son ${catNameEs}. ¿Cuál figura NO es un/a ${sc.category==="quadrilateral"?"cuadrilátero":sc.category==="parallelogram"?"paralelogramo":"rectángulo"}?`,
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    stripShapes: strip,
+    answerKey: { mode:"single_select", correctAnswers:[`Figure ${correctLabel}`] },
+    meta: { category:sc.category, strip, nonExIdx, correctLabel },
+    choices
+  };
+}
+
+// Family 5: group_descriptor_mc_v1
+// Show a group of shapes, ask what they all have in common
+const DESCRIPTOR_SCENARIOS = [
+  {
+    groupKeys:["square","rectangle","rhombus","parallelogram"],
+    correctAttr_en:"They all have 2 pairs of parallel sides.",
+    correctAttr_es:"Todas tienen 2 pares de lados paralelos.",
+    distractors_en:["They all have 4 equal sides.","They all have 4 right angles.","They all have exactly 1 pair of parallel sides."],
+    distractors_es:["Todas tienen 4 lados iguales.","Todas tienen 4 ángulos rectos.","Todas tienen exactamente 1 par de lados paralelos."],
+    pattern:"subset_confusion"
+  },
+  {
+    groupKeys:["square","rectangle"],
+    correctAttr_en:"They all have 4 right angles.",
+    correctAttr_es:"Todas tienen 4 ángulos rectos.",
+    distractors_en:["They all have 4 equal sides.","They all have exactly 1 pair of parallel sides.","They all have 3 sides."],
+    distractors_es:["Todas tienen 4 lados iguales.","Todas tienen exactamente 1 par de lados paralelos.","Todas tienen 3 lados."],
+    pattern:"subset_confusion"
+  },
+  {
+    groupKeys:["square","rhombus"],
+    correctAttr_en:"They all have 4 equal sides.",
+    correctAttr_es:"Todas tienen 4 lados iguales.",
+    distractors_en:["They all have 4 right angles.","They all have exactly 1 pair of parallel sides.","They all have 5 sides."],
+    distractors_es:["Todas tienen 4 ángulos rectos.","Todas tienen exactamente 1 par de lados paralelos.","Todas tienen 5 lados."],
+    pattern:"subset_confusion"
+  },
+  {
+    groupKeys:["trapezoid"],
+    correctAttr_en:"They all have exactly 1 pair of parallel sides.",
+    correctAttr_es:"Todas tienen exactamente 1 par de lados paralelos.",
+    distractors_en:["They all have 2 pairs of parallel sides.","They all have 4 equal sides.","They all have 4 right angles."],
+    distractors_es:["Todas tienen 2 pares de lados paralelos.","Todas tienen 4 lados iguales.","Todas tienen 4 ángulos rectos."],
+    pattern:"slanted_figure_classification_error"
+  }
+];
+function generateGroupDescriptorMC() {
+  const sc = DESCRIPTOR_SCENARIOS[randInt(0, DESCRIPTOR_SCENARIOS.length-1)];
+  const correctText = lang==="en"?sc.correctAttr_en:sc.correctAttr_es;
+  const dTexts = lang==="en"?sc.distractors_en:sc.distractors_es;
+  const allTexts = shuffle([correctText, ...dTexts.slice(0,3)]);
+  const choices = allTexts.map(tx=>({text:tx, correct:tx===correctText}));
+  if (choices.filter(c=>c.correct).length!==1) return null;
+  const groupKeys = shuffle([...sc.groupKeys]).slice(0,Math.min(4,sc.groupKeys.length));
+  while (groupKeys.length<2) groupKeys.push(groupKeys[0]);
+  return {
+    id: `descriptor_${Date.now()}_${randInt(1e3,9999)}`,
+    templateId: "group_descriptor_mc_v1",
+    family: "group_descriptor_from_shared_attributes",
+    itemType: "multiple_choice",
+    pattern: sc.pattern,
+    stem_en: "What do ALL of these shapes have in common?",
+    stem_es: "¿Qué tienen en común TODAS estas figuras?",
+    directions_en: "Select one answer.",
+    directions_es: "Selecciona una respuesta.",
+    groupKeys,
+    answerKey: { mode:"single_select", correctAnswers:[correctText] },
+    meta: { groupKeys, correctAttr_en:sc.correctAttr_en },
+    choices
+  };
+}
+
+// ── CHUNK 5: VALIDATORS ──────────────────────────────────────
+
+const QUAD_TEMPLATE_ALLOWLIST = new Set([
+  "select_two_quads_hotspot_v1","best_name_for_figure_mc_v1",
+  "choose_set_all_belong_mc_v1","find_nonexample_mc_v1","group_descriptor_mc_v1"
+]);
+
+function validateItem(item) {
+  const r={status:"PASS",failedChecks:[]};
+  const fail=m=>{r.failedChecks.push(m);r.status="FAIL";};
+  if (!item||!item.templateId){fail("missing templateId");return r;}
+  if (!QUAD_TEMPLATE_ALLOWLIST.has(item.templateId)){fail("templateId not in allowlist");return r;}
+  if (!item.answerKey||!Array.isArray(item.answerKey.correctAnswers)||item.answerKey.correctAnswers.length===0)
+    fail("answerKey.correctAnswers empty");
+  if (item.itemType==="multiple_choice") {
+    if (!item.choices||item.choices.length!==4) fail("MC must have 4 choices, got "+(item.choices||[]).length);
+    else {
+      const c=item.choices.filter(x=>x.correct);
+      if (c.length!==1) fail("MC must have exactly 1 correct, got "+c.length);
+      if (c.length===1&&c[0].text!==item.answerKey.correctAnswers[0])
+        fail("MC declared key mismatch");
+    }
+  }
+  if (item.itemType==="hotspot") {
+    if (!item.boardShapes||item.boardShapes.length!==6) fail("hotspot board must have 6 shapes");
+    if (!item.answerKey.correctIds||item.answerKey.correctIds.length!==2) fail("hotspot must have exactly 2 correct IDs");
+  }
+  return r;
+}
+
+function symbolicValidateItem(item) {
+  const r={status:"PASS",failedChecks:[]};
+  const fail=m=>{r.failedChecks.push(m);r.status="FAIL";};
+  if (!item||!item.meta) return r;
+
+  if (item.templateId==="select_two_quads_hotspot_v1") {
+    const correctIds=new Set(item.answerKey.correctIds);
+    const allShapes=item.boardShapes||[];
+    // Verify correct IDs map to quad shapes
+    for (const s of allShapes) {
+      const shouldBeCorrect=correctIds.has(s.id);
+      const isActuallyQuad=SHAPE_DEFS[s.key]?.isQuad||false;
+      if (shouldBeCorrect&&!isActuallyQuad) fail(`Shape ${s.key} marked correct but is not a quad`);
+      if (!shouldBeCorrect&&isActuallyQuad) fail(`Shape ${s.key} is a quad but not in correctIds`);
+    }
+    const quadCount=allShapes.filter(s=>SHAPE_DEFS[s.key]?.isQuad).length;
+    if (quadCount!==2) fail("Board must have exactly 2 quads, got "+quadCount);
+  }
+
+  if (item.templateId==="best_name_for_figure_mc_v1") {
+    const {shapeKey,correctName}=item.meta;
+    if (!isInCategory(shapeKey,correctName)&&correctName!=="square") {
+      // squareness check: square is also a rect/rhombus/parallelogram so "square" is always correct for square
+      if (correctName!==SHAPE_DEFS[shapeKey]?.name_en) fail("best name classification mismatch");
+    }
+  }
+
+  if (item.templateId==="choose_set_all_belong_mc_v1") {
+    const {category,groups}=item.meta;
+    for (const g of groups||[]) {
+      const allBelong=g.keys.every(k=>isInCategory(k,category));
+      if (g.correct&&!allBelong) fail("Correct group contains non-member of "+category);
+      if (!g.correct&&allBelong) fail("Wrong group has all members of "+category+" — ambiguous");
+    }
+  }
+
+  if (item.templateId==="find_nonexample_mc_v1") {
+    const {category,strip,nonExIdx}=item.meta;
+    strip.forEach((s,i)=>{
+      const belongs=isInCategory(s.key,category);
+      if (i===nonExIdx&&belongs) fail(`Nonexample shape ${s.key} actually belongs to ${category}`);
+      if (i!==nonExIdx&&!belongs) fail(`Member shape ${s.key} does not belong to ${category}`);
+    });
+  }
+
+  return r;
+}
+
+// ── CHUNK 5b: REGISTRY + WEIGHTS + CHOOSER ───────────────────
+
+const QUAD_FAMILIES = [
+  "select_two_quadrilaterals_from_mixed_board",
+  "identify_correct_descriptor_for_puzzle_piece_figures",
+  "choose_set_where_all_figures_belong_to_named_quadrilateral_subclasses",
+  "identify_nonexample_among_labeled_figures",
+  "group_descriptor_from_shared_attributes"
+];
+
+const FAMILY_WEIGHTS = {
+  select_two_quadrilaterals_from_mixed_board:                    9,
+  identify_correct_descriptor_for_puzzle_piece_figures:          8,
+  choose_set_where_all_figures_belong_to_named_quadrilateral_subclasses: 8,
+  identify_nonexample_among_labeled_figures:                     9,
+  group_descriptor_from_shared_attributes:                       6
+};
+
+const MISCONCEPTION_TO_FAMILY = {
+  counts_four_sides_incorrectly:          ["select_two_quadrilaterals_from_mixed_board","identify_correct_descriptor_for_puzzle_piece_figures"],
+  slanted_figure_classification_error:    ["identify_correct_descriptor_for_puzzle_piece_figures","group_descriptor_from_shared_attributes"],
+  subset_confusion:                       ["choose_set_where_all_figures_belong_to_named_quadrilateral_subclasses","group_descriptor_from_shared_attributes"],
+  accepts_near_quadrilateral_distractor:  ["select_two_quadrilaterals_from_mixed_board","identify_nonexample_among_labeled_figures"],
+  misses_nonexample_by_visual_resemblance:["identify_nonexample_among_labeled_figures","choose_set_where_all_figures_belong_to_named_quadrilateral_subclasses"]
+};
+
+const ANTI_STARVATION_WINDOW = 7;
+let familyExposure = Object.fromEntries(QUAD_FAMILIES.map(f=>[f,0]));
+let familyLastSeen = Object.fromEntries(QUAD_FAMILIES.map(f=>[f,-99]));
+let lastChosenFamily = null;
+let totalItemsGenerated = 0;
+
+function chooseQuadFamily() {
+  const starved=QUAD_FAMILIES.filter(f=>totalItemsGenerated-familyLastSeen[f]>=ANTI_STARVATION_WINDOW);
+  if (starved.length>0) return starved[Math.floor(Math.random()*starved.length)];
+  const weakest=getWeakestPattern();
+  let pool=weakest&&studentModel.patternErrors[weakest]>=2
+    ?(MISCONCEPTION_TO_FAMILY[weakest]||QUAD_FAMILIES):[...QUAD_FAMILIES];
+  const avg=QUAD_FAMILIES.reduce((s,f)=>s+familyExposure[f],0)/QUAD_FAMILIES.length;
+  pool=pool.filter(f=>familyExposure[f]<=1.5*avg+1);
+  if (pool.length===0) pool=[...QUAD_FAMILIES];
+  if (pool.length>1) pool=pool.filter(f=>f!==lastChosenFamily);
+  if (pool.length===0) pool=[...QUAD_FAMILIES];
+  const tot=pool.reduce((s,f)=>s+(FAMILY_WEIGHTS[f]||5),0);
+  let r=Math.random()*tot;
+  for (const f of pool){ r-=(FAMILY_WEIGHTS[f]||5); if(r<=0) return f; }
+  return pool[pool.length-1];
+}
+
+const FAMILY_GENERATORS = {
+  select_two_quadrilaterals_from_mixed_board:                    generateSelectTwoQuadsHotspot,
+  identify_correct_descriptor_for_puzzle_piece_figures:          generateBestNameMC,
+  choose_set_where_all_figures_belong_to_named_quadrilateral_subclasses: generateChooseSetMC,
+  identify_nonexample_among_labeled_figures:                     generateFindNonexampleMC,
+  group_descriptor_from_shared_attributes:                       generateGroupDescriptorMC
+};
+
+function generateNextItem() {
+  const family=chooseQuadFamily();
+  const gen=FAMILY_GENERATORS[family];
+  for (let i=0;i<12;i++) {
+    try {
+      const item=gen();
+      if (!item) continue;
+      if (validateItem(item).status==="PASS"&&symbolicValidateItem(item).status==="PASS") {
+        familyExposure[family]++; familyLastSeen[family]=totalItemsGenerated;
+        lastChosenFamily=family; totalItemsGenerated++;
+        return item;
+      }
+    } catch(e){}
+  }
+  for (const fb of QUAD_FAMILIES) {
+    for (let i=0;i<5;i++) {
+      try {
+        const item=FAMILY_GENERATORS[fb]();
+        if (item&&validateItem(item).status==="PASS") {
+          familyExposure[fb]++; familyLastSeen[fb]=totalItemsGenerated;
+          lastChosenFamily=fb; totalItemsGenerated++;
+          return item;
+        }
+      } catch(e){}
+    }
+  }
+  return null;
+}
+
+function chooseAdaptiveTemplate(){ return "__quad_family_router__"; }
+
+// ── CHUNK 6: SCAFFOLD ────────────────────────────────────────
+
+function buildScaffoldTier1(item) {
+  if (!item) return "";
+  const tid = item.templateId||"";
+  if (tid==="select_two_quads_hotspot_v1")
+    return `<div class="work-card"><div class="work-title">${t("What is a quadrilateral?","¿Qué es un cuadrilátero?")}</div>
+      <div class="structure-note">${t("A quadrilateral has exactly 4 sides and 4 corners. Count the sides of each shape before clicking.","Un cuadrilátero tiene exactamente 4 lados y 4 esquinas. Cuenta los lados de cada figura antes de hacer clic.")}</div></div>`;
+  if (tid==="best_name_for_figure_mc_v1")
+    return `<div class="work-card"><div class="work-title">${t("Check the shape's traits","Revisa las características de la figura")}</div>
+      <div class="structure-note">${t("Count sides. Check for parallel sides and right angles. Then pick the most specific correct name.","Cuenta los lados. Verifica los lados paralelos y los ángulos rectos. Luego elige el nombre correcto más específico.")}</div></div>`;
+  if (tid==="choose_set_all_belong_mc_v1")
+    return `<div class="work-card"><div class="work-title">${t("Check every shape in each group","Revisa cada figura en cada grupo")}</div>
+      <div class="structure-note">${t("A group only works if ALL of its shapes belong to the named type — not just most of them.","Un grupo solo funciona si TODAS sus figuras pertenecen al tipo indicado, no solo la mayoría.")}</div></div>`;
+  if (tid==="find_nonexample_mc_v1")
+    return `<div class="work-card"><div class="work-title">${t("Find the one that does NOT fit","Encuentra la que NO encaja")}</div>
+      <div class="structure-note">${t("Check each figure's sides and angles. The nonexample breaks at least one rule of the named category.","Revisa los lados y ángulos de cada figura. El no ejemplo rompe al menos una regla de la categoría indicada.")}</div></div>`;
+  if (tid==="group_descriptor_mc_v1")
+    return `<div class="work-card"><div class="work-title">${t("Find a rule ALL shapes share","Encuentra una regla que TODAS las figuras compartan")}</div>
+      <div class="structure-note">${t("The correct answer must be true for every shape shown — not just some of them.","La respuesta correcta debe ser verdadera para cada figura que se muestra, no solo para algunas.")}</div></div>`;
+  return `<div class="work-card"><div class="work-title">${t("Think about sides and angles","Piensa en lados y ángulos")}</div>
+    <div class="structure-note">${t("Quadrilaterals have exactly 4 sides. Parallelograms have 2 pairs of parallel sides.","Los cuadriláteros tienen exactamente 4 lados. Los paralelogramos tienen 2 pares de lados paralelos.")}</div></div>`;
+}
+
+function buildScaffoldTier2(item) {
+  if (!item) return "";
+  const tid = item.templateId||"";
+  if (tid==="best_name_for_figure_mc_v1") {
+    const key=item.meta?.shapeKey||"";
+    const d=SHAPE_DEFS[key];
+    const traits = d ? [
+      d.isParallelogram?t("2 pairs of parallel sides","2 pares de lados paralelos"):null,
+      d.isRectangle?t("4 right angles","4 ángulos rectos"):null,
+      d.isRhombus?t("4 equal sides","4 lados iguales"):null,
+      d.isTrapezoid?t("1 pair of parallel sides","1 par de lados paralelos"):null
+    ].filter(Boolean) : [];
+    return `<div class="work-card"><div class="work-title">${t("Worked check","Verificación guiada")}</div>
+      <div class="structure-note">${t("This shape has: ","Esta figura tiene: ")}${traits.join(", ")||"4 sides"}</div></div>`;
+  }
+  if (tid==="find_nonexample_mc_v1") {
+    const {strip,category}=item.meta||{};
+    const worked=(strip||[]).map(s=>`${s.label}: ${shapeName(s.key)} → ${isInCategory(s.key,category)?t("✓ belongs","✓ pertenece"):t("✗ does NOT belong","✗ NO pertenece")}`).join("<br>");
+    return `<div class="work-card"><div class="work-title">${t("Worked check","Verificación guiada")}</div>
+      <div class="structure-note">${worked}</div></div>`;
+  }
+  return `<div class="work-card"><div class="work-title">${t("Worked check","Verificación guiada")}</div>
+    <div class="structure-note">${t("Review the category rule, then test each shape one at a time.","Revisa la regla de la categoría, luego prueba cada figura una por una.")}</div></div>`;
+}
+
+function renderScaffold(item, tier) {
+  const vis=document.getElementById("visual"), tog=document.getElementById("structureToggle");
+  if (!vis) return;
+  if (tier===0){vis.style.display="none"; if(tog) tog.textContent=t("💡 Need a hint?","💡 ¿Necesitas una pista?"); return;}
+  let html=buildScaffoldTier1(item);
+  if (tier>=2) html+=`<hr style="margin:10px 0;border-color:#e5e7eb">`+buildScaffoldTier2(item);
+  vis.innerHTML=html; vis.style.display="block";
+  if(tog) tog.textContent=t("Hide hint","Ocultar pista");
+}
+
+function toggleStructureHint() {
+  const el=document.getElementById("visual"); if(!el) return;
+  if (el.style.display==="none"||!el.style.display){
+    if (scaffoldTier===0) scaffoldTier=1;
+    renderScaffold(currentItem,scaffoldTier);
+  } else {
+    el.style.display="none";
+    const tog=document.getElementById("structureToggle");
+    if(tog) tog.textContent=t("💡 Need a hint?","💡 ¿Necesitas una pista?");
+  }
+}
+
+// ── CHUNK 6b: RENDERER ───────────────────────────────────────
+
+function renderItem(item) {
+  if (!item) return;
+  currentItem=item; selected=[]; selectedHotspotIds=[];
+  attemptStage="first"; currentAttemptCount=0; scaffoldTier=0;
+
+  document.getElementById("stem").textContent=lang==="en"?item.stem_en:item.stem_es;
+  document.getElementById("directions").textContent=lang==="en"?item.directions_en:item.directions_es;
+  document.getElementById("feedback").textContent="";
+  document.getElementById("feedback").style.background="#eff6ff";
+  document.getElementById("prompt").style.display="none";
+  document.getElementById("submitBtn").disabled=false;
+  document.getElementById("studentLockoutBox").style.display="none";
+  renderScaffold(item,0);
+
+  const stimDiv=document.getElementById("stimulus");
+  const choicesDiv=document.getElementById("choices");
+
+  // Build stimulus HTML
+  let stimHTML="";
+  if (item.itemType==="hotspot") {
+    stimHTML=renderShapeBoard(item.boardShapes);
+  } else if (item.stimulusShapeKey) {
+    stimHTML=`<div style="text-align:center;padding:8px;">${shapeSVG(item.stimulusShapeKey,120,96)}</div>`;
+  } else if (item.stripShapes) {
+    stimHTML=renderLabeledStrip(item.stripShapes);
+  } else if (item.groupKeys) {
+    stimHTML=`<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:4px;">`+
+      item.groupKeys.map(k=>`<div style="text-align:center;">${shapeSVG(k,90,72)}<div style="font-size:.75rem;color:#6b7280;margin-top:3px;">${shapeName(k)}</div></div>`).join("")+`</div>`;
+  } else if (item.stimulusHTML) {
+    stimHTML=item.stimulusHTML;
+  }
+  if (stimHTML){stimDiv.innerHTML=stimHTML; stimDiv.style.display="block";}
+  else stimDiv.style.display="none";
+
+  // Choices
+  if (item.itemType==="hotspot") {
+    choicesDiv.innerHTML=""; // board is in stimulus
+  } else {
+    const shape="circle"; // all 3.6B MC use circles
+    choicesDiv.innerHTML=(item.choices||[]).map((ch,i)=>{
+      let inner="";
+      if (ch.groupKeys) {
+        inner=renderShapeGroup(ch.groupKeys,52,40);
+      } else {
+        inner=ch.text;
+      }
+      return `<button type="button" class="choice" data-shape="${shape}" data-index="${i}" onclick="selectChoice(${i})">${inner}</button>`;
+    }).join("");
+  }
+}
+
+function selectChoice(i) {
+  if (!currentItem||currentItem.itemType==="hotspot") return;
+  selected=[i];
+  document.querySelectorAll("#choices button.choice").forEach((b,bi)=>b.classList.toggle("selected",bi===i));
+}
+
+function hotspotClick(id) {
+  if (!currentItem||currentItem.itemType!=="hotspot") return;
+  const cell=document.getElementById("sc_"+id);
+  if (!cell||cell.classList.contains("disabled-cell")) return;
+  const idx=selectedHotspotIds.indexOf(id);
+  if (idx===-1) {
+    if (selectedHotspotIds.length>=2) return; // max 2
+    selectedHotspotIds.push(id);
+    cell.classList.add("selected");
+  } else {
+    selectedHotspotIds.splice(idx,1);
+    cell.classList.remove("selected");
+  }
+}
+
+// ── CHUNK 6c: SUBMIT ─────────────────────────────────────────
+
+function submitAnswer() {
+  if (!currentItem) return;
+  const item=currentItem;
+  let isCorrect=false;
+
+  if (item.itemType==="hotspot") {
+    const correctSet=new Set(item.answerKey.correctIds);
+    isCorrect = selectedHotspotIds.length===2 &&
+      selectedHotspotIds.every(id=>correctSet.has(id));
+    // Reveal board
+    document.querySelectorAll(".shape-cell").forEach(cell=>{
+      const sid=cell.dataset.sid;
+      cell.classList.add("disabled-cell");
+      if (correctSet.has(sid)) cell.classList.add("correct-reveal");
+      else if (selectedHotspotIds.includes(sid)&&!correctSet.has(sid)) cell.classList.add("wrong-reveal");
+    });
+  } else {
+    if (selected.length===0) return;
+    const btns=document.querySelectorAll("#choices button.choice");
+    isCorrect=item.choices[selected[0]]?.correct===true;
+    btns.forEach((b,bi)=>{
+      if (selected.includes(bi)) b.classList.add(item.choices[bi].correct?"correct":"wrong");
+      else if (item.choices[bi].correct&&!isCorrect) b.classList.add("correct");
+      b.disabled=true;
+    });
+  }
+
+  currentAttemptCount++;
+  document.getElementById("submitBtn").disabled=true;
+  if (!isCorrect) markFormatMissed(item.templateId);
+
+  if (isCorrect) {
+    if (currentAttemptCount===1) studentModel.firstTryCorrect++;
+    else if (currentAttemptCount===2) studentModel.secondTryCorrect++;
+    else studentModel.thirdPlusTryCorrect++;
+    studentModel.streak++; studentModel.total++;
+    if (studentModel.streak>=3){
+      document.getElementById("streakCount").textContent=studentModel.streak;
+      const sb=document.getElementById("streakBanner"); sb.classList.add("visible");
+      setTimeout(()=>sb.classList.remove("visible"),2000);
+    }
+    markFormatSeen(item.templateId);
+    updateSmartScore(true,currentAttemptCount);
+    document.getElementById("feedback").textContent=t("✅ Correct! Great work!","✅ ¡Correcto! ¡Buen trabajo!");
+    document.getElementById("feedback").style.background="#dcfce7";
+    if (inChallengeGate){challengeGateAnswers.push(true);advanceChallengeGate();}
+    else setTimeout(generateAndRenderItem,1200);
+  } else {
+    studentModel.streak=0;
+    studentModel.patternErrors[item.pattern]=(studentModel.patternErrors[item.pattern]||0)+1;
+    studentModel.repeatedWrongItems++;
+    updateSmartScore(false,currentAttemptCount);
+    scaffoldTier=currentAttemptCount>=2?2:1;
+    renderScaffold(item,scaffoldTier);
+    const promptEl=document.getElementById("prompt");
+    promptEl.textContent=t("Try again — check each shape's sides and angles.","Inténtalo de nuevo — revisa los lados y ángulos de cada figura.");
+    promptEl.style.display="block";
+    document.getElementById("feedback").textContent=t("Not quite — try again.","No es correcto — intenta de nuevo.");
+    document.getElementById("feedback").style.background="#fff7ed";
+    selected=[]; selectedHotspotIds=[];
+    if (item.itemType!=="hotspot") {
+      document.querySelectorAll("#choices button.choice").forEach(b=>{b.disabled=false;b.classList.remove("selected","correct","wrong");});
+    }
+    document.getElementById("submitBtn").disabled=false;
+    if (studentModel.repeatedWrongItems>=5){
+      studentModel.lockout=true;
+      document.getElementById("studentLockoutBox").style.display="block";
+      document.getElementById("submitBtn").disabled=true;
+    }
+    if (inChallengeGate){challengeGateAnswers.push(false);advanceChallengeGate();}
+  }
+  updateTeacherPanel();
+}
+
+function toggleInlineUnlock(){document.getElementById("inlineUnlockPanel").classList.toggle("visible");}
+function teacherUnlock(){
+  if (document.getElementById("inlineTeacherCode").value==="unlock123"){
+    studentModel.lockout=false; studentModel.repeatedWrongItems=0;
+    document.getElementById("studentLockoutBox").style.display="none";
+    document.getElementById("submitBtn").disabled=false;
+    generateAndRenderItem();
+  }
+}
+
+// ── CHUNK 6d: SMARTSCORE + CHALLENGE GATE ────────────────────
+
+function updateSmartScore(ok,attempt){
+  const ss=studentModel.smartScore;
+  let d=ok?(ss<70?(attempt===1?8:4):ss<90?(attempt===1?5:2):(attempt===1?4:1)):ss<70?-5:ss<90?-7:-10;
+  studentModel.smartScore=Math.max(0,Math.min(100,ss+d));
+  updateSmartScoreUI();
+  if (studentModel.smartScore>=100) setTimeout(triggerWin,500);
+}
+
+function updateSmartScoreUI(){
+  const ss=studentModel.smartScore;
+  document.getElementById("ssNumber").textContent=ss;
+  const fill=document.getElementById("ssFill"); fill.style.width=ss+"%";
+  const zone=ss<70?"practice":ss<90?"proficiency":ss<100?"challenge":"mastered";
+  fill.className="ss-fill "+zone;
+  const badge=document.getElementById("ssZoneBadge"); badge.className="ss-zone-badge "+zone;
+  const zoneNames={practice:t("Practice Zone","Zona de práctica"),proficiency:t("Proficiency Zone","Zona de dominio"),challenge:t("Challenge Zone","Zona de desafío"),mastered:t("Mastered!","¡Dominado!")};
+  badge.textContent=zoneNames[zone];
+  document.getElementById("ssGoalText").textContent=ss<70?t("Keep practicing — reach 70!","¡Sigue practicando — llega a 70!"):ss<90?t("Great — reach 90 for a challenge!","¡Genial — llega a 90 para un desafío!"):t("You're in the challenge zone!","¡Estás en la zona de desafío!");
+}
+
+function shouldEnterChallengeGate(){return studentModel.smartScore>=70&&allChallengeGateFormatsSeen()&&!inChallengeGate;}
+
+function enterChallengeGate(){
+  inChallengeGate=true; challengeGateAnswers=[]; cgIndex=0;
+  document.getElementById("checkBanner").classList.add("visible");
+  document.getElementById("checkBannerTitle").textContent=t("⭐ 3.6B Challenge Gate","⭐ 3.6B Puerta de desafío");
+  updateCGDots(); generateAndRenderItem();
+}
+function updateCGDots(){
+  document.getElementById("checkProgress").textContent=t(`Question ${cgIndex+1} of 5`,`Pregunta ${cgIndex+1} de 5`);
+  document.getElementById("checkDots").textContent=Array.from({length:5},(_,i)=>i<challengeGateAnswers.length?(challengeGateAnswers[i]?"✅":"❌"):"⬜").join("");
+}
+function advanceChallengeGate(){
+  cgIndex++; updateCGDots();
+  if (cgIndex<5) setTimeout(generateAndRenderItem,1200);
+  else finishChallengeGate();
+}
+function finishChallengeGate(){
+  inChallengeGate=false; document.getElementById("checkBanner").classList.remove("visible");
+  const correct=challengeGateAnswers.filter(Boolean).length;
+  if (correct>=4){
+    studentModel.smartScore=90; updateSmartScoreUI();
+    document.getElementById("feedback").textContent=t(`🏆 ${correct}/5 — You passed the challenge!`,`🏆 ${correct}/5 — ¡Pasaste el desafío!`);
+    document.getElementById("feedback").style.background="#dcfce7";
+    setTimeout(generateAndRenderItem,1800);
+  } else {
+    studentModel.smartScore=Math.max(60,studentModel.smartScore-10); updateSmartScoreUI();
+    document.getElementById("almostMsg").textContent=t(`You got ${correct} out of 5. Keep practicing!`,`Obtuviste ${correct} de 5. ¡Sigue practicando!`);
+    document.getElementById("almostScore").textContent=t("Need 4 or more to advance.","Necesitas 4 o más para avanzar.");
+    document.getElementById("almostOverlay").classList.add("visible");
+  }
+}
+function backToPractice(){document.getElementById("almostOverlay").classList.remove("visible");generateAndRenderItem();}
+
+// ── CHUNK 6e: WIN + TEACHER PANEL ────────────────────────────
+
+function triggerWin(){
+  document.getElementById("winStat1").textContent=t(`Total questions: ${studentModel.total}`,`Total de preguntas: ${studentModel.total}`);
+  document.getElementById("winStat2").textContent=t(`First-try correct: ${studentModel.firstTryCorrect}`,`Correcto al primer intento: ${studentModel.firstTryCorrect}`);
+  document.getElementById("masteryOverlay").classList.add("visible");
+}
+function continueFromMastery(){
+  document.getElementById("masteryOverlay").classList.remove("visible");
+  studentModel.smartScore=80; updateSmartScoreUI(); generateAndRenderItem();
+}
+
+function runtimeCoverageAudit(){
+  const dead=QUAD_FAMILIES.filter(f=>familyExposure[f]===0);
+  const el=document.getElementById("coverageAuditLog");
+  if (el) el.textContent=dead.length===0?"✅ All 5 families exposed.":"⚠️ Dead families: "+dead.join(", ");
+  return dead;
+}
+
+function updateTeacherPanel(){
+  const sm=studentModel;
+  document.getElementById("ssTeacher").textContent=sm.smartScore;
+  document.getElementById("streakTeacher").textContent=sm.streak;
+  document.getElementById("totalTeacher").textContent=sm.total;
+  document.getElementById("firstTryTeacher").textContent=sm.firstTryCorrect;
+  document.getElementById("secondTryTeacher").textContent=sm.secondTryCorrect;
+  document.getElementById("thirdTryTeacher").textContent=sm.thirdPlusTryCorrect;
+  const pl=document.getElementById("patternList");
+  if (pl) pl.innerHTML=Object.entries(sm.patternErrors).map(([k,v])=>`<li>${k.replace(/_/g," ")}: ${v}</li>`).join("");
+  const weak=getWeakestPattern();
+  const ad=document.getElementById("adaptiveMessage");
+  if (ad) ad.textContent=weak&&sm.patternErrors[weak]>=2?t(`Routing toward: ${weak.replace(/_/g," ")}`,`Redirigiendo: ${weak.replace(/_/g," ")}`):t("Balanced selection.","Selección equilibrada.");
+  const expLog=document.getElementById("familyExposureLog");
+  if (expLog) expLog.textContent=QUAD_FAMILIES.map(f=>`${f}: ${familyExposure[f]}`).join("\n");
+  const cov=document.getElementById("coverageStatus");
+  if (cov) cov.textContent=t(`Formats seen: ${[...sm.formatsSeen].join(", ")||"none"}`,`Formatos vistos: ${[...sm.formatsSeen].join(", ")||"ninguno"}`);
+  const meta=document.getElementById("meta");
+  if (meta&&currentItem) meta.textContent=JSON.stringify({id:currentItem.id,family:currentItem.family,templateId:currentItem.templateId,itemType:currentItem.itemType,meta:currentItem.meta,answerKey:currentItem.answerKey},null,2);
+  runtimeCoverageAudit();
+}
+
+// ── CHUNK 6f: LANGUAGE + RESET ────────────────────────────────
+
+function toggleLang(){
+  lang=lang==="en"?"es":"en";
+  document.getElementById("langLabel").textContent=lang==="en"?"Español":"English";
+  document.getElementById("langBadge").textContent=lang==="en"?"English":"Español";
+  if (currentItem) renderItem(currentItem);
+}
+function readAloud(){
+  if (!currentItem) return;
+  const text=lang==="en"?currentItem.stem_en:currentItem.stem_es;
+  if ("speechSynthesis" in window){const u=new SpeechSynthesisUtterance(text);u.lang=lang==="en"?"en-US":"es-US";window.speechSynthesis.cancel();window.speechSynthesis.speak(u);}
+}
+function resetRuntimeSession(){
+  studentModel.total=0;studentModel.streak=0;studentModel.smartScore=0;
+  studentModel.firstTryCorrect=0;studentModel.secondTryCorrect=0;studentModel.thirdPlusTryCorrect=0;
+  studentModel.repeatedWrongItems=0;studentModel.lockout=false;studentModel.formatsSeen=new Set();
+  Object.keys(studentModel.patternErrors).forEach(k=>studentModel.patternErrors[k]=0);
+  QUAD_FAMILIES.forEach(f=>{familyExposure[f]=0;familyLastSeen[f]=-99;});
+  lastChosenFamily=null;totalItemsGenerated=0;
+  document.querySelectorAll(".stamp").forEach(s=>s.classList.remove("seen","missed"));
+  inChallengeGate=false;challengeGateAnswers=[];cgIndex=0;
+  document.getElementById("checkBanner").classList.remove("visible");
+  document.getElementById("almostOverlay").classList.remove("visible");
+  document.getElementById("masteryOverlay").classList.remove("visible");
+  updateSmartScoreUI();updateTeacherPanel();generateAndRenderItem();
+}
+
+// ── CHUNK 6g: DRIVER + BOOT ───────────────────────────────────
+
+function generateAndRenderItem(){
+  if (shouldEnterChallengeGate()){enterChallengeGate();return;}
+  const item=generateNextItem();
+  if (!item){document.getElementById("stem").textContent=t("Error generating item — please reload.","Error al generar pregunta — recarga la página.");return;}
+  renderItem(item);updateTeacherPanel();
+}
+
+window.addEventListener('DOMContentLoaded',function(){
+  updateSmartScoreUI();runtimeCoverageAudit();generateAndRenderItem();
+});
+</script>
+</body>
+</html>
