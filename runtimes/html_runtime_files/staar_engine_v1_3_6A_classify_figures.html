@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.6A Classify 2D &amp; 3D Figures</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#eef2ff 0%,#f0fdf4 100%);color:#1f2937;margin:0;padding:12px;min-height:100vh;}
+.shell{max-width:720px;margin:0 auto;}
+.header-bar{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:14px 18px;margin-bottom:12px;box-shadow:0 2px 12px rgba(79,70,229,.10);gap:12px;}
+.header-bar h1{margin:0;font-size:1.2rem;color:#4f46e5;font-weight:800;}
+.header-actions{display:flex;gap:8px;}
+.icon-btn{background:#f3f4f6;border:none;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:.95rem;font-weight:700;color:#374151;display:flex;align-items:center;gap:5px;}
+.icon-btn:hover{background:#e0e7ff;color:#4f46e5;}
+.smartscore-bar{background:white;border-radius:16px;padding:14px 18px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.ss-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.ss-number{font-size:2.4rem;font-weight:900;line-height:1;background:linear-gradient(135deg,#4f46e5,#4338ca);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ss-label{font-size:.78rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;}
+.ss-zone-badge{font-size:.8rem;font-weight:800;padding:3px 12px;border-radius:999px;}
+.ss-zone-badge.practice{background:#e0e7ff;color:#3730a3;}
+.ss-zone-badge.proficiency{background:#fef3c7;color:#92400e;}
+.ss-zone-badge.challenge{background:#fee2e2;color:#991b1b;}
+.ss-zone-badge.mastered{background:#dcfce7;color:#14532d;}
+.ss-track{background:#e5e7eb;border-radius:999px;height:14px;overflow:visible;position:relative;margin-bottom:6px;}
+.ss-fill{height:14px;border-radius:999px;transition:width .5s cubic-bezier(.34,1.56,.64,1);}
+.ss-fill.practice{background:linear-gradient(90deg,#818cf8,#4f46e5);}
+.ss-fill.proficiency{background:linear-gradient(90deg,#f59e0b,#f97316);}
+.ss-fill.challenge{background:linear-gradient(90deg,#ef4444,#ec4899);}
+.ss-fill.mastered{background:linear-gradient(90deg,#10b981,#059669);}
+.ss-marker{position:absolute;top:-4px;width:2px;height:22px;background:rgba(0,0,0,.15);border-radius:2px;}
+.ss-zones{display:flex;justify-content:space-between;font-size:.72rem;color:#9ca3af;font-weight:600;margin-top:2px;}
+.streak-banner{display:none;background:linear-gradient(135deg,#f59e0b,#f97316);color:white;border-radius:12px;padding:8px 16px;margin-top:8px;font-weight:800;font-size:.95rem;text-align:center;}
+.streak-banner.visible{display:block;}
+.stamps-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;background:white;border-radius:14px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.stamp{display:flex;flex-direction:column;align-items:center;gap:2px;background:#f3f4f6;border-radius:10px;padding:6px 10px;min-width:52px;border:2px solid transparent;transition:all .2s;cursor:default;}
+.stamp.seen{background:#eef2ff;border-color:#a5b4fc;}
+.stamp.missed{background:#fff7ed;border-color:#fcd34d;}
+.stamp-icon{font-size:1.2rem;line-height:1;}
+.stamp-label{font-size:.62rem;font-weight:700;color:#6b7280;text-align:center;line-height:1.2;}
+.stamp.seen .stamp-label{color:#3730a3;}
+.stamp.missed .stamp-label{color:#92400e;}
+.check-banner{display:none;background:linear-gradient(135deg,#4f46e5,#4338ca);color:white;border-radius:16px;padding:14px 20px;margin-bottom:12px;text-align:center;}
+.check-banner.visible{display:block;}
+.check-banner h2{margin:0 0 4px 0;font-size:1.1rem;font-weight:800;}
+.check-progress{font-size:.95rem;opacity:.95;}
+.check-dots{font-size:1.2rem;letter-spacing:4px;margin-top:6px;}
+.question-card{background:white;border-radius:20px;padding:22px;box-shadow:0 4px 20px rgba(79,70,229,.10);margin-bottom:12px;}
+.teks-label,.badge{display:inline-block;background:#e0e7ff;color:#3730a3;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:12px;}
+.badge.lang{background:#e0e7ff;color:#3730a3;margin-left:8px;}
+.question-text{font-size:1.1rem;font-weight:800;color:#111827;margin:0 0 16px 0;line-height:1.3;}
+#directions{font-size:.85rem;color:#6b7280;font-style:italic;margin-bottom:8px;display:block;}
+.stimulus-wrap{background:#eef2ff;border-radius:14px;padding:14px;margin-bottom:14px;}
+.visual-toggle{background:none;border:2px solid #e0e7ff;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:.88rem;font-weight:600;color:#4338ca;margin-bottom:10px;display:inline-flex;align-items:center;gap:6px;}
+.visual-toggle:hover{background:#e0e7ff;}
+.visual{background:#eef2ff;border-radius:14px;padding:14px;margin-bottom:14px;display:none;}
+.prompt{background:#fff7ed;border-left:4px solid #f59e0b;border-radius:0 10px 10px 0;padding:10px 14px;font-size:.92rem;color:#78350f;margin-bottom:12px;}
+.figure-board{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0;}
+.fig-cell{background:#f9fafb;border:2px solid #e5e7eb;border-radius:10px;padding:8px 6px 4px;text-align:center;min-width:70px;}
+.fig-label{font-size:.75rem;font-weight:800;color:#374151;margin-top:3px;}
+.attr-table{border-collapse:collapse;width:100%;font-size:.88rem;border-radius:10px;overflow:hidden;margin:4px 0;}
+.attr-table th{background:#e0e7ff;color:#3730a3;font-weight:800;padding:6px 10px;text-align:left;}
+.attr-table td{padding:5px 10px;border-bottom:1px solid #e5e7eb;color:#374151;}
+.attr-table tr:last-child td{border-bottom:none;}
+.attr-table tr:nth-child(even) td{background:#f9fafb;}
+#choices{margin-top:8px;}
+button.choice{display:flex;align-items:flex-start;width:100%;text-align:left;margin:8px 0;padding:12px 16px;background:#f9fafb;border:2px solid #e5e7eb;border-radius:12px;cursor:pointer;font-size:1rem;font-weight:600;color:#1f2937;transition:border-color .15s,background .15s;line-height:1.4;gap:12px;}
+button.choice::before{content:'';flex-shrink:0;width:22px;height:22px;border:2.5px solid #9ca3af;background:white;display:inline-block;margin-top:2px;}
+button.choice[data-shape="circle"]::before{border-radius:50%;}
+button.choice[data-shape="square"]::before{border-radius:4px;}
+button.choice:hover:not(:disabled){background:#e0e7ff;border-color:#a5b4fc;}
+button.choice:hover:not(:disabled)::before{border-color:#4f46e5;}
+button.choice.selected{background:#e0e7ff;border-color:#4f46e5;color:#312e81;}
+button.choice.selected::before{background:#4f46e5;border-color:#4f46e5;}
+button.choice[data-shape="circle"].selected::before{box-shadow:inset 0 0 0 4px white;}
+button.choice.correct{background:#dcfce7;border-color:#16a34a;color:#14532d;}
+button.choice.correct::before{background:#16a34a;border-color:#16a34a;}
+button.choice.wrong{background:#fee2e2;border-color:#dc2626;color:#7f1d1d;}
+button.choice.wrong::before{background:#dc2626;border-color:#dc2626;}
+button.choice:disabled{cursor:default;opacity:.88;}
+#inputWrap{display:none;margin-top:10px;}
+#numInput{width:120px;padding:12px 14px;border:2.5px solid #d1d5db;border-radius:12px;font-size:1.4rem;font-weight:800;text-align:center;color:#111827;}
+#numInput:focus{outline:none;border-color:#4f46e5;}
+.action-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.action-row>button:first-child{flex:1;padding:15px 20px;background:#4f46e5;color:white;border:none;border-radius:14px;font-size:1.05rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s;}
+.action-row>button:first-child:hover:not(:disabled){background:#4338ca;transform:translateY(-1px);}
+.action-row>button:first-child:disabled{background:#9ca3af;cursor:default;transform:none;}
+.feedback{border-radius:14px;padding:14px 16px;margin-top:12px;font-size:1rem;font-weight:600;min-height:50px;display:block;line-height:1.5;background:#eef2ff;}
+.work-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px;margin:8px 0;}
+.work-title{font-size:.82rem;font-weight:800;color:#374151;margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
+.structure-note{font-size:.86rem;color:#374151;line-height:1.5;}
+.lockout-inline{display:none;margin-top:12px;padding:12px;border-radius:12px;background:#fee2e2;border:1px solid #dc2626;}
+.lockout-inline .unlock-panel{display:none;margin-top:10px;}
+.lockout-inline .unlock-panel.visible{display:block;}
+.input{width:100%;padding:10px;border-radius:10px;border:2px solid #d1d5db;font-size:1rem;font-weight:600;}
+.input:focus{outline:none;border-color:#4f46e5;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.88);z-index:9999;align-items:center;justify-content:center;padding:20px;}
+.overlay.visible{display:flex;}
+.overlay-card{max-width:560px;width:100%;background:white;border-radius:24px;padding:32px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.overlay-card h2{margin:0 0 8px 0;font-size:2rem;font-weight:900;color:#4f46e5;}
+.overlay-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+.overlay-actions button{border:none;border-radius:14px;padding:13px 22px;font-size:1rem;font-weight:800;cursor:pointer;}
+.overlay-actions button:first-child{background:#4f46e5;color:white;}
+.overlay-actions button:last-child{background:#f3f4f6;color:#374151;}
+.almost-card{max-width:460px;width:100%;background:white;border-radius:24px;padding:28px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.almost-card h2{margin:0 0 8px 0;font-size:1.6rem;font-weight:900;color:#92400e;}
+.teacher-panel{display:block;margin-top:12px;}
+details.teacher-panel summary{cursor:pointer;font-weight:700;color:#6b7280;}
+.pre{white-space:pre-wrap;background:#f8fafc;border-radius:12px;padding:12px;overflow:auto;font-size:.8rem;}
+.small{font-size:.92rem;color:#4b5563;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+@keyframes floatUp{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-60px);opacity:0;}}
+.celebrate-pop{position:fixed;pointer-events:none;z-index:9998;font-size:2rem;animation:floatUp 1s ease forwards;}
+@media(max-width:500px){.figure-board{gap:6px;}.question-text{font-size:.98rem;}.ss-number{font-size:2rem;}}
+</style>
+</head>
+<body>
+<main>
+<div class="shell">
+  <div class="header-bar">
+    <h1>📐 TEKS 3.6A Classify 2D &amp; 3D Figures</h1>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" onclick="toggleLang()">🌐 <span id="langLabel">Español</span></button>
+      <button type="button" class="icon-btn" onclick="readAloud()">🔊</button>
+      <button type="button" class="icon-btn" onclick="resetRuntimeSession()">🔄 <span>Start Over</span></button>
+    </div>
+  </div>
+  <div class="smartscore-bar" id="smartscoreBar" role="region" aria-label="Your score">
+    <div class="ss-top">
+      <div>
+        <div class="ss-label" id="ssLabel">3.6A Geometry Power</div>
+        <div class="ss-number" id="ssNumber">0</div>
+      </div>
+      <div style="text-align:right">
+        <span class="ss-zone-badge practice" id="ssZoneBadge">Practice Zone</span>
+        <div style="font-size:.78rem;color:#6b7280;margin-top:4px;" id="ssGoalText">Get ready for geometry practice</div>
+      </div>
+    </div>
+    <div class="ss-track">
+      <div class="ss-fill practice" id="ssFill" style="width:0%"></div>
+      <div class="ss-marker" style="left:70%"></div>
+      <div class="ss-marker" style="left:90%"></div>
+    </div>
+    <div class="ss-zones"><span>0</span><span>Practice</span><span style="margin-left:auto">70 Proficiency</span><span style="margin-left:12px">90 Challenge</span><span style="margin-left:12px">100 ⭐</span></div>
+    <div class="streak-banner" id="streakBanner">🔥 <span id="streakCount">3</span> in a row!</div>
+  </div>
+  <div class="stamps-row" id="stampsRow" role="region" aria-label="3.6A format coverage">
+    <div class="stamp" id="stamp_sort_the_group"><div class="stamp-icon">📦</div><div class="stamp-label">Sort<br>Group</div></div>
+    <div class="stamp" id="stamp_whats_true"><div class="stamp-icon">✅</div><div class="stamp-label">What's<br>True</div></div>
+    <div class="stamp" id="stamp_fill_the_rule"><div class="stamp-icon">📝</div><div class="stamp-label">Fill<br>Rule</div></div>
+    <div class="stamp" id="stamp_count_the_figures"><div class="stamp-icon">🔢</div><div class="stamp-label">Count<br>Figs</div></div>
+    <div class="stamp" id="stamp_match_the_table"><div class="stamp-icon">📊</div><div class="stamp-label">Match<br>Table</div></div>
+    <div class="stamp" id="stamp_real_objects"><div class="stamp-icon">🌍</div><div class="stamp-label">Real<br>Objects</div></div>
+  </div>
+  <div class="check-banner" id="checkBanner" role="status" aria-live="polite">
+    <h2 id="checkBannerTitle">⭐ 3.6A Challenge Gate</h2>
+    <div class="check-progress" id="checkProgress">Question 1 of 5</div>
+    <div class="check-dots" id="checkDots">⬜⬜⬜⬜⬜</div>
+  </div>
+  <section class="question-card" aria-labelledby="stem">
+    <div>
+      <span class="teks-label">TEKS 3.6A Classify Figures</span>
+      <span class="badge lang" id="langBadge">English</span>
+    </div>
+    <h2 class="question-text" id="stem">Loading your first question…</h2>
+    <span id="directions">Select one answer.</span>
+    <div id="stimulus" class="stimulus-wrap" style="display:none;"></div>
+    <button type="button" class="visual-toggle" id="structureToggle" onclick="toggleStructureHint()">💡 Need a hint?</button>
+    <div class="visual" id="visual"></div>
+    <div class="prompt" id="prompt" style="display:none;"></div>
+    <div id="choices"></div>
+    <div id="inputWrap">
+      <input type="number" id="numInput" min="0" max="99" placeholder="?" aria-label="Enter your answer">
+    </div>
+    <div class="action-row">
+      <button type="button" id="submitBtn" onclick="submitAnswer()">Check My Answer ✓</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="lockout-inline" id="lockoutInline">
+      <strong>🔒 Paused for Teacher Check</strong>
+      <p class="small">You've missed this type of question 5 times in a row. Ask your teacher for help.</p>
+      <button type="button" class="icon-btn" style="margin-top:8px" onclick="document.getElementById('unlockPanel').classList.toggle('visible')">🔑 Enter Code</button>
+      <div class="unlock-panel" id="unlockPanel">
+        <input type="password" class="input" id="unlockInput" placeholder="Enter unlock code">
+        <button type="button" class="icon-btn" style="margin-top:6px;background:#4f46e5;color:white" onclick="tryUnlock()">Unlock</button>
+      </div>
+    </div>
+    <div class="work-card" id="scaffoldCard" style="display:none;">
+      <div class="work-title" id="scaffoldTitle">Hint</div>
+      <div class="structure-note" id="scaffoldContent"></div>
+    </div>
+  </section>
+  <div class="overlay" id="almostOverlay" role="dialog" aria-modal="true">
+    <div class="almost-card">
+      <h2>📉 Challenge Not Passed Yet</h2>
+      <p class="small" id="almostMsg">Keep practicing to improve your SmartScore.</p>
+      <div class="overlay-actions"><button type="button" onclick="backToPractice()">Keep Practicing</button></div>
+    </div>
+  </div>
+  <div class="overlay" id="masteryOverlay" role="dialog" aria-modal="true">
+    <div class="overlay-card">
+      <h2>🌟 Mastered!</h2>
+      <p class="small" id="masteryMsg">You've mastered TEKS 3.6A!</p>
+      <div class="overlay-actions">
+        <button type="button" onclick="continueFromMastery()">Keep Going</button>
+        <button type="button" onclick="resetRuntimeSession()">Start Over</button>
+      </div>
+    </div>
+  </div>
+  <details class="teacher-panel">
+    <summary>Teacher Panel ▾</summary>
+    <div style="padding:10px 0;"><div class="pre" id="teacherPanelContent">Loading…</div></div>
+  </details>
+</div>
+</main>
+<script>
+// ── CHUNK 2a: LANGUAGE ────────────────────────────────────────
+let currentLang='en';
+function t(en,es){return currentLang==='es'?es:en;}
+
+// ── CHUNK 2b: SHAPE / SOLID DATA ─────────────────────────────
+const SHAPE_ATTRS={
+  triangle:    {dim:2,sides:3,vertices:3,isPolygon:true,isQuad:false,isCurved:false,name_en:"triangle",name_es:"triángulo"},
+  square:      {dim:2,sides:4,vertices:4,rightAngles:4,isPolygon:true,isQuad:true,isParallelogram:true,isRectangle:true,isRhombus:true,isCurved:false,name_en:"square",name_es:"cuadrado"},
+  rectangle:   {dim:2,sides:4,vertices:4,rightAngles:4,isPolygon:true,isQuad:true,isParallelogram:true,isRectangle:true,isCurved:false,name_en:"rectangle",name_es:"rectángulo"},
+  rhombus:     {dim:2,sides:4,vertices:4,rightAngles:0,isPolygon:true,isQuad:true,isParallelogram:true,isRhombus:true,isCurved:false,name_en:"rhombus",name_es:"rombo"},
+  parallelogram:{dim:2,sides:4,vertices:4,rightAngles:0,isPolygon:true,isQuad:true,isParallelogram:true,isCurved:false,name_en:"parallelogram",name_es:"paralelogramo"},
+  trapezoid:   {dim:2,sides:4,vertices:4,rightAngles:0,isPolygon:true,isQuad:true,isParallelogram:false,isCurved:false,name_en:"trapezoid",name_es:"trapecio"},
+  circle:      {dim:2,sides:0,vertices:0,isPolygon:false,isQuad:false,isCurved:true,name_en:"circle",name_es:"círculo"},
+  pentagon:    {dim:2,sides:5,vertices:5,isPolygon:true,isQuad:false,isCurved:false,name_en:"pentagon",name_es:"pentágono"},
+  hexagon:     {dim:2,sides:6,vertices:6,isPolygon:true,isQuad:false,isCurved:false,name_en:"hexagon",name_es:"hexágono"},
+  cube:        {dim:3,faces:6,edges:12,vertices:8,flatFaces:6,curvedFaces:0,isPrism:true,isPyramid:false,name_en:"cube",name_es:"cubo"},
+  rect_prism:  {dim:3,faces:6,edges:12,vertices:8,flatFaces:6,curvedFaces:0,isPrism:true,isPyramid:false,name_en:"rectangular prism",name_es:"prisma rectangular"},
+  tri_prism:   {dim:3,faces:5,edges:9,vertices:6,flatFaces:5,curvedFaces:0,isPrism:true,isPyramid:false,name_en:"triangular prism",name_es:"prisma triangular"},
+  sq_pyramid:  {dim:3,faces:5,edges:8,vertices:5,flatFaces:5,curvedFaces:0,isPrism:false,isPyramid:true,name_en:"square pyramid",name_es:"pirámide cuadrada"},
+  tri_pyramid: {dim:3,faces:4,edges:6,vertices:4,flatFaces:4,curvedFaces:0,isPrism:false,isPyramid:true,name_en:"triangular pyramid",name_es:"pirámide triangular"},
+  cylinder:    {dim:3,faces:3,edges:2,vertices:0,flatFaces:2,curvedFaces:1,isPrism:false,isPyramid:false,name_en:"cylinder",name_es:"cilindro"},
+  cone:        {dim:3,faces:2,edges:1,vertices:1,flatFaces:1,curvedFaces:1,isPrism:false,isPyramid:false,name_en:"cone",name_es:"cono"},
+  sphere:      {dim:3,faces:1,edges:0,vertices:0,flatFaces:0,curvedFaces:1,isPrism:false,isPyramid:false,name_en:"sphere",name_es:"esfera"}
+};
+const SHAPE_2D_PATHS={
+  triangle:"M50,8 L90,72 L10,72 Z",square:"M15,15 L85,15 L85,65 L15,65 Z",
+  rectangle:"M5,22 L95,22 L95,58 L5,58 Z",rhombus:"M50,6 L90,40 L50,74 L10,40 Z",
+  parallelogram:"M28,14 L92,14 L72,66 L8,66 Z",trapezoid:"M22,14 L78,14 L94,66 L6,66 Z",
+  pentagon:"M50,5 L92,33 L77,78 L23,78 L8,33 Z",hexagon:"M50,4 L88,26 L88,64 L50,76 L12,64 L12,26 Z"
+};
+const SHAPE_2D_FILL={triangle:"#d1fae5",square:"#bfdbfe",rectangle:"#a5f3fc",rhombus:"#ddd6fe",parallelogram:"#fbcfe8",trapezoid:"#fde68a",pentagon:"#fee2e2",hexagon:"#fef3c7"};
+const SHAPE_2D_STROKE={triangle:"#065f46",square:"#1e40af",rectangle:"#0e7490",rhombus:"#5b21b6",parallelogram:"#9d174d",trapezoid:"#92400e",pentagon:"#991b1b",hexagon:"#78350f"};
+const REAL_OBJECTS={
+  soup_can:    {label_en:"a soup can",label_es:"una lata de sopa",solid:"cylinder"},
+  cereal_box:  {label_en:"a cereal box",label_es:"una caja de cereal",solid:"rect_prism"},
+  basketball:  {label_en:"a basketball",label_es:"un balón de básquetbol",solid:"sphere"},
+  party_hat:   {label_en:"a party hat",label_es:"un gorro de fiesta",solid:"cone"},
+  die_cube:    {label_en:"a number cube (die)",label_es:"un cubo numerado (dado)",solid:"cube"},
+  camping_tent:{label_en:"a camping tent",label_es:"una tienda de campaña",solid:"tri_prism"},
+  funnel:      {label_en:"a funnel",label_es:"un embudo",solid:"cone"},
+  tissue_box:  {label_en:"a tissue box",label_es:"una caja de pañuelos",solid:"rect_prism"}
+};
+
+// ── CHUNK 2c: FAMILY VARIANT DATA ────────────────────────────
+const F1_VARIANTS=[
+  {figs:["triangle","square","rectangle","pentagon"],
+   stmts:[{en:"All are polygons.",es:"Todas son polígonos.",t:true},{en:"All have exactly 4 sides.",es:"Todas tienen exactamente 4 lados.",t:false},{en:"All have at least 3 sides.",es:"Todas tienen al menos 3 lados.",t:true},{en:"All have curved sides.",es:"Todas tienen lados curvos.",t:false}],correct:[0,2]},
+  {figs:["cube","rect_prism","tri_prism"],
+   stmts:[{en:"All are prisms.",es:"Todas son prismas.",t:true},{en:"All have exactly 6 faces.",es:"Todas tienen exactamente 6 caras.",t:false},{en:"All have 0 curved faces.",es:"Todas tienen 0 caras curvas.",t:true},{en:"All are pyramids.",es:"Todas son pirámides.",t:false}],correct:[0,2]},
+  {figs:["square","rectangle","trapezoid","parallelogram"],
+   stmts:[{en:"All have exactly 4 sides.",es:"Todas tienen exactamente 4 lados.",t:true},{en:"All are parallelograms.",es:"Todas son paralelogramos.",t:false},{en:"All are quadrilaterals.",es:"Todas son cuadriláteros.",t:true},{en:"All have 4 right angles.",es:"Todas tienen 4 ángulos rectos.",t:false}],correct:[0,2]},
+  {figs:["sq_pyramid","tri_pyramid"],
+   stmts:[{en:"All are pyramids.",es:"Todas son pirámides.",t:true},{en:"All have curved faces.",es:"Todas tienen caras curvas.",t:false},{en:"All have at least 4 flat faces.",es:"Todas tienen al menos 4 caras planas.",t:true},{en:"All have exactly 5 faces.",es:"Todas tienen exactamente 5 caras.",t:false}],correct:[0,2]}
+];
+const F2_VARIANTS=[
+  {figs:["square","rectangle","rhombus","parallelogram"],
+   stem_en:"These figures were sorted into a group. Which rule best explains why they all belong together?",stem_es:"Estas figuras se ordenaron en un grupo. ¿Qué regla explica mejor por qué pertenecen juntas?",
+   choices:[{en:"They all have exactly 4 sides and 4 angles.",es:"Todas tienen exactamente 4 lados y 4 ángulos.",c:true},{en:"They all have 4 equal sides.",es:"Todas tienen 4 lados iguales.",c:false},{en:"They all have 4 right angles.",es:"Todas tienen 4 ángulos rectos.",c:false},{en:"They are all circles.",es:"Todas son círculos.",c:false}]},
+  {figs:["cube","rect_prism","tri_prism"],
+   stem_en:"These solid figures were sorted into a group. Which rule best explains why they all belong together?",stem_es:"Estas figuras sólidas se ordenaron. ¿Qué regla explica mejor por qué pertenecen juntas?",
+   choices:[{en:"They all are prisms.",es:"Todas son prismas.",c:true},{en:"They all have 6 faces.",es:"Todas tienen 6 caras.",c:false},{en:"They all have triangular bases.",es:"Todas tienen bases triangulares.",c:false},{en:"They all have curved surfaces.",es:"Todas tienen superficies curvas.",c:false}]},
+  {figs:["triangle","pentagon","hexagon"],
+   stem_en:"These figures were sorted into a group. Which rule best explains why they all belong together?",stem_es:"Estas figuras se ordenaron en un grupo. ¿Qué regla explica mejor por qué pertenecen juntas?",
+   choices:[{en:"They all have an odd number of sides.",es:"Todas tienen un número impar de lados.",c:true},{en:"They all have exactly 3 sides.",es:"Todas tienen exactamente 3 lados.",c:false},{en:"They all are quadrilaterals.",es:"Todas son cuadriláteros.",c:false},{en:"They all have 4 angles.",es:"Todas tienen 4 ángulos.",c:false}]}
+];
+const F3_VARIANTS=[
+  {figs:["triangle","square","circle","rectangle","pentagon","hexagon","rhombus"],q_en:"How many of the figures shown are polygons?",q_es:"¿Cuántas de las figuras mostradas son polígonos?",answer:6},
+  {figs:["square","circle","cylinder","rectangle","sphere","triangle"],q_en:"How many of the figures shown are three-dimensional (3D)?",q_es:"¿Cuántas de las figuras mostradas son tridimensionales (3D)?",answer:2},
+  {figs:["square","rectangle","triangle","rhombus","circle","parallelogram"],q_en:"How many of the figures shown are quadrilaterals?",q_es:"¿Cuántas de las figuras mostradas son cuadriláteros?",answer:4},
+  {figs:["cube","rect_prism","tri_prism","sq_pyramid","cone","cylinder","sphere"],q_en:"How many of the figures shown are prisms?",q_es:"¿Cuántas de las figuras mostradas son prismas?",answer:3}
+];
+const F4_VARIANTS=[
+  {shape:"cube",tables:[{faces:6,vertices:8,edges:12,curved:0,c:true},{faces:5,vertices:6,edges:9,curved:0,c:false},{faces:5,vertices:5,edges:8,curved:0,c:false},{faces:3,vertices:0,edges:2,curved:1,c:false}]},
+  {shape:"tri_prism",tables:[{faces:5,vertices:6,edges:9,curved:0,c:true},{faces:6,vertices:8,edges:12,curved:0,c:false},{faces:4,vertices:4,edges:6,curved:0,c:false},{faces:5,vertices:5,edges:8,curved:0,c:false}]},
+  {shape:"cone",tables:[{faces:2,vertices:1,edges:1,curved:1,c:true},{faces:3,vertices:0,edges:2,curved:1,c:false},{faces:1,vertices:0,edges:0,curved:1,c:false},{faces:5,vertices:5,edges:8,curved:0,c:false}]},
+  {shape:"sq_pyramid",tables:[{faces:5,vertices:5,edges:8,curved:0,c:true},{faces:6,vertices:8,edges:12,curved:0,c:false},{faces:4,vertices:4,edges:6,curved:0,c:false},{faces:2,vertices:1,edges:1,curved:1,c:false}]}
+];
+const F5_VARIANTS=[
+  {figs:["cube","rect_prism","tri_prism","sq_pyramid"],notIdx:3},
+  {figs:["tri_prism","rect_prism","cube","cone"],notIdx:3},
+  {figs:["sphere","cube","tri_prism","rect_prism"],notIdx:0},
+  {figs:["sq_pyramid","tri_prism","cylinder","cube"],notIdx:2}
+];
+const F6_VARIANTS=[
+  {obj:"soup_can",choices:["cylinder","rect_prism","cone","sphere"]},
+  {obj:"cereal_box",choices:["cone","cylinder","rect_prism","sphere"]},
+  {obj:"basketball",choices:["cube","cone","cylinder","sphere"]},
+  {obj:"party_hat",choices:["cylinder","cone","cube","rect_prism"]},
+  {obj:"die_cube",choices:["sphere","cone","rect_prism","cube"]},
+  {obj:"camping_tent",choices:["sq_pyramid","cone","tri_prism","cube"]}
+];
+const F7_VARIANTS=[
+  {rule_en:"figures that have exactly 5 faces",rule_es:"figuras que tienen exactamente 5 caras",
+   choices:[{figs:["tri_prism","sq_pyramid"],c:true},{figs:["cube","rect_prism"],c:false},{figs:["cone","cylinder"],c:false},{figs:["tri_pyramid","cube"],c:false}]},
+  {rule_en:"figures that are quadrilaterals",rule_es:"figuras que son cuadriláteros",
+   choices:[{figs:["square","rectangle","parallelogram"],c:true},{figs:["triangle","pentagon","hexagon"],c:false},{figs:["square","triangle","circle"],c:false},{figs:["hexagon","pentagon"],c:false}]},
+  {rule_en:"solid figures with at least 1 curved surface",rule_es:"figuras sólidas con al menos 1 superficie curva",
+   choices:[{figs:["cylinder","cone","sphere"],c:true},{figs:["cube","rect_prism","tri_prism"],c:false},{figs:["sq_pyramid","cube"],c:false},{figs:["sphere","cube","tri_prism"],c:false}]},
+  {rule_en:"figures that have more than 4 sides",rule_es:"figuras que tienen más de 4 lados",
+   choices:[{figs:["pentagon","hexagon"],c:true},{figs:["square","rectangle"],c:false},{figs:["triangle","pentagon"],c:false},{figs:["rhombus","hexagon"],c:false}]}
+];
+const F8_VARIANTS=[
+  {q_en:"How many sections of the figure are quadrilaterals?",q_es:"¿Cuántas secciones de la figura son cuadriláteros?",answer:4,type:"grid4"},
+  {q_en:"How many sections of the figure are quadrilaterals?",q_es:"¿Cuántas secciones de la figura son cuadriláteros?",answer:2,type:"two_quad_one_tri"},
+  {q_en:"How many sections of the figure are quadrilaterals?",q_es:"¿Cuántas secciones de la figura son cuadriláteros?",answer:3,type:"three_rows"}
+];
+const F9_VARIANTS=[
+  {figs:["square","rectangle","rhombus"],q_en:"What property do all three figures have in common?",q_es:"¿Qué propiedad tienen en común las tres figuras?",
+   choices:[{en:"They all have 4 equal sides.",es:"Todas tienen 4 lados iguales.",c:false},{en:"They all have 4 right angles.",es:"Todas tienen 4 ángulos rectos.",c:false},{en:"They all are parallelograms.",es:"Todas son paralelogramos.",c:true},{en:"They all are rectangles.",es:"Todas son rectángulos.",c:false}]},
+  {figs:["cube","rect_prism","tri_prism"],q_en:"What property do all three solid figures have in common?",q_es:"¿Qué propiedad tienen en común las tres figuras sólidas?",
+   choices:[{en:"They all have the same number of faces.",es:"Todas tienen el mismo número de caras.",c:false},{en:"They are all prisms.",es:"Todas son prismas.",c:true},{en:"They all have 8 vertices.",es:"Todas tienen 8 vértices.",c:false},{en:"They all have curved faces.",es:"Todas tienen caras curvas.",c:false}]},
+  {figs:["cone","cylinder","sphere"],q_en:"What property do all three solid figures have in common?",q_es:"¿Qué propiedad tienen en común las tres figuras sólidas?",
+   choices:[{en:"They all are prisms.",es:"Todas son prismas.",c:false},{en:"They all have 0 flat faces.",es:"Todas tienen 0 caras planas.",c:false},{en:"They all have at least 1 curved face.",es:"Todas tienen al menos 1 cara curva.",c:true},{en:"They all have the same number of vertices.",es:"Todas tienen el mismo número de vértices.",c:false}]}
+];
+
+// ── CHUNK 2d: SESSION STATE ───────────────────────────────────
+const ANTI_STARVATION_WINDOW=8;
+let smartScore=0,streak=0,totalAnswered=0,wrongStreak=0,lockoutActive=false;
+let itemHistory=[],familyExposure={},misconceptionCount={},stampSeen={},lastItemJSON='{}';
+const SS_GAIN={practice:{correct:5,wrong:-3},proficiency:{correct:3,wrong:-4},challenge:{correct:2,wrong:-5}};
+function getZone(){return smartScore<70?'practice':smartScore<90?'proficiency':smartScore<100?'challenge':'mastered';}
+function gainFor(c){const z=getZone()==='mastered'?'challenge':getZone();return c?SS_GAIN[z].correct:SS_GAIN[z].wrong;}
+const CG_REQUIRED_STAMPS=['whats_true','fill_the_rule','match_the_table','count_the_figures','real_objects'];
+let cgActive=false,cgQ=0,cgCorrect=0,cgResults=[];
+const FAMILY_REGISTRY=[
+  {id:"f1",templateId:"choose_true_statements_v1",family:"choose_true_statements_about_group_of_figures",stamp:"whats_true",itemType:"multiselect",misconception:"2d_vs_3d_confusion"},
+  {id:"f2",templateId:"explain_grouping_rule_v1",family:"explain_grouping_rule_with_inline_dropdowns",stamp:"fill_the_rule",itemType:"mc",misconception:"uses_exact_name_grouping_instead_of_attribute_grouping"},
+  {id:"f3",templateId:"count_qualifying_shapes_v1",family:"count_qualifying_shapes_in_mixed_set",stamp:"count_the_figures",itemType:"numeric_entry",misconception:"counting_errors_in_mixed_scenes"},
+  {id:"f4",templateId:"choose_attribute_table_v1",family:"choose_correct_attribute_table",stamp:"match_the_table",itemType:"mc",misconception:"base_face_vertex_confusion"},
+  {id:"f5",templateId:"identify_not_prism_v1",family:"identify_which_figure_is_not_a_prism",stamp:"sort_the_group",itemType:"mc_shapes",misconception:"prism_vs_polygon_confusion"},
+  {id:"f6",templateId:"classify_real_world_v1",family:"classify_real_world_objects_by_solid_type",stamp:"real_objects",itemType:"mc",misconception:"2d_vs_3d_confusion"},
+  {id:"f7",templateId:"choose_correct_grouped_list_v1",family:"choose_correct_grouped_list",stamp:"sort_the_group",itemType:"mc",misconception:"misses_figures_can_belong_to_more_than_one_attribute_group"},
+  {id:"f8",templateId:"identify_quad_sections_v1",family:"identify_quadrilateral_sections_within_partitioned_figure",stamp:"count_the_figures",itemType:"numeric_entry",misconception:"counting_errors_in_mixed_scenes"},
+  {id:"f9",templateId:"identify_common_property_v1",family:"identify_common_property_of_set",stamp:"whats_true",itemType:"mc",misconception:"uses_exact_name_grouping_instead_of_attribute_grouping"}
+];
+
+// ── CHUNK 3a: VARIANT PICKER ──────────────────────────────────
+const lastVariantIdx={};
+function pickVariant(arr,fid){
+  let idx;
+  if(arr.length===1){idx=0;}
+  else{do{idx=Math.floor(Math.random()*arr.length);}while(idx===lastVariantIdx[fid]);}
+  lastVariantIdx[fid]=idx;
+  return {...arr[idx]};
+}
+
+// ── CHUNK 3b: GENERATORS ──────────────────────────────────────
+function genF1(){
+  const v=pickVariant(F1_VARIANTS,'f1');
+  return {templateId:"choose_true_statements_v1",family:"choose_true_statements_about_group_of_figures",stamp:"whats_true",
+    itemType:"multiselect",
+    stem_en:"Which statements are true about all the figures shown? Select all that apply.",
+    stem_es:"¿Cuáles enunciados son verdaderos para todas las figuras mostradas? Selecciona todos los que apliquen.",
+    stimFigs:v.figs,choices:v.stmts.map((s,i)=>({...s,idx:i})),correctIdxs:v.correct,
+    misconception:"2d_vs_3d_confusion"};
+}
+function genF2(){
+  const v=pickVariant(F2_VARIANTS,'f2');
+  const ci=v.choices.findIndex(c=>c.c);
+  return {templateId:"explain_grouping_rule_v1",family:"explain_grouping_rule_with_inline_dropdowns",stamp:"fill_the_rule",
+    itemType:"mc",stem_en:v.stem_en,stem_es:v.stem_es,stimFigs:v.figs,
+    choices:v.choices.map((c,i)=>({...c,idx:i})),correctIdx:ci,
+    misconception:"uses_exact_name_grouping_instead_of_attribute_grouping"};
+}
+function genF3(){
+  const v=pickVariant(F3_VARIANTS,'f3');
+  return {templateId:"count_qualifying_shapes_v1",family:"count_qualifying_shapes_in_mixed_set",stamp:"count_the_figures",
+    itemType:"numeric_entry",stem_en:v.q_en,stem_es:v.q_es,stimFigs:v.figs,
+    correctAnswer:v.answer,misconception:"counting_errors_in_mixed_scenes"};
+}
+function genF4(){
+  const v=pickVariant(F4_VARIANTS,'f4');
+  const ci=v.tables.findIndex(t=>t.c);
+  return {templateId:"choose_attribute_table_v1",family:"choose_correct_attribute_table",stamp:"match_the_table",
+    itemType:"mc_table",
+    stem_en:`Which table shows the correct attributes of a ${SHAPE_ATTRS[v.shape].name_en}?`,
+    stem_es:`¿Qué tabla muestra los atributos correctos de un ${SHAPE_ATTRS[v.shape].name_es}?`,
+    stimSolid:v.shape,choices:v.tables.map((tb,i)=>({...tb,idx:i})),correctIdx:ci,
+    misconception:"base_face_vertex_confusion"};
+}
+function genF5(){
+  const v=pickVariant(F5_VARIANTS,'f5');
+  return {templateId:"identify_not_prism_v1",family:"identify_which_figure_is_not_a_prism",stamp:"sort_the_group",
+    itemType:"mc_shapes",
+    stem_en:"Which figure is NOT a prism?",stem_es:"¿Cuál figura NO es un prisma?",
+    choices:v.figs.map((k,i)=>({key:k,idx:i})),correctIdx:v.notIdx,
+    misconception:"prism_vs_polygon_confusion"};
+}
+function genF6(){
+  const v=pickVariant(F6_VARIANTS,'f6');
+  const obj=REAL_OBJECTS[v.obj];
+  const ci=v.choices.indexOf(obj.solid);
+  return {templateId:"classify_real_world_v1",family:"classify_real_world_objects_by_solid_type",stamp:"real_objects",
+    itemType:"mc",
+    stem_en:`Which solid figure has the same shape as ${obj.label_en}?`,
+    stem_es:`¿Qué figura sólida tiene la misma forma que ${obj.label_es}?`,
+    choices:v.choices.map((k,i)=>({en:SHAPE_ATTRS[k].name_en,es:SHAPE_ATTRS[k].name_es,solidKey:k,idx:i})),
+    correctIdx:ci,misconception:"2d_vs_3d_confusion"};
+}
+function genF7(){
+  const v=pickVariant(F7_VARIANTS,'f7');
+  const ci=v.choices.findIndex(c=>c.c);
+  return {templateId:"choose_correct_grouped_list_v1",family:"choose_correct_grouped_list",stamp:"sort_the_group",
+    itemType:"mc",
+    stem_en:`Which group contains only ${v.rule_en}?`,
+    stem_es:`¿Qué grupo contiene solo ${v.rule_es}?`,
+    choices:v.choices.map((c,i)=>({
+      en:c.figs.map(k=>SHAPE_ATTRS[k].name_en).join(', '),
+      es:c.figs.map(k=>SHAPE_ATTRS[k].name_es).join(', '),
+      idx:i})),correctIdx:ci,
+    misconception:"misses_figures_can_belong_to_more_than_one_attribute_group"};
+}
+function genF8(){
+  const v=pickVariant(F8_VARIANTS,'f8');
+  return {templateId:"identify_quad_sections_v1",family:"identify_quadrilateral_sections_within_partitioned_figure",stamp:"count_the_figures",
+    itemType:"numeric_entry",stem_en:v.q_en,stem_es:v.q_es,partitionType:v.type,
+    correctAnswer:v.answer,misconception:"counting_errors_in_mixed_scenes"};
+}
+function genF9(){
+  const v=pickVariant(F9_VARIANTS,'f9');
+  const ci=v.choices.findIndex(c=>c.c);
+  return {templateId:"identify_common_property_v1",family:"identify_common_property_of_set",stamp:"whats_true",
+    itemType:"mc",stem_en:v.q_en,stem_es:v.q_es,stimFigs:v.figs,
+    choices:v.choices.map((c,i)=>({...c,idx:i})),correctIdx:ci,
+    misconception:"uses_exact_name_grouping_instead_of_attribute_grouping"};
+}
+const GENERATORS={f1:genF1,f2:genF2,f3:genF3,f4:genF4,f5:genF5,f6:genF6,f7:genF7,f8:genF8,f9:genF9};
+
+// ── CHUNK 3c: CHOOSER ─────────────────────────────────────────
+function chooseAdaptiveTemplate(){return "__classify_figures_family_router__";}
+function antiStarvationCheck(){
+  if(itemHistory.length<ANTI_STARVATION_WINDOW)return null;
+  const recent=itemHistory.slice(-ANTI_STARVATION_WINDOW);
+  const counts={};
+  FAMILY_REGISTRY.forEach(f=>{counts[f.id]=0;});
+  recent.forEach(id=>{if(counts[id]!==undefined)counts[id]++;});
+  const starved=FAMILY_REGISTRY.filter(f=>counts[f.id]===0);
+  if(starved.length>0)return starved[Math.floor(Math.random()*starved.length)].id;
+  return null;
+}
+function dominationCheck(){
+  if(itemHistory.length<4)return null;
+  const last4=itemHistory.slice(-4);
+  const domId=last4[0];
+  if(last4.every(id=>id===domId)){
+    const others=FAMILY_REGISTRY.filter(f=>f.id!==domId);
+    return others[Math.floor(Math.random()*others.length)].id;
+  }
+  return null;
+}
+function weightedRandom(){
+  const weights=FAMILY_REGISTRY.map(f=>{
+    const exp=familyExposure[f.id]||0;
+    const mc=misconceptionCount[f.misconception]||0;
+    return Math.max(1,5-exp+mc*2);
+  });
+  const total=weights.reduce((a,b)=>a+b,0);
+  let r=Math.random()*total;
+  for(let i=0;i<FAMILY_REGISTRY.length;i++){r-=weights[i];if(r<=0)return FAMILY_REGISTRY[i].id;}
+  return FAMILY_REGISTRY[FAMILY_REGISTRY.length-1].id;
+}
+function pickNextFamilyId(){
+  const as=antiStarvationCheck(); if(as)return as;
+  const mc=FAMILY_REGISTRY.find(f=>misconceptionCount[f.misconception]>=2&&(familyExposure[f.id]||0)<3);
+  if(mc)return mc.id;
+  const dom=dominationCheck(); if(dom)return dom;
+  if(itemHistory.length>=2){const last=itemHistory[itemHistory.length-1];const sl=FAMILY_REGISTRY.filter(f=>f.id!==last);if(sl.length)return sl[Math.floor(Math.random()*sl.length)].id;}
+  return weightedRandom();
+}
+
+// ── CHUNK 4a: VALIDATORS ──────────────────────────────────────
+function validateItem(item){
+  if(!item||!item.templateId||!item.family||!item.stamp)return false;
+  if(!item.stem_en||!item.stem_es)return false;
+  if(item.itemType==='numeric_entry'){if(typeof item.correctAnswer!=='number')return false;}
+  else if(item.itemType==='multiselect'){if(!Array.isArray(item.correctIdxs)||item.correctIdxs.length<1)return false;}
+  else{if(typeof item.correctIdx!=='number'||item.correctIdx<0)return false;}
+  if(item.choices&&!Array.isArray(item.choices))return false;
+  return true;
+}
+function symbolicValidateItem(item){
+  if(!validateItem(item))return{pass:false,reason:"base validate fail"};
+  if(item.itemType==='numeric_entry'&&item.correctAnswer<0)return{pass:false,reason:"negative answer"};
+  if(item.stimFigs){
+    for(const k of item.stimFigs){if(!SHAPE_ATTRS[k])return{pass:false,reason:`unknown fig: ${k}`};}
+  }
+  if(item.stimSolid&&!SHAPE_ATTRS[item.stimSolid])return{pass:false,reason:"unknown solid"};
+  if(item.itemType==='multiselect'&&item.choices){
+    const trueCount=item.choices.filter(c=>c.t).length;
+    if(trueCount<1)return{pass:false,reason:"multiselect no correct"};
+  }
+  if(item.choices&&typeof item.correctIdx==='number'){
+    if(item.correctIdx>=item.choices.length)return{pass:false,reason:"correctIdx OOB"};
+  }
+  return{pass:true};
+}
+function generateNextItem(){
+  const fid=pickNextFamilyId();
+  const gen=GENERATORS[fid];
+  if(!gen)return null;
+  const item=gen();
+  item.familyId=fid;
+  const sv=symbolicValidateItem(item);
+  if(!sv.pass){console.warn("item failed validation",sv.reason,item);return null;}
+  familyExposure[fid]=(familyExposure[fid]||0)+1;
+  itemHistory.push(fid);
+  return item;
+}
+
+// ── CHUNK 4b: SVG RENDERERS ───────────────────────────────────
+function shape2DSVG(key,w,h){
+  const p=SHAPE_2D_PATHS[key];
+  if(!p){
+    if(key==='circle')return `<svg viewBox="0 0 100 80" width="${w}" height="${h}"><circle cx="50" cy="40" r="34" fill="#fef9c3" stroke="#854d0e" stroke-width="2"/></svg>`;
+    if(SHAPE_ATTRS[key]&&SHAPE_ATTRS[key].dim===3)return solidSVG(key,w,h);
+    return '';
+  }
+  return `<svg viewBox="0 0 100 80" width="${w}" height="${h}" style="display:inline-block"><path d="${p}" fill="${SHAPE_2D_FILL[key]||'#e0e7ff'}" stroke="${SHAPE_2D_STROKE[key]||'#4f46e5'}" stroke-width="2" stroke-linejoin="round"/></svg>`;
+}
+function solidSVG(key,w,h){
+  const parts={
+    cube:`<polygon points="20,30 60,30 60,70 20,70" fill="#bfdbfe" stroke="#1e40af" stroke-width="1.5"/><polygon points="20,30 40,12 80,12 60,30" fill="#93c5fd" stroke="#1e40af" stroke-width="1.5"/><polygon points="60,30 80,12 80,52 60,70" fill="#60a5fa" stroke="#1e40af" stroke-width="1.5"/>`,
+    rect_prism:`<polygon points="10,35 55,35 55,70 10,70" fill="#bbf7d0" stroke="#166534" stroke-width="1.5"/><polygon points="10,35 25,18 70,18 55,35" fill="#86efac" stroke="#166534" stroke-width="1.5"/><polygon points="55,35 70,18 70,53 55,70" fill="#4ade80" stroke="#166534" stroke-width="1.5"/>`,
+    tri_prism:`<polygon points="20,70 50,22 80,70" fill="#fde68a" stroke="#92400e" stroke-width="1.5"/><polygon points="20,70 30,57 60,57 80,70" fill="#fcd34d" stroke="#92400e" stroke-width="1.5"/><polygon points="50,22 60,9 90,57 80,70 60,57" fill="#f59e0b" stroke="#92400e" stroke-width="1.5"/>`,
+    sq_pyramid:`<polygon points="25,70 75,70 75,50 25,50" fill="#ddd6fe" stroke="#5b21b6" stroke-width="1.5"/><polygon points="25,70 75,70 50,12" fill="#c4b5fd" stroke="#5b21b6" stroke-width="1.5"/><polygon points="25,70 25,50 50,12" fill="#a78bfa" stroke="#5b21b6" stroke-width="1.5"/>`,
+    tri_pyramid:`<polygon points="15,75 85,75 50,15" fill="#fecaca" stroke="#991b1b" stroke-width="1.5"/><polygon points="15,75 50,15 38,52" fill="#fca5a5" stroke="#991b1b" stroke-width="1.5"/><polygon points="15,75 85,75 65,52 38,52" fill="#f87171" stroke="#991b1b" stroke-width="1.5"/>`,
+    cylinder:`<rect x="20" y="26" width="60" height="40" fill="#e0e7ff" stroke="#3730a3" stroke-width="1.5"/><ellipse cx="50" cy="26" rx="30" ry="9" fill="#c7d2fe" stroke="#3730a3" stroke-width="1.5"/><path d="M20,66 A30,9 0 0,0 80,66" fill="none" stroke="#3730a3" stroke-width="1.5"/>`,
+    cone:`<ellipse cx="50" cy="68" rx="32" ry="9" fill="#fed7aa" stroke="#9a3412" stroke-width="1.5"/><polygon points="50,8 18,68 82,68" fill="#fdba74" stroke="#9a3412" stroke-width="1.5"/>`,
+    sphere:`<circle cx="50" cy="40" r="34" fill="#d1fae5" stroke="#065f46" stroke-width="1.5"/><path d="M16,40 Q50,27 84,40" fill="none" stroke="#065f46" stroke-width="1" stroke-dasharray="4,2"/><path d="M16,40 Q50,53 84,40" fill="none" stroke="#065f46" stroke-width="1.5"/>`
+  };
+  const inner=parts[key]||`<circle cx="50" cy="40" r="30" fill="#e5e7eb" stroke="#6b7280" stroke-width="1.5"/>`;
+  return `<svg viewBox="0 0 100 80" width="${w}" height="${h}" style="display:inline-block">${inner}</svg>`;
+}
+function renderFigureBoard(figKeys){
+  return '<div class="figure-board">'+figKeys.map((k,i)=>{
+    const a=SHAPE_ATTRS[k];
+    const svg=a&&a.dim===3?solidSVG(k,72,56):shape2DSVG(k,72,56);
+    const lbl=t(a?a.name_en:'?',a?a.name_es:'?');
+    return `<div class="fig-cell">${svg}<div class="fig-label">${lbl}</div></div>`;
+  }).join('')+'</div>';
+}
+function renderAttrTableHTML(tb){
+  return `<table class="attr-table"><thead><tr><th>Property</th><th>Count</th></tr></thead><tbody><tr><td>Faces</td><td>${tb.faces}</td></tr><tr><td>Vertices</td><td>${tb.vertices}</td></tr><tr><td>Edges</td><td>${tb.edges}</td></tr><tr><td>Curved faces</td><td>${tb.curved}</td></tr></tbody></table>`;
+}
+function renderPartitionedFig(type){
+  const base='style="display:block;margin:0 auto;"';
+  if(type==='grid4'){
+    return `<svg viewBox="0 0 200 140" width="200" height="140" ${base}><rect x="5" y="5" width="190" height="130" fill="#e0e7ff" stroke="#4f46e5" stroke-width="2"/><line x1="100" y1="5" x2="100" y2="135" stroke="#4f46e5" stroke-width="2"/><line x1="5" y1="70" x2="195" y2="70" stroke="#4f46e5" stroke-width="2"/><text x="52" y="44" font-size="16" font-weight="bold" text-anchor="middle" fill="#3730a3">A</text><text x="148" y="44" font-size="16" font-weight="bold" text-anchor="middle" fill="#3730a3">B</text><text x="52" y="110" font-size="16" font-weight="bold" text-anchor="middle" fill="#3730a3">C</text><text x="148" y="110" font-size="16" font-weight="bold" text-anchor="middle" fill="#3730a3">D</text></svg>`;
+  }
+  if(type==='two_quad_one_tri'){
+    return `<svg viewBox="0 0 200 140" width="200" height="140" ${base}><rect x="5" y="5" width="190" height="130" fill="none" stroke="#4f46e5" stroke-width="2"/><line x1="5" y1="70" x2="195" y2="70" stroke="#4f46e5" stroke-width="2"/><line x1="5" y1="70" x2="100" y2="135" stroke="#4f46e5" stroke-width="2"/><text x="100" y="44" font-size="15" font-weight="bold" text-anchor="middle" fill="#3730a3">A</text><text x="40" y="110" font-size="15" font-weight="bold" text-anchor="middle" fill="#3730a3">B</text><text x="152" y="110" font-size="15" font-weight="bold" text-anchor="middle" fill="#3730a3">C</text></svg>`;
+  }
+  return `<svg viewBox="0 0 200 150" width="200" height="150" ${base}><rect x="5" y="5" width="190" height="140" fill="#e0e7ff" stroke="#4f46e5" stroke-width="2"/><line x1="5" y1="52" x2="195" y2="52" stroke="#4f46e5" stroke-width="2"/><line x1="5" y1="100" x2="195" y2="100" stroke="#4f46e5" stroke-width="2"/><text x="100" y="34" font-size="15" font-weight="bold" text-anchor="middle" fill="#3730a3">A</text><text x="100" y="81" font-size="15" font-weight="bold" text-anchor="middle" fill="#3730a3">B</text><text x="100" y="127" font-size="15" font-weight="bold" text-anchor="middle" fill="#3730a3">C</text></svg>`;
+}
+
+// ── CHUNK 5: renderItem ───────────────────────────────────────
+let currentItem=null;
+let selectedChoiceIdx=-1;
+let selectedMultiIdxs=[];
+let answered=false;
+let wrongCount=0;
+
+function renderItem(item){
+  currentItem=item;
+  selectedChoiceIdx=-1;
+  selectedMultiIdxs=[];
+  answered=false;
+  lastItemJSON=JSON.stringify(item,null,2);
+  document.getElementById('stem').textContent=t(item.stem_en,item.stem_es);
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').style.background='#eef2ff';
+  document.getElementById('prompt').style.display='none';
+  document.getElementById('scaffoldCard').style.display='none';
+  document.getElementById('lockoutInline').style.display=lockoutActive?'block':'none';
+  document.getElementById('visual').style.display='none';
+  const sb=document.getElementById('submitBtn');
+  sb.disabled=lockoutActive;
+  // Stimulus
+  const stim=document.getElementById('stimulus');
+  stim.innerHTML='';
+  stim.style.display='none';
+  if(item.stimFigs&&item.stimFigs.length){stim.innerHTML=renderFigureBoard(item.stimFigs);stim.style.display='block';}
+  else if(item.stimSolid){
+    const w=140,h=110;
+    const lbl=t(SHAPE_ATTRS[item.stimSolid].name_en,SHAPE_ATTRS[item.stimSolid].name_es);
+    stim.innerHTML=`<div style="text-align:center">${solidSVG(item.stimSolid,w,h)}<div style="font-size:.85rem;font-weight:700;color:#374151;margin-top:4px">${lbl}</div></div>`;
+    stim.style.display='block';
+  } else if(item.partitionType){
+    stim.innerHTML=renderPartitionedFig(item.partitionType);stim.style.display='block';
+  }
+  // Directions
+  const dir=document.getElementById('directions');
+  if(item.itemType==='multiselect')dir.textContent=t('Select all that apply.','Selecciona todos los que apliquen.');
+  else if(item.itemType==='numeric_entry')dir.textContent=t('Type your answer in the box.','Escribe tu respuesta en el recuadro.');
+  else dir.textContent=t('Select one answer.','Selecciona una respuesta.');
+  // Choices vs numeric
+  const choicesEl=document.getElementById('choices');
+  const inputWrap=document.getElementById('inputWrap');
+  const numInput=document.getElementById('numInput');
+  choicesEl.innerHTML='';
+  inputWrap.style.display='none';
+  if(item.itemType==='numeric_entry'){
+    inputWrap.style.display='block';
+    numInput.value='';
+    numInput.disabled=false;
+    numInput.focus();
+  } else if(item.itemType==='multiselect'){
+    item.choices.forEach((c,i)=>{
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='choice';
+      btn.dataset.shape='square';
+      btn.dataset.idx=i;
+      btn.innerHTML=`<span>${t(c.en,c.es)}</span>`;
+      btn.addEventListener('click',()=>toggleMulti(i));
+      choicesEl.appendChild(btn);
+    });
+  } else if(item.itemType==='mc_table'){
+    item.choices.forEach((tb,i)=>{
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='choice';
+      btn.dataset.shape='circle';
+      btn.dataset.idx=i;
+      btn.innerHTML=`<span>${renderAttrTableHTML(tb)}</span>`;
+      btn.addEventListener('click',()=>selectChoice(i));
+      choicesEl.appendChild(btn);
+    });
+  } else if(item.itemType==='mc_shapes'){
+    item.choices.forEach((c,i)=>{
+      const a=SHAPE_ATTRS[c.key];
+      const svg=a&&a.dim===3?solidSVG(c.key,60,46):shape2DSVG(c.key,60,46);
+      const lbl=t(a?a.name_en:'?',a?a.name_es:'?');
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='choice';
+      btn.dataset.shape='circle';
+      btn.dataset.idx=i;
+      btn.innerHTML=`${svg}<span>${lbl}</span>`;
+      btn.addEventListener('click',()=>selectChoice(i));
+      choicesEl.appendChild(btn);
+    });
+  } else {
+    // mc / mc_rule / mc_group
+    item.choices.forEach((c,i)=>{
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='choice';
+      btn.dataset.shape='circle';
+      btn.dataset.idx=i;
+      btn.innerHTML=`<span>${t(c.en,c.es)}</span>`;
+      btn.addEventListener('click',()=>selectChoice(i));
+      choicesEl.appendChild(btn);
+    });
+  }
+  sb.disabled=lockoutActive||(item.itemType!=='numeric_entry'&&selectedChoiceIdx<0&&selectedMultiIdxs.length===0);
+  // Format stamp
+  markStamp(item.stamp,'seen');
+}
+
+// ── CHUNK 6a: SELECTION ───────────────────────────────────────
+function selectChoice(idx){
+  if(answered)return;
+  selectedChoiceIdx=idx;
+  document.querySelectorAll('#choices button.choice').forEach((b,i)=>{
+    b.classList.toggle('selected',i===idx);
+  });
+  document.getElementById('submitBtn').disabled=false;
+}
+function toggleMulti(idx){
+  if(answered)return;
+  const pos=selectedMultiIdxs.indexOf(idx);
+  if(pos>=0)selectedMultiIdxs.splice(pos,1); else selectedMultiIdxs.push(idx);
+  document.querySelectorAll('#choices button.choice').forEach((b,i)=>{
+    b.classList.toggle('selected',selectedMultiIdxs.includes(i));
+  });
+  document.getElementById('submitBtn').disabled=selectedMultiIdxs.length===0;
+}
+function toggleStructureHint(){
+  const v=document.getElementById('visual');
+  v.style.display=v.style.display==='none'?'block':'none';
+}
+function tryUnlock(){
+  const code=document.getElementById('unlockInput').value.trim();
+  if(code==='unlock123'){
+    lockoutActive=false;wrongStreak=0;
+    document.getElementById('lockoutInline').style.display='none';
+    document.getElementById('unlockInput').value='';
+    document.getElementById('unlockPanel').classList.remove('visible');
+    document.getElementById('submitBtn').disabled=false;
+  } else {
+    document.getElementById('unlockInput').value='';
+    document.getElementById('unlockInput').placeholder='Wrong code — try again';
+  }
+}
+
+// ── CHUNK 6b: SUBMIT ──────────────────────────────────────────
+function submitAnswer(){
+  if(answered||lockoutActive)return;
+  answered=true;
+  const item=currentItem;
+  let correct=false;
+  if(item.itemType==='numeric_entry'){
+    const val=parseInt(document.getElementById('numInput').value,10);
+    correct=(!isNaN(val)&&val===item.correctAnswer);
+    document.getElementById('numInput').disabled=true;
+  } else if(item.itemType==='multiselect'){
+    const correct_set=new Set(item.correctIdxs);
+    const selected_set=new Set(selectedMultiIdxs);
+    correct=(correct_set.size===selected_set.size&&[...correct_set].every(x=>selected_set.has(x)));
+    document.querySelectorAll('#choices button.choice').forEach((b,i)=>{
+      b.disabled=true;
+      if(item.correctIdxs.includes(i)&&selectedMultiIdxs.includes(i))b.classList.add('correct');
+      else if(selectedMultiIdxs.includes(i))b.classList.add('wrong');
+      else if(item.correctIdxs.includes(i))b.classList.add('correct');
+    });
+  } else {
+    correct=(selectedChoiceIdx===item.correctIdx);
+    document.querySelectorAll('#choices button.choice').forEach((b,i)=>{
+      b.disabled=true;
+      if(i===item.correctIdx){b.classList.remove('selected');b.classList.add('correct');}
+      else if(i===selectedChoiceIdx){b.classList.add('wrong');}
+    });
+    if(item.itemType==='mc_table'&&typeof item.correctIdx==='number'){
+      // light-green / orange format stamp on choices
+    }
+  }
+  totalAnswered++;
+  if(cgActive){processCGAnswer(correct);return;}
+  if(correct){
+    streak++;wrongStreak=0;
+    markStamp(item.stamp,'seen');
+    showFeedback(true,item);
+    updateSmartScore(true);
+    if(streak>=3)showStreak();
+  } else {
+    streak=0;wrongStreak++;
+    if(wrongStreak>=5&&!lockoutActive){
+      lockoutActive=true;
+      document.getElementById('lockoutInline').style.display='block';
+    }
+    markStamp(item.stamp,'missed');
+    misconceptionCount[item.misconception]=(misconceptionCount[item.misconception]||0)+1;
+    showFeedback(false,item);
+    updateSmartScore(false);
+    showScaffold(item,wrongCount);
+    wrongCount++;
+  }
+  document.getElementById('submitBtn').disabled=true;
+}
+function showFeedback(correct,item){
+  const fb=document.getElementById('feedback');
+  if(correct){
+    fb.textContent=t('✅ Correct! Great work.','✅ ¡Correcto! Buen trabajo.');
+    fb.style.background='#dcfce7';
+  } else {
+    let msg='';
+    if(item.itemType==='numeric_entry')msg=t(`Not quite. The answer is ${item.correctAnswer}.`,`No exactamente. La respuesta es ${item.correctAnswer}.`);
+    else if(item.itemType==='multiselect')msg=t('Not quite. The highlighted answers were correct.','No exactamente. Las respuestas resaltadas eran correctas.');
+    else{const a=item.choices&&item.choices[item.correctIdx];msg=t(`Not quite. The correct answer is: ${a?a.en:'—'}`,`No exactamente. La respuesta correcta es: ${a?a.es:'—'}`);}
+    fb.textContent='❌ '+msg;
+    fb.style.background='#fee2e2';
+  }
+}
+function showScaffold(item,wc){
+  const card=document.getElementById('scaffoldCard');
+  const title=document.getElementById('scaffoldTitle');
+  const content=document.getElementById('scaffoldContent');
+  if(wc===0){
+    title.textContent=t('Tier 1 Hint — Think About It','Nivel 1 — Piénsalo');
+    const hints={
+      choose_true_statements_v1:t('Ask: is this statement true for EVERY figure shown?','Pregunta: ¿es este enunciado verdadero para CADA figura mostrada?'),
+      explain_grouping_rule_v1:t('Look at what ALL the figures have in common, not just one.','Mira lo que TODAS las figuras tienen en común, no solo una.'),
+      count_qualifying_shapes_v1:t('Go through each figure one by one and check if it fits the rule.','Revisa cada figura una por una y verifica si cumple la regla.'),
+      choose_attribute_table_v1:t('Count the faces, vertices, and edges carefully on the shown solid.','Cuenta cuidadosamente las caras, vértices y aristas del sólido mostrado.'),
+      identify_not_prism_v1:t('A prism has two identical parallel bases connected by rectangles.','Un prisma tiene dos bases paralelas idénticas conectadas por rectángulos.'),
+      classify_real_world_v1:t('Think about the 3D shape that best matches the real object.','Piensa en la figura 3D que mejor se parece al objeto real.'),
+      choose_correct_grouped_list_v1:t('Check EVERY figure in the group — all must fit the rule.','Revisa CADA figura del grupo — todas deben cumplir la regla.'),
+      identify_quad_sections_v1:t('A quadrilateral has exactly 4 straight sides. Count those sections.','Un cuadrilátero tiene exactamente 4 lados rectos. Cuenta esas secciones.'),
+      identify_common_property_v1:t('What is true about ALL three figures, not just one or two?','¿Qué es verdad para LAS TRES figuras, no solo una o dos?')
+    };
+    content.textContent=hints[item.templateId]||t('Look at the figures carefully.','Mira las figuras con cuidado.');
+  } else {
+    title.textContent=t('Tier 2 — Worked Example','Nivel 2 — Ejemplo resuelto');
+    const ex2={
+      choose_true_statements_v1:t('Test each statement: "All are polygons" — is triangle a polygon? Yes. Is square? Yes. So check it!','Prueba cada enunciado: "Todas son polígonos" — ¿es el triángulo un polígono? Sí. ¿El cuadrado? Sí. ¡Selecciónalo!'),
+      explain_grouping_rule_v1:t('Square, rectangle, rhombus → all have 4 sides and 4 angles. That is the grouping rule.','Cuadrado, rectángulo, rombo → todos tienen 4 lados y 4 ángulos. Esa es la regla del grupo.'),
+      count_qualifying_shapes_v1:t('Circle: 0 sides → NOT a polygon. All others have straight sides → ARE polygons. Count the polygons.','Círculo: 0 lados → NO es polígono. Los demás tienen lados rectos → SÍ son polígonos. Cuenta los polígonos.'),
+      identify_not_prism_v1:t('Cube, rectangular prism, triangular prism all have two matching bases → prisms. A pyramid has only one base → NOT a prism.','Cubo, prisma rectangular, prisma triangular tienen dos bases iguales → prismas. Una pirámide tiene solo una base → NO es prisma.'),
+      classify_real_world_v1:t('A soup can is round with flat circles on top and bottom → cylinder.','Una lata de sopa es redonda con círculos planos arriba y abajo → cilindro.'),
+      default:t('Re-read the rule and test every figure in the group against it.','Vuelve a leer la regla y prueba cada figura del grupo con ella.')
+    };
+    content.textContent=ex2[item.templateId]||ex2.default;
+  }
+  card.style.display='block';
+}
+
+// ── CHUNK 6c: SMARTSCORE ──────────────────────────────────────
+function updateSmartScore(correct){
+  const g=gainFor(correct);
+  smartScore=Math.max(0,Math.min(100,smartScore+g));
+  updateSmartScoreUI();
+  if(smartScore>=100)triggerWin();
+}
+function updateSmartScoreUI(){
+  document.getElementById('ssNumber').textContent=Math.round(smartScore);
+  const z=getZone();
+  const fill=document.getElementById('ssFill');
+  const badge=document.getElementById('ssZoneBadge');
+  fill.style.width=smartScore+'%';
+  fill.className='ss-fill '+z;
+  badge.className='ss-zone-badge '+z;
+  const labels={practice:t('Practice Zone','Zona de Práctica'),proficiency:t('Proficiency Zone','Zona de Competencia'),challenge:t('Challenge Zone','Zona de Desafío'),mastered:t('Mastered! ⭐','¡Dominado! ⭐')};
+  badge.textContent=labels[z]||z;
+  const goals={practice:t('Reach 70 to unlock Proficiency Zone!','¡Llega a 70 para desbloquear la Zona de Competencia!'),proficiency:t('Reach 90 to unlock the Challenge!','¡Llega a 90 para desbloquear el Desafío!'),challenge:t('Reach 100 — you can do it!','¡Llega a 100 — ¡puedes lograrlo!'),mastered:t('Amazing! You mastered this TEKS!','¡Increíble! ¡Dominaste este TEKS!')};
+  document.getElementById('ssGoalText').textContent=goals[z]||'';
+}
+function showStreak(){
+  const b=document.getElementById('streakBanner');
+  document.getElementById('streakCount').textContent=streak;
+  b.classList.add('visible');
+  setTimeout(()=>b.classList.remove('visible'),2000);
+}
+function markStamp(stampId,state){
+  const el=document.getElementById('stamp_'+stampId);
+  if(!el)return;
+  stampSeen[stampId]=stampSeen[stampId]||state;
+  if(state==='missed'&&stampSeen[stampId]!=='seen')el.classList.add('missed');
+  else if(state==='seen'){el.classList.remove('missed');el.classList.add('seen');}
+}
+
+// ── CHUNK 7a: CHALLENGE GATE ──────────────────────────────────
+function shouldEnterChallengeGate(){
+  if(cgActive||getZone()!=='proficiency')return false;
+  if(smartScore<70)return false;
+  const allSeen=CG_REQUIRED_STAMPS.every(s=>stampSeen[s]==='seen');
+  return allSeen;
+}
+function enterChallengeGate(){
+  cgActive=true;cgQ=0;cgCorrect=0;cgResults=[];
+  document.getElementById('checkBanner').classList.add('visible');
+  document.getElementById('checkBannerTitle').textContent=t('⭐ 3.6A Challenge Gate','⭐ Puerta de Desafío 3.6A');
+  updateCGDots();
+  const item=generateNextItem();
+  if(item)renderItem(item);
+}
+function updateCGDots(){
+  document.getElementById('checkProgress').textContent=t(`Question ${cgQ+1} of 5`,`Pregunta ${cgQ+1} de 5`);
+  document.getElementById('checkDots').textContent=cgResults.map(r=>r?'✅':'❌').join('')+'⬜'.repeat(5-cgResults.length);
+}
+function processCGAnswer(correct){
+  cgResults.push(correct);
+  cgQ++;
+  if(correct)cgCorrect++;
+  updateCGDots();
+  showFeedback(correct,currentItem);
+  document.getElementById('submitBtn').disabled=true;
+  setTimeout(()=>{
+    if(cgQ>=5)finishChallengeGate();
+    else{const item=generateNextItem();if(item)renderItem(item);}
+  },1400);
+}
+function advanceChallengeGate(){
+  const item=generateNextItem();if(item)renderItem(item);
+}
+function finishChallengeGate(){
+  cgActive=false;
+  document.getElementById('checkBanner').classList.remove('visible');
+  if(cgCorrect>=4){
+    smartScore=Math.max(smartScore,90);
+    updateSmartScoreUI();
+    generateAndRenderItem();
+  } else {
+    smartScore=Math.max(0,smartScore-8);
+    updateSmartScoreUI();
+    document.getElementById('almostMsg').textContent=t(`You got ${cgCorrect}/5. Need 4 to advance. Keep practicing!`,`Obtuviste ${cgCorrect}/5. Necesitas 4 para avanzar. ¡Sigue practicando!`);
+    document.getElementById('almostOverlay').classList.add('visible');
+  }
+}
+function backToPractice(){
+  document.getElementById('almostOverlay').classList.remove('visible');
+  generateAndRenderItem();
+}
+function triggerWin(){
+  document.getElementById('masteryMsg').textContent=t('You scored 100 — TEKS 3.6A mastered!','¡Obtuviste 100 — TEKS 3.6A dominado!');
+  document.getElementById('masteryOverlay').classList.add('visible');
+  confetti();
+}
+function continueFromMastery(){
+  document.getElementById('masteryOverlay').classList.remove('visible');
+  generateAndRenderItem();
+}
+function confetti(){
+  ['🎉','⭐','🌟','🎊','📐'].forEach((e,i)=>{
+    setTimeout(()=>{
+      const d=document.createElement('div');d.className='celebrate-pop';d.textContent=e;
+      d.style.cssText=`left:${15+i*18}vw;top:${20+Math.random()*30}vh;`;
+      document.body.appendChild(d);setTimeout(()=>d.remove(),1100);
+    },i*120);
+  });
+}
+
+// ── CHUNK 7b: TEACHER PANEL ───────────────────────────────────
+function runtimeCoverageAudit(){
+  const covered=FAMILY_REGISTRY.filter(f=>stampSeen[f.stamp]==='seen').length;
+  return{covered,total:FAMILY_REGISTRY.length};
+}
+function updateTeacherPanel(){
+  const audit=runtimeCoverageAudit();
+  const lines=[
+    `3.6A Runtime — SmartScore: ${Math.round(smartScore)} | Zone: ${getZone()}`,
+    `Items answered: ${totalAnswered} | Streak: ${streak} | Wrong streak: ${wrongStreak}`,
+    `Coverage: ${audit.covered}/${audit.total} families exposed`,
+    ``,`Family exposure:`,
+    ...FAMILY_REGISTRY.map(f=>`  ${f.id} (${f.family.slice(0,30)}…): ${familyExposure[f.id]||0}`),
+    ``,`Misconception counts:`,
+    ...Object.entries(misconceptionCount).map(([k,v])=>`  ${k}: ${v}`),
+    ``,`Stamps seen: ${Object.entries(stampSeen).filter(([,v])=>v==='seen').map(([k])=>k).join(', ')||'none'}`,
+    `Adaptive routing: ${chooseAdaptiveTemplate()}`,
+    ``,`Last item:`,lastItemJSON
+  ];
+  document.getElementById('teacherPanelContent').textContent=lines.join('\n');
+}
+
+// ── CHUNK 7c: UTILITIES + BOOT ────────────────────────────────
+function toggleLang(){
+  currentLang=currentLang==='en'?'es':'en';
+  document.getElementById('langLabel').textContent=currentLang==='en'?'Español':'English';
+  document.getElementById('langBadge').textContent=currentLang==='en'?'English':'Español';
+  if(currentItem)renderItem(currentItem);
+}
+function readAloud(){
+  const txt=document.getElementById('stem').textContent;
+  if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(txt);u.lang=currentLang==='es'?'es-US':'en-US';speechSynthesis.speak(u);}
+}
+function resetRuntimeSession(){
+  smartScore=0;streak=0;totalAnswered=0;wrongStreak=0;lockoutActive=false;
+  itemHistory=[];familyExposure={};misconceptionCount={};stampSeen={};lastItemJSON='{}';
+  wrongCount=0;cgActive=false;cgQ=0;cgCorrect=0;cgResults=[];
+  Object.keys(lastVariantIdx).forEach(k=>delete lastVariantIdx[k]);
+  document.querySelectorAll('.stamp').forEach(s=>{s.classList.remove('seen','missed');});
+  document.getElementById('almostOverlay').classList.remove('visible');
+  document.getElementById('masteryOverlay').classList.remove('visible');
+  document.getElementById('checkBanner').classList.remove('visible');
+  updateSmartScoreUI();
+  updateTeacherPanel();
+  generateAndRenderItem();
+}
+function generateAndRenderItem(){
+  if(shouldEnterChallengeGate()){enterChallengeGate();return;}
+  const item=generateNextItem();
+  if(!item){document.getElementById('stem').textContent=t('Error generating item — please reload.','Error al generar pregunta — recarga la página.');return;}
+  renderItem(item);
+  updateTeacherPanel();
+}
+window.addEventListener('DOMContentLoaded',function(){
+  updateSmartScoreUI();
+  updateTeacherPanel();
+  generateAndRenderItem();
+});
+</script>
+</body>
+</html>
