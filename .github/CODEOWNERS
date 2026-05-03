@@ -1,0 +1,8 @@
+# MetaBlooms protected ownership map
+# Replace or expand with teams when additional reviewers exist.
+/0_kernel/ @blobertplunk-hue
+/runtime/ @blobertplunk-hue
+/governance/ @blobertplunk-hue
+/portable_full_os_boot_verify.py @blobertplunk-hue
+/.github/workflows/ @blobertplunk-hue
+/security/ @blobertplunk-hue
