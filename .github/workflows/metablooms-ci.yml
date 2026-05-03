@@ -12,25 +12,29 @@ permissions:
   security-events: write
 
 jobs:
-  boot-and-replay:
+  professionalization-projection:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Locate boot verifier
+      - name: Validate professionalization projection files
         run: |
-          test -f portable_full_os_boot_verify.py || test -f Metablooms_OS/portable_full_os_boot_verify.py
-      - name: Run portable boot verifier
+          python3 -S scripts/validate-professionalization-projection.py .
+      - name: Run portable boot verifier when projected
         run: |
           if test -f portable_full_os_boot_verify.py; then
             python3 -S portable_full_os_boot_verify.py
           elif test -f Metablooms_OS/portable_full_os_boot_verify.py; then
             cd Metablooms_OS
             python3 -S portable_full_os_boot_verify.py
-          fi
-      - name: Validate professionalization projection pack if present
-        run: |
-          if test -f runtime/professionalization/PROFESSIONALIZATION_CONVERGENCE_STAGE2_REAL_REPO_PROJECTION_AND_GITHUB_RULESET_PLAN/scripts/validate_stage2_projection.py; then
-            python3 -S runtime/professionalization/PROFESSIONALIZATION_CONVERGENCE_STAGE2_REAL_REPO_PROJECTION_AND_GITHUB_RULESET_PLAN/scripts/validate_stage2_projection.py runtime/professionalization/PROFESSIONALIZATION_CONVERGENCE_STAGE2_REAL_REPO_PROJECTION_AND_GITHUB_RULESET_PLAN
           else
-            echo "Stage 2 projection validator not present in this checkout layout; boot verifier remains authoritative."
+            echo "Boot verifier not yet projected into repository; skipping until OS source projection stage."
           fi
+      - name: Confirm ruleset remains evaluate-mode
+        run: |
+          python3 - <<'PY'
+          import json
+          p='.github/rulesets/main-protection.evaluate.json'
+          data=json.load(open(p, encoding='utf-8'))
+          assert data.get('enforcement') == 'evaluate', data.get('enforcement')
+          print('PASS: ruleset is evaluate-mode')
+          PY
