@@ -1,0 +1,36 @@
+name: apply-branch-protection-main
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-branch-protection-main.sh'
+      - '.github/workflows/apply-branch-protection-main.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  apply-classic-branch-protection:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify admin token secret is available
+        env:
+          METABLOOMS_ADMIN_TOKEN: ${{ secrets.METABLOOMS_ADMIN_TOKEN }}
+        run: |
+          if [ -z "${METABLOOMS_ADMIN_TOKEN:-}" ]; then
+            echo "METABLOOMS_ADMIN_TOKEN secret is missing or unavailable." >&2
+            exit 4
+          fi
+          echo "PASS: METABLOOMS_ADMIN_TOKEN secret available."
+      - name: Apply classic branch protection
+        env:
+          GITHUB_TOKEN: ${{ secrets.METABLOOMS_ADMIN_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          bash scripts/apply-branch-protection-main.sh main

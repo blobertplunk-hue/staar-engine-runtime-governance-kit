@@ -1,0 +1,40 @@
+name: soft-main-governance-guard
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  observe-main-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Write main-push observation
+        run: |
+          mkdir -p runtime/professionalization/main_push_observations
+          cat > runtime/professionalization/main_push_observations/latest_main_push_observation.md <<'EOF'
+          # Main Push Observation
+
+          This workflow records that a push reached `main`. It is not hard branch protection; it is a soft fallback when GitHub private-repo plan limits block rulesets/protected branches.
+
+          Review commit, actor, and related PR status in the workflow summary.
+          EOF
+      - name: Emit workflow summary
+        run: |
+          {
+            echo "## MetaBlooms soft main governance guard"
+            echo
+            echo "Repository: ${{ github.repository }}"
+            echo "Actor: ${{ github.actor }}"
+            echo "Commit: ${{ github.sha }}"
+            echo "Ref: ${{ github.ref }}"
+            echo
+            echo "If this push was not produced by a reviewed PR/squash merge, create a governed repair issue."
+          } >> "$GITHUB_STEP_SUMMARY"
