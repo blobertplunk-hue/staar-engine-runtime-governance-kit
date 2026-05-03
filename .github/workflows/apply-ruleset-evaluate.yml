@@ -2,12 +2,22 @@ name: apply-ruleset-evaluate
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/rulesets/main-protection.evaluate.json'
+      - 'scripts/apply-github-ruleset.sh'
+      - '.github/workflows/apply-ruleset-evaluate.yml'
+      - 'scripts/validate-professionalization-projection.py'
 
 permissions:
   contents: read
 
+actions-disabled-note: disabled
+
 jobs:
   apply-evaluate-ruleset:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +36,17 @@ jobs:
               raise SystemExit(f"Refusing non-evaluate ruleset: {data.get('enforcement')}")
           print('PASS: ruleset is evaluate-mode')
           PY
-      - name: Apply evaluate-mode ruleset
+      - name: Verify METABLOOMS_ADMIN_TOKEN secret is available
+        env:
+          METABLOOMS_ADMIN_TOKEN: ${{ secrets.METABLOOMS_ADMIN_TOKEN }}
+        run: |
+          if [ -z "${METABLOOMS_ADMIN_TOKEN:-}" ]; then
+            echo "METABLOOMS_ADMIN_TOKEN secret is missing or unavailable." >&2
+            echo "Add it at Settings > Secrets and variables > Actions." >&2
+            exit 4
+          fi
+          echo "PASS: METABLOOMS_ADMIN_TOKEN secret is available to this workflow."
+      - name: Apply or update evaluate-mode ruleset
         env:
           GITHUB_TOKEN: ${{ secrets.METABLOOMS_ADMIN_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
