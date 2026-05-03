@@ -1,0 +1,34 @@
+name: apply-ruleset-evaluate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apply-evaluate-ruleset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate projection before ruleset application
+        run: |
+          python3 -S scripts/validate-professionalization-projection.py .
+      - name: Confirm ruleset is evaluate mode
+        run: |
+          python3 - <<'PY'
+          import json
+          p='.github/rulesets/main-protection.evaluate.json'
+          data=json.load(open(p, encoding='utf-8'))
+          if data.get('enforcement') != 'evaluate':
+              raise SystemExit(f"Refusing non-evaluate ruleset: {data.get('enforcement')}")
+          print('PASS: ruleset is evaluate-mode')
+          PY
+      - name: Apply evaluate-mode ruleset
+        env:
+          GITHUB_TOKEN: ${{ secrets.METABLOOMS_ADMIN_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          bash scripts/apply-github-ruleset.sh .github/rulesets/main-protection.evaluate.json
