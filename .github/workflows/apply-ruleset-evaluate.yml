@@ -13,8 +13,6 @@ on:
 permissions:
   contents: read
 
-actions-disabled-note: disabled
-
 jobs:
   apply-evaluate-ruleset:
     if: github.ref == 'refs/heads/main'
