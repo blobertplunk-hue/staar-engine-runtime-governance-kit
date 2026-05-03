@@ -1,0 +1,25 @@
+name: Governed stage
+about: Track one bounded MetaBlooms OS stage
+labels: [governed-stage]
+body:
+  - type: input
+    id: stage_id
+    attributes:
+      label: Stage ID
+      description: Exact governed stage identifier.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: One bounded stage only. Include constraints and stop condition.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and artifacts
+      description: Receipts, exports, hashes, replay proof, or blocked proof.
+    validations:
+      required: true
