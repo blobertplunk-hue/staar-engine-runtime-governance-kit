@@ -33,4 +33,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.METABLOOMS_ADMIN_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
+          echo "Repository visibility is now public; retrying classic branch protection."
           bash scripts/apply-branch-protection-main.sh main
