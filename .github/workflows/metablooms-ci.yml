@@ -1,0 +1,40 @@
+name: metablooms-ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
+jobs:
+  professionalization-projection:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate professionalization projection files
+        run: |
+          python3 -S scripts/validate-professionalization-projection.py .
+      - name: Run portable boot verifier when projected
+        run: |
+          if test -f portable_full_os_boot_verify.py; then
+            python3 -S portable_full_os_boot_verify.py
+          elif test -f Metablooms_OS/portable_full_os_boot_verify.py; then
+            cd Metablooms_OS
+            python3 -S portable_full_os_boot_verify.py
+          else
+            echo "Boot verifier not yet projected into repository; skipping until OS source projection stage."
+          fi
+      - name: Confirm ruleset remains evaluate-mode
+        run: |
+          python3 - <<'PY'
+          import json
+          p='.github/rulesets/main-protection.evaluate.json'
+          data=json.load(open(p, encoding='utf-8'))
+          assert data.get('enforcement') == 'evaluate', data.get('enforcement')
+          print('PASS: ruleset is evaluate-mode')
+          PY
