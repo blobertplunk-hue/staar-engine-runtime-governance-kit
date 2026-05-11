@@ -1,0 +1,13 @@
+{
+  "artifact_type": "METABLOOMS_TERMUX_GITHUB_HTTPS_UPLOAD_METADATA_v1",
+  "created_utc": "2026-05-11T12:27:46Z",
+  "source_path": "/storage/emulated/0/Download/METABLOOMS_TERMUX_UPLOAD_LATEST_ARTIFACT_TO_GITHUB_HTTPS_GH_FIXED_README.md",
+  "artifact_filename": "METABLOOMS_TERMUX_UPLOAD_LATEST_ARTIFACT_TO_GITHUB_HTTPS_GH_FIXED_README.md",
+  "artifact_sha256": "4a7320cc035a1aabdfa372fa7b728b1a325de3f2beae9a9f381a62e72acc47ba",
+  "sidecar_status": "not_found",
+  "target_repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "target_subdir": "incoming/termux/20260511T122745Z",
+  "auth_protocol": "https_via_gh_auth_setup_git",
+  "device_context": "termux_android",
+  "claim_limit": "This metadata proves Termux selected, hashed, copied, and attempted to commit this file. It does not prove semantic validity of the artifact."
+}
