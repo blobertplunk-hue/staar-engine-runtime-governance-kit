@@ -1,0 +1,5 @@
+AUDIT-CARTRIDGE-5 remote workflow trigger.
+
+Purpose: trigger the installed MetaBlooms release audit harness workflow after the workflow file exists on main.
+Expected workflow: .github/workflows/metablooms-release-audit-harness.yml
+Expected mode: self-test only if no artifact_path input is supplied.
