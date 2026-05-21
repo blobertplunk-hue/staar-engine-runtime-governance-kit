@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       artifact_path:
-        description: "Path to release ZIP or ZIP.ZST inside the checked-out repository. Leave empty to run self-test only."
+        description: "Path to release ZIP or ZIP.ZST inside the checked-out repository. Leave empty to use the Stage 6 fixture when present."
         required: false
         default: ""
       expected_root:
@@ -60,22 +60,27 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -S "${{ steps.locate.outputs.runner }}" --self-test
+          python3 -S "${{ steps.locate.outputs.runner }}" --self-test --out-dir remote_self_test --clean
 
-      - name: Audit release artifact if supplied
+      - name: Audit release artifact
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p remote_audit_out
-          if [ -n "${{ github.event.inputs.artifact_path || '' }}" ]; then
+          ARTIFACT_PATH="${{ github.event.inputs.artifact_path || '' }}"
+          EXPECTED_ROOT="${{ github.event.inputs.expected_root || 'Metablooms_OS' }}"
+          if [ -z "$ARTIFACT_PATH" ] && [ -f release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip ]; then
+            ARTIFACT_PATH="release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip"
+          fi
+          if [ -n "$ARTIFACT_PATH" ]; then
             python3 -S "${{ steps.locate.outputs.runner }}" \
-              --artifact "${{ github.event.inputs.artifact_path }}" \
-              --expected-root "${{ github.event.inputs.expected_root || 'Metablooms_OS' }}" \
+              --artifact "$ARTIFACT_PATH" \
+              --expected-root "$EXPECTED_ROOT" \
               --out-dir remote_audit_out \
               --clean
           else
-            printf '{"verdict":"SELF_TEST_ONLY","reason":"no artifact_path input supplied"}\n' > remote_audit_out/audit_result.json
-            printf '# MetaBlooms Remote Audit\n\nSELF_TEST_ONLY: no release artifact path supplied.\n' > remote_audit_out/audit_report.md
+            printf '{"verdict":"SELF_TEST_ONLY","reason":"no artifact_path input supplied and no Stage 6 fixture present"}\n' > remote_audit_out/audit_result.json
+            printf '# MetaBlooms Remote Audit\n\nSELF_TEST_ONLY: no release artifact path supplied and no Stage 6 fixture present.\n' > remote_audit_out/audit_report.md
             zip -qr remote_audit_out/audit_packet.zip remote_audit_out/audit_result.json remote_audit_out/audit_report.md
           fi
           sha256sum remote_audit_out/audit_packet.zip > remote_audit_out/audit_packet.zip.sha256
@@ -90,6 +95,7 @@ jobs:
             remote_audit_out/audit_packet.zip.sha256
             remote_audit_out/audit_result.json
             remote_audit_out/audit_report.md
+            remote_self_test/self_test_result.json
           retention-days: 14
           if-no-files-found: error
 
