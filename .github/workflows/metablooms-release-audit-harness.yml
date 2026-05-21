@@ -11,6 +11,9 @@ on:
         description: "Expected root directory inside release artifact."
         required: false
         default: "Metablooms_OS"
+  pull_request:
+    branches:
+      - "main"
   push:
     branches:
       - "main"
@@ -37,7 +40,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y zstd zip unzip python3 gh
+          sudo apt-get install -y zstd zip unzip python3
 
       - name: Locate harness
         id: locate
@@ -57,7 +60,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -S "${{ steps.locate.outputs.runner }}" --self-test --out-dir remote_self_test --clean
+          python3 -S "${{ steps.locate.outputs.runner }}" --self-test
 
       - name: Audit release artifact if supplied
         shell: bash
@@ -87,7 +90,6 @@ jobs:
             remote_audit_out/audit_packet.zip.sha256
             remote_audit_out/audit_result.json
             remote_audit_out/audit_report.md
-            remote_self_test/self_test_result.json
           retention-days: 14
           if-no-files-found: error
 
