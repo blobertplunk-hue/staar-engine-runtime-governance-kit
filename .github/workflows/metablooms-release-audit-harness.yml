@@ -1,0 +1,121 @@
+name: MetaBlooms Release Audit Harness with GitHub Attestation
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_path:
+        description: "Path to release ZIP or ZIP.ZST inside the checked-out repository. Leave empty to run self-test only."
+        required: false
+        default: ""
+      expected_root:
+        description: "Expected root directory inside release artifact."
+        required: false
+        default: "Metablooms_OS"
+  push:
+    branches:
+      - "main"
+    tags:
+      - "metablooms-release-*"
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+  actions: read
+
+jobs:
+  audit-and-attest:
+    name: Audit release artifact and attest audit packet
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install runtime tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y zstd zip unzip python3 gh
+
+      - name: Locate harness
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py ]; then
+            echo "runner=runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py" >> "$GITHUB_OUTPUT"
+          elif [ -f Metablooms_OS/runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py ]; then
+            echo "runner=Metablooms_OS/runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py" >> "$GITHUB_OUTPUT"
+          else
+            echo "release audit harness runner missing" >&2
+            exit 41
+          fi
+
+      - name: Run bounded negative fixture self-test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -S "${{ steps.locate.outputs.runner }}" --self-test --out-dir remote_self_test --clean
+
+      - name: Audit release artifact if supplied
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p remote_audit_out
+          if [ -n "${{ github.event.inputs.artifact_path || '' }}" ]; then
+            python3 -S "${{ steps.locate.outputs.runner }}" \
+              --artifact "${{ github.event.inputs.artifact_path }}" \
+              --expected-root "${{ github.event.inputs.expected_root || 'Metablooms_OS' }}" \
+              --out-dir remote_audit_out \
+              --clean
+          else
+            printf '{"verdict":"SELF_TEST_ONLY","reason":"no artifact_path input supplied"}\n' > remote_audit_out/audit_result.json
+            printf '# MetaBlooms Remote Audit\n\nSELF_TEST_ONLY: no release artifact path supplied.\n' > remote_audit_out/audit_report.md
+            zip -qr remote_audit_out/audit_packet.zip remote_audit_out/audit_result.json remote_audit_out/audit_report.md
+          fi
+          sha256sum remote_audit_out/audit_packet.zip > remote_audit_out/audit_packet.zip.sha256
+
+      - name: Upload audit packet
+        id: upload-audit-packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: metablooms-release-audit-packet
+          path: |
+            remote_audit_out/audit_packet.zip
+            remote_audit_out/audit_packet.zip.sha256
+            remote_audit_out/audit_result.json
+            remote_audit_out/audit_report.md
+            remote_self_test/self_test_result.json
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Generate GitHub artifact attestation for audit packet
+        uses: actions/attest@v4
+        with:
+          subject-path: remote_audit_out/audit_packet.zip
+
+      - name: Verify GitHub artifact attestation for audit packet
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh attestation verify remote_audit_out/audit_packet.zip -R "${{ github.repository }}"
+
+      - name: Write remote CI summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "# MetaBlooms Release Audit Harness"
+            echo
+            echo "- Repository: ${{ github.repository }}"
+            echo "- Ref: ${{ github.ref }}"
+            echo "- SHA: ${{ github.sha }}"
+            echo "- Artifact upload digest: ${{ steps.upload-audit-packet.outputs.digest }}"
+            echo "- Attestation verification: completed by gh attestation verify"
+            echo
+            cat remote_audit_out/audit_report.md || true
+          } >> "$GITHUB_STEP_SUMMARY"
