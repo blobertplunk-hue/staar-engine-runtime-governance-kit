@@ -1,0 +1,34 @@
+{
+  "schema": "metablooms.release_governance.main_ci_evidence_ingest.v1",
+  "stage": "AUDIT-CARTRIDGE-21_MAIN_CI_EVIDENCE_INGEST_IF_USER_PROVIDES_OUTPUT",
+  "decision": "NO_MANUAL_MAIN_CI_EVIDENCE_PROVIDED_MAIN_CI_GREEN_UNCLAIMED",
+  "created_utc": "2026-05-22T12:12:00Z",
+  "repository": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "prior_archive_index": {
+    "path": "runtime/release_governance/STAGE20_RELEASE_ARCHIVE_EXPORT_v1.json",
+    "blob_sha": "73c68df8e9664689c0b9d153531f0ffe605e10a8",
+    "decision": "PASS_RELEASE_ARCHIVE_EXPORTED_MAIN_CI_UNCLAIMED"
+  },
+  "release_candidate": {
+    "tag": "metablooms-stage12-reconciled-20260522T0058Z",
+    "asset_name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst",
+    "asset_sha256": "274e0063dfeac4a0193c181fd5e161c51bd9367665f089cd0960c83b901dc7aa",
+    "expected_root": "Metablooms_OS"
+  },
+  "locked_remote_release_audit": {
+    "workflow_dispatch_run_id": 26265099140,
+    "job_id": 77306578699,
+    "job_conclusion": "success",
+    "audit_packet_artifact_id": 7151611610,
+    "audit_packet_artifact_digest": "sha256:34c37fc2965e3314eaabb0c56448bd1311559bbf110a02d4563cfbcfb7df685a",
+    "github_attestation_id": 28352056,
+    "rekor_log_index": 1597847004
+  },
+  "manual_main_ci_evidence": {
+    "provided_by_user": false,
+    "ingested": false,
+    "required_command": "gh run list --repo blobertplunk-hue/staar-engine-runtime-governance-kit --branch main --limit 10",
+    "decision": "NOT_CLAIMED"
+  },
+  "claim_boundary": "Stage 21 received no manual main-CI evidence. Release audit proof remains locked, but fresh main-branch CI green remains unclaimed."
+}
