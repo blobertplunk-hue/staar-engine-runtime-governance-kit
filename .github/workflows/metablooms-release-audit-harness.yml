@@ -4,7 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       artifact_path:
-        description: "Path to release ZIP or ZIP.ZST inside the checked-out repository. Leave empty to use the Stage 6 fixture when present."
+        description: "Path to release ZIP or ZIP.ZST inside the checked-out repository. Optional."
+        required: false
+        default: ""
+      release_tag:
+        description: "GitHub Release tag containing the artifact asset. Optional."
+        required: false
+        default: ""
+      release_asset_name:
+        description: "GitHub Release asset name to download and audit. Optional."
         required: false
         default: ""
       expected_root:
@@ -40,7 +48,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y zstd zip unzip python3
+          sudo apt-get install -y zstd zip unzip python3 gh
 
       - name: Locate harness
         id: locate
@@ -62,16 +70,33 @@ jobs:
           set -euo pipefail
           python3 -S "${{ steps.locate.outputs.runner }}" --self-test --out-dir remote_self_test --clean
 
+      - name: Resolve artifact source
+        id: resolve-artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release_asset_download remote_audit_out
+          ARTIFACT_PATH="${{ github.event.inputs.artifact_path || '' }}"
+          RELEASE_TAG="${{ github.event.inputs.release_tag || '' }}"
+          RELEASE_ASSET_NAME="${{ github.event.inputs.release_asset_name || '' }}"
+          if [ -n "$RELEASE_TAG" ] && [ -n "$RELEASE_ASSET_NAME" ]; then
+            gh release download "$RELEASE_TAG" --repo "${{ github.repository }}" --pattern "$RELEASE_ASSET_NAME" --dir release_asset_download
+            ARTIFACT_PATH="release_asset_download/$RELEASE_ASSET_NAME"
+          fi
+          if [ -z "$ARTIFACT_PATH" ] && [ -f release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip ]; then
+            ARTIFACT_PATH="release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip"
+          fi
+          echo "artifact_path=$ARTIFACT_PATH" >> "$GITHUB_OUTPUT"
+          echo "resolved_artifact_path=$ARTIFACT_PATH"
+
       - name: Audit release artifact
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p remote_audit_out
-          ARTIFACT_PATH="${{ github.event.inputs.artifact_path || '' }}"
+          ARTIFACT_PATH="${{ steps.resolve-artifact.outputs.artifact_path }}"
           EXPECTED_ROOT="${{ github.event.inputs.expected_root || 'Metablooms_OS' }}"
-          if [ -z "$ARTIFACT_PATH" ] && [ -f release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip ]; then
-            ARTIFACT_PATH="release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip"
-          fi
           if [ -n "$ARTIFACT_PATH" ]; then
             python3 -S "${{ steps.locate.outputs.runner }}" \
               --artifact "$ARTIFACT_PATH" \
@@ -79,8 +104,8 @@ jobs:
               --out-dir remote_audit_out \
               --clean
           else
-            printf '{"verdict":"SELF_TEST_ONLY","reason":"no artifact_path input supplied and no Stage 6 fixture present"}\n' > remote_audit_out/audit_result.json
-            printf '# MetaBlooms Remote Audit\n\nSELF_TEST_ONLY: no release artifact path supplied and no Stage 6 fixture present.\n' > remote_audit_out/audit_report.md
+            printf '{"verdict":"SELF_TEST_ONLY","reason":"no artifact_path, no release asset inputs, and no Stage 6 fixture present"}\n' > remote_audit_out/audit_result.json
+            printf '# MetaBlooms Remote Audit\n\nSELF_TEST_ONLY: no release artifact path supplied.\n' > remote_audit_out/audit_report.md
             zip -qr remote_audit_out/audit_packet.zip remote_audit_out/audit_result.json remote_audit_out/audit_report.md
           fi
           sha256sum remote_audit_out/audit_packet.zip > remote_audit_out/audit_packet.zip.sha256
@@ -122,6 +147,7 @@ jobs:
             echo "- Repository: ${{ github.repository }}"
             echo "- Ref: ${{ github.ref }}"
             echo "- SHA: ${{ github.sha }}"
+            echo "- Artifact path: ${{ steps.resolve-artifact.outputs.artifact_path }}"
             echo "- Artifact upload digest: ${{ steps.upload-audit-packet.outputs.digest }}"
             echo "- Attestation verification: completed by gh attestation verify"
             echo
