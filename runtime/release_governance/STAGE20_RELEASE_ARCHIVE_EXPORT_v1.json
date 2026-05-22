@@ -1,0 +1,37 @@
+{
+  "schema": "metablooms.release_governance.archive_export_index.v1",
+  "stage": "AUDIT-CARTRIDGE-20_OPTIONAL_MAIN_CI_MANUAL_EVIDENCE_LOCK_OR_RELEASE_ARCHIVE_EXPORT",
+  "decision": "PASS_RELEASE_ARCHIVE_EXPORTED_MAIN_CI_UNCLAIMED",
+  "created_utc": "2026-05-22T12:08:30Z",
+  "repository": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "release_candidate": {
+    "tag": "metablooms-stage12-reconciled-20260522T0058Z",
+    "asset_name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst",
+    "asset_sha256": "274e0063dfeac4a0193c181fd5e161c51bd9367665f089cd0960c83b901dc7aa",
+    "expected_root": "Metablooms_OS"
+  },
+  "locked_remote_release_audit": {
+    "workflow_dispatch_run_id": 26265099140,
+    "job_id": 77306578699,
+    "job_conclusion": "success",
+    "audit_packet_artifact_id": 7151611610,
+    "audit_packet_artifact_digest": "sha256:34c37fc2965e3314eaabb0c56448bd1311559bbf110a02d4563cfbcfb7df685a",
+    "github_attestation_id": 28352056,
+    "rekor_log_index": 1597847004
+  },
+  "release_doctor": {
+    "stage19_file": "runtime/release_governance/STAGE19_FINAL_RELEASE_DOCTOR_v1.json",
+    "stage19_blob_sha": "5f062042d5b04b9365f8e995fbe17575e7adf190",
+    "decision": "PASS_FINAL_RELEASE_DOCTOR_WITH_MAIN_CI_OBSERVABILITY_LIMITATION"
+  },
+  "local_archive_packet": {
+    "name": "RELEASE_AUDIT_HARNESS_STAGE20_20260522T1208Z_PACKET.zip",
+    "sha256": "879bd2086a88290786825a0a4ab69301c7a0fb878a85bc4ccb98f77311eae794"
+  },
+  "manual_main_ci_result": {
+    "provided_by_user": false,
+    "ingested": false,
+    "decision": "NOT_CLAIMED"
+  },
+  "claim_boundary": "Release archive export is locked. Fresh main CI green remains unclaimed until manual or connector evidence is captured."
+}
