@@ -1,0 +1,54 @@
+{
+  "schema": "metablooms.release_governance.final_release_doctor.v1",
+  "stage": "AUDIT-CARTRIDGE-19_MAIN_CI_MANUAL_RESULT_INGEST_OR_FINAL_RELEASE_DOCTOR",
+  "decision": "PASS_FINAL_RELEASE_DOCTOR_WITH_MAIN_CI_OBSERVABILITY_LIMITATION",
+  "created_utc": "2026-05-22T12:01:30Z",
+  "repository": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "release_candidate": {
+    "tag": "metablooms-stage12-reconciled-20260522T0058Z",
+    "asset_name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst",
+    "asset_sha256": "274e0063dfeac4a0193c181fd5e161c51bd9367665f089cd0960c83b901dc7aa",
+    "expected_root": "Metablooms_OS"
+  },
+  "locked_remote_release_audit": {
+    "workflow_dispatch_run_id": 26265099140,
+    "job_id": 77306578699,
+    "job_conclusion": "success",
+    "audit_packet_artifact_id": 7151611610,
+    "audit_packet_artifact_digest": "sha256:34c37fc2965e3314eaabb0c56448bd1311559bbf110a02d4563cfbcfb7df685a",
+    "attested_subject": "audit_packet.zip@sha256:77b1ad4a8bb19418a8373e92b345e8351ad8774ebc5f67a7398312d815465100",
+    "github_attestation_id": 28352056,
+    "rekor_log_index": 1597847004,
+    "steps_confirmed_success": [
+      "Run bounded negative fixture self-test",
+      "Resolve artifact source",
+      "Audit release artifact",
+      "Upload audit packet",
+      "Generate GitHub artifact attestation for audit packet",
+      "Verify GitHub artifact attestation for audit packet"
+    ]
+  },
+  "repository_governance_files": {
+    "current_release_pointer": "runtime/pointers/CURRENT_RELEASE_AUDIT_BASELINE_POINTER_v1.json",
+    "stage17_release_governance_export": "runtime/release_governance/STAGE17_RELEASE_GOVERNANCE_EXPORT_v1.json",
+    "stage18_release_governance_audit": "runtime/release_governance/STAGE18_RELEASE_GOVERNANCE_EXPORT_AUDIT_v1.json",
+    "stage19_final_release_doctor": "runtime/release_governance/STAGE19_FINAL_RELEASE_DOCTOR_v1.json"
+  },
+  "manual_main_ci_result": {
+    "provided_by_user": false,
+    "ingested": false,
+    "required_command": "gh run list --repo blobertplunk-hue/staar-engine-runtime-governance-kit --branch main --limit 10",
+    "decision": "NOT_CLAIMED"
+  },
+  "doctor_summary": {
+    "release_asset_audited": true,
+    "release_asset_sidecar_verified": true,
+    "zstd_materialization_verified": true,
+    "zip_structural_audit_verified": true,
+    "boot_required_members_verified": true,
+    "audit_packet_attested": true,
+    "repository_pointer_hardened": true,
+    "main_ci_green_observed": false
+  },
+  "claim_boundary": "The Stage 12 release asset and audit harness are release-doctor PASS. Main-branch CI green remains unclaimed because no manual main CI output was provided and connector observations did not expose a fresh main push workflow run."
+}
