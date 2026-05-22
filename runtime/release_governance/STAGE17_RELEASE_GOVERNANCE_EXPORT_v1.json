@@ -1,0 +1,37 @@
+{
+  "schema": "metablooms.release_governance.export.v1",
+  "stage": "AUDIT-CARTRIDGE-17_MAIN_POINTER_CI_OBSERVABILITY_OR_RELEASE_GOVERNANCE_EXPORT",
+  "decision": "RELEASE_GOVERNANCE_EXPORT_LOCKED_MAIN_PUSH_CI_UNOBSERVED",
+  "created_utc": "2026-05-22T10:55:30Z",
+  "repository": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "main_pointer_commit": "5f020d13a28a52d3c18e495c8784d5129c4056dc",
+  "merged_release_audit_harness_commit": "082938464b0f20c3fe5ae82caf997f5d76fe651a",
+  "current_release_pointer_path": "runtime/pointers/CURRENT_RELEASE_AUDIT_BASELINE_POINTER_v1.json",
+  "release_candidate": {
+    "tag": "metablooms-stage12-reconciled-20260522T0058Z",
+    "asset_name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst",
+    "asset_sha256": "274e0063dfeac4a0193c181fd5e161c51bd9367665f089cd0960c83b901dc7aa",
+    "expected_root": "Metablooms_OS"
+  },
+  "remote_release_audit_proof": {
+    "workflow_dispatch_run_id": 26265099140,
+    "job_id": 77306578699,
+    "job_conclusion": "success",
+    "audit_packet_artifact_id": 7151611610,
+    "audit_packet_artifact_digest": "sha256:34c37fc2965e3314eaabb0c56448bd1311559bbf110a02d4563cfbcfb7df685a",
+    "attested_subject": "audit_packet.zip@sha256:77b1ad4a8bb19418a8373e92b345e8351ad8774ebc5f67a7398312d815465100",
+    "github_attestation_id": 28352056,
+    "rekor_log_index": 1597847004
+  },
+  "main_ci_observability": {
+    "stage16_pointer_commit_checked": "5f020d13a28a52d3c18e495c8784d5129c4056dc",
+    "fetch_commit_workflow_runs_returned": [],
+    "classic_status_contexts_returned": [],
+    "decision": "MAIN_PUSH_CI_NOT_OBSERVED_BY_AVAILABLE_CONNECTOR"
+  },
+  "recovery_source": {
+    "runtime_recovered_from": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip",
+    "zip_sha256": "1dde83a4ee051e44a58f3d8317ebe86f53bff0f0bcb71111d27e0f931f2e8b9f"
+  },
+  "claim_boundary": "This export locks release governance state and repository pointer evidence. It does not claim fresh main push CI green because available connector queries did not expose a main push workflow run."
+}
