@@ -1,0 +1,25 @@
+{
+  "schema": "metablooms.release_audit.current_baseline_pointer.v1",
+  "stage": "AUDIT-CARTRIDGE-16_MAIN_PUSH_CI_RERUN_OR_REPO_RELEASE_POINTER_HARDENING",
+  "decision": "PROMOTE_STAGE12_RECONCILED_RELEASE_AS_CURRENT_AUDITED_BASELINE",
+  "created_utc": "2026-05-22T02:56:00Z",
+  "repository": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "repository_main_merge_commit": "082938464b0f20c3fe5ae82caf997f5d76fe651a",
+  "release": {
+    "tag": "metablooms-stage12-reconciled-20260522T0058Z",
+    "asset_name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst",
+    "asset_sha256": "274e0063dfeac4a0193c181fd5e161c51bd9367665f089cd0960c83b901dc7aa",
+    "expected_root": "Metablooms_OS"
+  },
+  "remote_release_audit_proof": {
+    "workflow_dispatch_run_id": 26265099140,
+    "job_id": 77306578699,
+    "job_conclusion": "success",
+    "audit_packet_artifact_id": 7151611610,
+    "audit_packet_artifact_digest": "sha256:34c37fc2965e3314eaabb0c56448bd1311559bbf110a02d4563cfbcfb7df685a",
+    "attested_subject": "audit_packet.zip@sha256:77b1ad4a8bb19418a8373e92b345e8351ad8774ebc5f67a7398312d815465100",
+    "github_attestation_id": 28352056,
+    "rekor_log_index": 1597847004
+  },
+  "claim_boundary": "This pointer identifies the current audited release candidate and repository-side release-audit proof. It does not by itself prove a fresh main push CI run unless the Stage 16 commit workflow runs are observed and successful."
+}
