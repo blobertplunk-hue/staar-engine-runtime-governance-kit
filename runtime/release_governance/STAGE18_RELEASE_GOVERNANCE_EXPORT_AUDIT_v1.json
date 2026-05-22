@@ -1,0 +1,40 @@
+{
+  "schema": "metablooms.release_governance.export_audit.v1",
+  "stage": "AUDIT-CARTRIDGE-18_RELEASE_GOVERNANCE_EXPORT_AUDIT_AND_OPTIONAL_MAIN_CI_MANUAL_CHECK",
+  "decision": "PASS_RELEASE_GOVERNANCE_EXPORT_AUDITED_MAIN_CI_MANUAL_CHECK_REQUIRED",
+  "created_utc": "2026-05-22T11:54:30Z",
+  "repository": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "audited_files": {
+    "release_pointer": "runtime/pointers/CURRENT_RELEASE_AUDIT_BASELINE_POINTER_v1.json",
+    "stage17_governance_export": "runtime/release_governance/STAGE17_RELEASE_GOVERNANCE_EXPORT_v1.json"
+  },
+  "release_candidate": {
+    "tag": "metablooms-stage12-reconciled-20260522T0058Z",
+    "asset_name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst",
+    "asset_sha256": "274e0063dfeac4a0193c181fd5e161c51bd9367665f089cd0960c83b901dc7aa",
+    "expected_root": "Metablooms_OS"
+  },
+  "remote_release_audit_recheck": {
+    "workflow_dispatch_run_id": 26265099140,
+    "job_id": 77306578699,
+    "job_conclusion": "success",
+    "steps_confirmed_success": [
+      "Run bounded negative fixture self-test",
+      "Resolve artifact source",
+      "Audit release artifact",
+      "Upload audit packet",
+      "Generate GitHub artifact attestation for audit packet",
+      "Verify GitHub artifact attestation for audit packet"
+    ],
+    "audit_packet_artifact_id": 7151611610,
+    "audit_packet_artifact_digest": "sha256:34c37fc2965e3314eaabb0c56448bd1311559bbf110a02d4563cfbcfb7df685a",
+    "github_attestation_id": 28352056,
+    "rekor_log_index": 1597847004
+  },
+  "main_ci_observability": {
+    "automated_connector_observation": "not_available_for_main_push_run_listing_in_prior_stage",
+    "manual_check_command": "gh run list --repo blobertplunk-hue/staar-engine-runtime-governance-kit --branch main --limit 10",
+    "manual_check_required": true
+  },
+  "claim_boundary": "The release governance export and remote release audit proof are audited. Fresh main push CI green is still not claimed unless a main-branch workflow run is observed and recorded."
+}
