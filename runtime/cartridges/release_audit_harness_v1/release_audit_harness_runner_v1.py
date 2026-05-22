@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from collections import Counter
 
 SCHEMA = "metablooms.release_audit_harness.remote_runner.v1"
-VERSION = "1.2.0-stage5-remote"
+VERSION = "1.2.1-stage14-zst-binary-safe"
 DEFAULT_ROOT = "Metablooms_OS"
 REQUIRED = [
     "{root}/scripts/mpp/mpp.sh",
@@ -42,17 +42,30 @@ def sidecar_hash(path: Path) -> str | None:
     side = Path(str(path) + ".sha256")
     if not side.exists():
         return None
-    first = side.read_text(errors="replace").split()[0] if side.read_text(errors="replace").split() else ""
+    parts = side.read_text(errors="replace").split()
+    first = parts[0] if parts else ""
     return first.lower() if re.fullmatch(r"[0-9a-fA-F]{64}", first) else None
 
 
-def run(cmd: list[str], cwd: Path | None = None, timeout: int = 120):
+def run_text(cmd: list[str], cwd: Path | None = None, timeout: int = 120):
     started = time.time()
     try:
         p = subprocess.run(cmd, cwd=str(cwd) if cwd else None, text=True, capture_output=True, timeout=timeout)
         return {"cmd": cmd, "cwd": str(cwd) if cwd else None, "returncode": p.returncode, "elapsed": round(time.time()-started, 3), "stdout_tail": p.stdout[-3000:], "stderr_tail": p.stderr[-3000:]}
     except subprocess.TimeoutExpired as e:
         return {"cmd": cmd, "cwd": str(cwd) if cwd else None, "returncode": "TIMEOUT", "elapsed": round(time.time()-started, 3), "stdout_tail": str(e.stdout or "")[-3000:], "stderr_tail": str(e.stderr or "")[-3000:]}
+
+
+def run_binary_to_file(cmd: list[str], target: Path, timeout: int = 180):
+    started = time.time()
+    try:
+        with target.open("wb") as f:
+            p = subprocess.run(cmd, stdout=f, stderr=subprocess.PIPE, timeout=timeout)
+        stderr_tail = (p.stderr or b"")[-3000:].decode("utf-8", errors="replace")
+        return {"cmd": cmd, "target": str(target), "returncode": p.returncode, "elapsed": round(time.time()-started, 3), "stderr_tail": stderr_tail, "size_bytes": target.stat().st_size if target.exists() else 0}
+    except subprocess.TimeoutExpired as e:
+        stderr_tail = (e.stderr or b"")[-3000:].decode("utf-8", errors="replace") if isinstance(e.stderr, (bytes, bytearray)) else str(e.stderr or "")[-3000:]
+        return {"cmd": cmd, "target": str(target), "returncode": "TIMEOUT", "elapsed": round(time.time()-started, 3), "stderr_tail": stderr_tail, "size_bytes": target.stat().st_size if target.exists() else 0}
 
 
 def check_zip(zip_path: Path, root: str):
@@ -91,14 +104,17 @@ def materialize(artifact: Path, out: Path):
         zstd = shutil.which("zstd")
         if not zstd:
             return None, [["zstd_available", "BLOCKED", "zstd missing"]]
-        frame = run([zstd, "-q", "-t", str(artifact)], timeout=120)
+        frame = run_text([zstd, "-q", "-t", str(artifact)], timeout=120)
         checks = [["zstd_frame", "PASS" if frame["returncode"] == 0 else "FAIL", frame]]
+        if frame["returncode"] != 0:
+            return None, checks
         target = out / artifact.name[:-4]
-        dec = run([zstd, "-q", "-dc", str(artifact)], timeout=180)
-        with target.open("wb") as f:
-            p = subprocess.run([zstd, "-q", "-dc", str(artifact)], stdout=f, stderr=subprocess.PIPE, timeout=180)
-        checks.append(["zst_materialize_zip", "PASS" if p.returncode == 0 and target.exists() else "FAIL", {"returncode": p.returncode, "target": str(target)}])
-        return target, checks
+        # Critical: zstd -dc emits a binary ZIP stream. Never capture it as text.
+        # The previous runner attempted text=True capture_output here, which failed
+        # with UnicodeDecodeError on real .zip.zst release assets.
+        dec = run_binary_to_file([zstd, "-q", "-dc", str(artifact)], target, timeout=240)
+        checks.append(["zst_materialize_zip", "PASS" if dec["returncode"] == 0 and target.exists() and target.stat().st_size > 0 else "FAIL", dec])
+        return (target if target.exists() and target.stat().st_size > 0 else None), checks
     return None, [["artifact_extension", "BLOCKED", "expected .zip or .zip.zst"]]
 
 

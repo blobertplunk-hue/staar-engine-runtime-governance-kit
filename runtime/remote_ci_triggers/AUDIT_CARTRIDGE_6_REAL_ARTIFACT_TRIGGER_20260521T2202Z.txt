@@ -1,0 +1,5 @@
+AUDIT-CARTRIDGE-6 real artifact remote proof trigger.
+
+This batch was rebuilt after a message-stream interruption. The prior half-written blob result was discarded.
+The workflow should audit release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip when no workflow_dispatch artifact_path input is supplied.
+Claim boundary: this is a real repository artifact fixture audit, not the full production OS export.

@@ -1,0 +1,24 @@
+{
+  "schema": "metablooms.release_bridge.target_profile.v1",
+  "stage": "AUDIT-CARTRIDGE-13_PROMOTE_RECONCILED_BASELINE_AND_RELEASE_BRIDGE",
+  "decision": "PROMOTE_STAGE12_RECONCILED_BASELINE_AS_RELEASE_CANDIDATE",
+  "target_repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "release_tag": "metablooms-stage12-reconciled-20260522T0058Z",
+  "release_title": "MetaBlooms Stage 12 Reconciled Boot-Linter + Auto-Audit Baseline",
+  "primary_audit_asset": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst",
+  "primary_audit_sha256": "274e0063dfeac4a0193c181fd5e161c51bd9367665f089cd0960c83b901dc7aa",
+  "assets": [
+    {"name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst", "sha256": "274e0063dfeac4a0193c181fd5e161c51bd9367665f089cd0960c83b901dc7aa"},
+    {"name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst.sha256"},
+    {"name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip", "sha256": "1dde83a4ee051e44a58f3d8317ebe86f53bff0f0bcb71111d27e0f931f2e8b9f"},
+    {"name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.sha256"},
+    {"name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.provenance.json"},
+    {"name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.provenance.json.sha256"}
+  ],
+  "workflow_inputs_after_release_upload": {
+    "release_tag": "metablooms-stage12-reconciled-20260522T0058Z",
+    "release_asset_name": "Metablooms_OS_BOOT_LINTER_AUTO_AUDIT_RECONCILED_STAGE12_20260522T0058Z.zip.zst",
+    "expected_root": "Metablooms_OS"
+  },
+  "claim_boundary": "Stage 13 promotes the reconciled Stage 12 baseline as the release candidate and updates the PR workflow/bridge scripts. It does not claim asset upload or workflow_dispatch until external authenticated execution returns evidence."
+}

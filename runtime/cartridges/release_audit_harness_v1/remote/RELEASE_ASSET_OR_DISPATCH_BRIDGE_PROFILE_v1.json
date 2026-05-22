@@ -1,0 +1,31 @@
+{
+  "schema": "metablooms.release_audit_harness.release_asset_or_dispatch_bridge.profile.v1",
+  "stage": "AUDIT-CARTRIDGE-10_RELEASE_ASSET_OR_DISPATCH_CAPABILITY_BRIDGE",
+  "decision": "BRIDGE_REQUIRED_EXTERNAL_AUTH_OR_CONNECTOR_CAPABILITY",
+  "target_repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "stage8_baseline": {
+    "name": "Metablooms_OS_v8_STAGE8_BASELINE_20260521T2303Z.zip",
+    "sha256": "dfb863720faee62b110533850fb669aaecc1193e6b9fdfce39af5f8c02981bc8",
+    "size_bytes": 118080893
+  },
+  "connector_capability_observed": {
+    "create_release": false,
+    "upload_release_asset": false,
+    "workflow_dispatch": false,
+    "blob_tree_commit_ref": true,
+    "workflow_run_read": true,
+    "workflow_job_log_read": true,
+    "workflow_artifact_read": true
+  },
+  "github_platform_capability": {
+    "workflow_dispatch_rest_endpoint_exists": true,
+    "release_asset_upload_endpoint_exists": true,
+    "repository_git_file_limit_blocks_stage8_zip_commit": true
+  },
+  "accepted_bridge_paths": [
+    "authenticated gh CLI from PC or Termux",
+    "REST API token bridge with release upload and workflow dispatch",
+    "future connector exposing release asset upload and workflow dispatch"
+  ],
+  "claim_boundary": "Stage 10 installs bridge instructions only. It does not claim a full release asset upload or workflow_dispatch run."
+}
