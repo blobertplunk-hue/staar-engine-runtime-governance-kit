@@ -83,7 +83,10 @@ jobs:
           RELEASE_ASSET_NAME="${{ github.event.inputs.release_asset_name || '' }}"
           if [ -n "$RELEASE_TAG" ] && [ -n "$RELEASE_ASSET_NAME" ]; then
             gh release download "$RELEASE_TAG" --repo "${{ github.repository }}" --pattern "$RELEASE_ASSET_NAME" --dir release_asset_download
+            gh release download "$RELEASE_TAG" --repo "${{ github.repository }}" --pattern "$RELEASE_ASSET_NAME.sha256" --dir release_asset_download
             ARTIFACT_PATH="release_asset_download/$RELEASE_ASSET_NAME"
+            test -f "$ARTIFACT_PATH"
+            test -f "$ARTIFACT_PATH.sha256"
           fi
           if [ -z "$ARTIFACT_PATH" ] && [ -f release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip ]; then
             ARTIFACT_PATH="release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip"
