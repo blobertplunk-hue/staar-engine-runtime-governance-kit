@@ -1,0 +1,20 @@
+{
+  "created_at_utc": "2026-05-31T22:30:00Z",
+  "defects_remaining": [
+    "landed receipt lacks asset_id/release_id/browser_download_url; harness discovers by tag/name through gh"
+  ],
+  "floor": "Stage10A v2",
+  "github": {
+    "api_digest": "sha256:c02432759e07036b4a672c2a0501e2ff9186e4c71fdcd5b7c6f4101516d0f8b4",
+    "asset_name": "METABLOOMS_FULL_OS_EXPORT_SARP_V2_THREAD_A_STAGE10A_FINAL_POINTER_LOCK_20260530T115100Z_tar.zst",
+    "release_tag": "MB-FLOOR-STAGE10A-20260530T115100Z",
+    "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit"
+  },
+  "landed_receipt": "/mnt/data/LANDED_ASSET_20260531T220559Z.json",
+  "local_archive": "/mnt/data/METABLOOMS_FULL_OS_EXPORT_SARP_V2_THREAD_A_STAGE10A_FINAL_POINTER_LOCK_20260530T115100Z_tar.zst",
+  "local_sha_sidecar": "/mnt/data/METABLOOMS_FULL_OS_EXPORT_SARP_V2_THREAD_A_STAGE10A_FINAL_POINTER_LOCK_20260530T115100Z.tar.zst.sha256",
+  "proof_rule": "Recover only after binary bytes hash to expected sha256; metadata-only evidence is insufficient.",
+  "schema": "mb.metablooms.recovery.floor_pointers.v1",
+  "sha256": "c02432759e07036b4a672c2a0501e2ff9186e4c71fdcd5b7c6f4101516d0f8b4",
+  "size_bytes": 242285543
+}
