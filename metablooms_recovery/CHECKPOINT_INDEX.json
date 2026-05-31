@@ -1,0 +1,36 @@
+{
+  "created_at_utc": "2026-05-31T22:30:00Z",
+  "ordered_overlays": [
+    {
+      "authority": "record_and_policy_summary",
+      "path": "metablooms_checkpoints/20260531T2220Z_BUILD_EXPORT_POLICY_ROUTER_STAGE003.md",
+      "sha": "528b3d37559ec4ba368f685dd05d43c234658d5a",
+      "type": "router_checkpoint"
+    },
+    {
+      "authority": "superseded_by_stage004",
+      "path": "metablooms_recovery/20260531T2226Z_RECOVERY_FROM_MNTDATA_AND_GITHUB_RUNBOOK.md",
+      "sha": "12417ba322ea403124dfce4727f047bcf89d8f60",
+      "type": "recovery_runbook_v1"
+    },
+    {
+      "authority": "risk_register",
+      "path": "metablooms_recovery/20260531T2229Z_RECOVERY_PLAN_ADVERSARIAL_AUDIT.md",
+      "sha": "ccf3434eaf0c8599651d29ac72094025558001b4",
+      "type": "adversarial_audit"
+    },
+    {
+      "authority": "current_recovery_runbook",
+      "path": "metablooms_recovery/20260531T2230Z_RECOVERY_POINTERS_AND_EXECUTABLE_HARNESS_RUNBOOK.md",
+      "type": "stage004_runbook"
+    }
+  ],
+  "overlay_semantics": {
+    "conflicts": "prefer newest validated policy only after explicit receipt; otherwise preserve as audit note",
+    "github_text_overlays_are_continuity_and_governance_inputs": true,
+    "local_os_artifacts_remain_primary_for_live_behavior": true,
+    "no_text_overlay_executes_without_schema_validation_and_stage_receipt": true,
+    "timestamp_order_applies_with_LATEST_overrides_for_pointer_selection": true
+  },
+  "schema": "mb.metablooms.recovery.checkpoint_index.v1"
+}
