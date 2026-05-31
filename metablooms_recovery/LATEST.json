@@ -1,0 +1,24 @@
+{
+  "created_at_utc": "2026-05-31T22:30:00Z",
+  "current_checkpoint_index": "metablooms_recovery/CHECKPOINT_INDEX.json",
+  "current_floor_pointers": "metablooms_recovery/FLOOR_POINTERS.json",
+  "current_harness_path": "scripts/metablooms_recover_from_mntdata_and_github_v1.sh",
+  "current_recovery_runbook": "metablooms_recovery/20260531T2230Z_RECOVERY_POINTERS_AND_EXECUTABLE_HARNESS_RUNBOOK.md",
+  "decision": "PASS_POINTERS_STAGE004_CREATED",
+  "durable_floor": {
+    "asset_name": "METABLOOMS_FULL_OS_EXPORT_SARP_V2_THREAD_A_STAGE10A_FINAL_POINTER_LOCK_20260530T115100Z_tar.zst",
+    "name": "Stage10A v2",
+    "release_tag": "MB-FLOOR-STAGE10A-20260530T115100Z",
+    "sha256": "c02432759e07036b4a672c2a0501e2ff9186e4c71fdcd5b7c6f4101516d0f8b4"
+  },
+  "known_unavailable": {
+    "stage003_cold_archive": "UNAVAILABLE_UNTIL_BYTES_PROVIDED_AND_OFFSITE_PROVEN"
+  },
+  "minimum_recovery_sets": {
+    "A_live_root": "/mnt/data/Metablooms_OS boots and Merkle passes",
+    "B_local_archive": "Stage10A archive plus expected hash present in /mnt/data",
+    "C_self_contained_packet": "self-contained Termux packet present and hash verified",
+    "D_github_release": "GitHub release asset retrievable and binary SHA equals expected"
+  },
+  "schema": "mb.metablooms.recovery.latest.v1"
+}
