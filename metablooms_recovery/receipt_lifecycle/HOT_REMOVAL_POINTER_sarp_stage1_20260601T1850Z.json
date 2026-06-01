@@ -1,0 +1,22 @@
+{
+  "schema": "mb.receipt_lifecycle.hot_removal_pointer.v1",
+  "created_at_utc": "2026-06-01T18:50:45Z",
+  "stage": "EFFICIENCY_STAGE005B_HOT_REMOVE_SARP_STAGE1_AFTER_FINAL_PRECHECK",
+  "decision": "PASS_HISTORICAL_HOT_FAMILY_REMOVED_POST_BOOT_MERKLE_PASS",
+  "family": "sarp_stage1",
+  "pre_file_count": 48,
+  "pre_size_bytes": 21255080,
+  "post_boot_current_receipt_file_count_in_family": 0,
+  "post_boot_current_receipt_bytes_in_family": 0,
+  "net_hot_shrink_bytes_approx": 21255080,
+  "cold_archive_sha256": "a7c7b0b063dd4ad68876469fa737101031588578653bd4b0191fdea8e470c449",
+  "cold_archive_offsite_proven": true,
+  "k2_floor_proven": true,
+  "post_boot_status": "PASS",
+  "post_merkle_status": "PASS",
+  "zero_unrecoverable_delete": true,
+  "bundle_sha256": "84b50f53b079463adea901387bcf52080f8bd397afc33ca2283697f3b09e8760",
+  "countdown": "4 of 6 hot-removed; 2 families remain",
+  "remaining_families": ["MB-WORLDCLASS-PLAN-8_CI_PREFLIGHT_HARDWIRE", "cross_cutting_llm_interleaving_primitive"],
+  "next_recommended_family": "MB-WORLDCLASS-PLAN-8_CI_PREFLIGHT_HARDWIRE"
+}
