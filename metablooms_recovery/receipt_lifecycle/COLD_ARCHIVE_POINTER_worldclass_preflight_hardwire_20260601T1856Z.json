@@ -1,0 +1,22 @@
+{
+  "schema": "mb.receipt_lifecycle.cold_archive_pointer.v1",
+  "created_at_utc": "2026-06-01T18:56:00Z",
+  "stage": "EFFICIENCY_STAGE006_COLD_ARCHIVE_WORLDCLASS_PREFLIGHT_HARDWIRE_ONE_FAMILY",
+  "family": "MB-WORLDCLASS-PLAN-8_CI_PREFLIGHT_HARDWIRE",
+  "decision": "PASS_LOCAL_COLD_ARCHIVE_AND_OFFSITE_PROOF_PACKAGE_CREATED__PHONE_READBACK_PENDING",
+  "archive_name": "METABLOOMS_COLD_RECEIPTS_worldclass_preflight_hardwire_20260601T1856Z.tar.zst",
+  "archive_sha256": "c8949bfd6008936f552d29e1cc701928653be839a0af11356a62220113305745",
+  "archive_size_bytes": 4112930,
+  "source_size_bytes": 21923820,
+  "file_count": 42,
+  "restore_verified_all": true,
+  "restore_missing_count": 0,
+  "restore_mismatch_count": 0,
+  "zero_hot_files_removed": true,
+  "hot_removal_authorized": false,
+  "package_name": "EFFICIENCY_STAGE006_WORLDCLASS_PREFLIGHT_HARDWIRE_OFFSITE_PROOF_PACKAGE_20260601T1856Z.zip",
+  "package_sha256": "1aba6c28e657457a0f5f2d963750d15953ec4d471decd8ad229b153f2a46a53f",
+  "receipt_bundle_sha256": "85b508e32fa716bd8dadef2396a6eed0aca7af453069023f6f43cde70203d43d",
+  "countdown": "4 of 6 hot-removed; this family pending offsite readback/import/hot-removal; then 1 family remains",
+  "next_required_receipt": "LANDED_COLD_ARCHIVE_worldclass_preflight_hardwire_*.json"
+}
