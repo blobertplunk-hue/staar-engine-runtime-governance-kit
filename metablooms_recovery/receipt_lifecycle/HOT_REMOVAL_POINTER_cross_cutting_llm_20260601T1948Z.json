@@ -1,0 +1,22 @@
+{
+  "schema":"mb.receipt_lifecycle.hot_removal_pointer.v1",
+  "created_at_utc":"2026-06-01T19:52:00Z",
+  "stage":"EFFICIENCY_STAGE007B_HOT_REMOVE_CROSS_CUTTING_LLM_INTERLEAVING_AFTER_FINAL_PRECHECK",
+  "decision":"PASS_HISTORICAL_HOT_FAMILY_REMOVED_POST_BOOT_MERKLE_PASS",
+  "family":"cross_cutting_llm_interleaving_primitive",
+  "pre_file_count":1313,
+  "pre_size_bytes":20294439,
+  "post_boot_current_receipt_file_count_in_family":0,
+  "post_boot_current_receipt_bytes_in_family":0,
+  "net_hot_shrink_bytes_approx":20294439,
+  "cold_archive_sha256":"30e0e53193faa77dff994b8a0dcaf154699e0535d223e6e250ccfcebf02a8f86",
+  "cold_archive_offsite_proven":true,
+  "k2_floor_proven":true,
+  "post_boot_status":"PASS",
+  "post_merkle_status":"PASS",
+  "zero_unrecoverable_delete":true,
+  "bundle_sha256":"fbbca54a1e2081f57ddc8e2a3a66f8612ace16b13f868cd8d0b842b7c5de2128",
+  "countdown":"6 of 6 hot-removed; shrink pass complete",
+  "remaining_families":[],
+  "next_recommended_stage":"EFFICIENCY_STAGE008_FULL_OS_EXPORT_AFTER_RECEIPT_LIFECYCLE_SHRINK"
+}
