@@ -1,0 +1,17 @@
+{
+  "schema": "mb.receipt_lifecycle.landed_import_pointer.v1",
+  "created_at_utc": "2026-06-01T17:36:30Z",
+  "stage": "EFFICIENCY_STAGE003A_IMPORT_RCA_INLINE_ROUTER_LANDED_RECEIPT",
+  "decision": "PASS_COLD_ARCHIVE_BINARY_READBACK_IMPORTED__HOT_REMOVAL_GATE_ELIGIBLE",
+  "family": "rca_inline_router",
+  "archive_sha256": "4d7da2fa1abacabfbcd9e51e13220fa199c4eccda18ba82f9669c6df8884992b",
+  "archive_size_bytes": 31527,
+  "landed_receipt_sha256": "55438c4f8ecbc9f8ff1a60d85ee886da7d5f9d2636d3721d339b08af2e0b7839",
+  "import_receipt_sha256": "a9434a1c1ad1934cd9683b04f804d0e3ccc4041ea5223ac82254e62efbd343d9",
+  "validation_errors": 0,
+  "offsite_binary_readback_status": "PROVEN",
+  "hot_removal_eligible_for_next_gate": true,
+  "hot_removal_authorized_now": false,
+  "zero_hot_files_removed": true,
+  "next_gate": "EFFICIENCY_STAGE003B_HOT_REMOVE_RCA_INLINE_ROUTER_AFTER_FINAL_PRECHECK"
+}
