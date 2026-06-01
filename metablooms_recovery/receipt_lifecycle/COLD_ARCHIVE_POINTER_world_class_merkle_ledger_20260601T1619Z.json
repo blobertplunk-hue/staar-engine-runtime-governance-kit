@@ -1,0 +1,18 @@
+{
+  "schema": "mb.receipt_lifecycle.cold_archive_pointer.v1",
+  "created_at_utc": "2026-06-01T16:21:13Z",
+  "stage": "EFFICIENCY_STAGE002_COLD_ARCHIVE_ONE_FAMILY_EXTERNALIZE_AND_PROVE",
+  "family": "world_class_merkle_ledger",
+  "decision": "PASS_LOCAL_COLD_ARCHIVE_RESTORE_PROVEN__OFFSITE_PROOF_PENDING",
+  "archive_name": "METABLOOMS_COLD_RECEIPTS_world_class_merkle_ledger_20260601T1619Z.tar.zst",
+  "archive_sha256": "eba7fbd4a0b9f473baf276573cfa9859acbf4ceb45d3db3b888ddd1a9337416e",
+  "archive_size_bytes": 1261818,
+  "file_count": 1730,
+  "source_payload_bytes": 34508900,
+  "restore_verified_all": true,
+  "restore_missing_count": 0,
+  "restore_mismatch_count": 0,
+  "zero_hot_files_removed": true,
+  "hot_removal_authorized": false,
+  "externalization_status": "LOCAL_ARTIFACT_READY__OFFSITE_BYTE_PROOF_REQUIRED_BEFORE_HOT_REMOVAL"
+}
