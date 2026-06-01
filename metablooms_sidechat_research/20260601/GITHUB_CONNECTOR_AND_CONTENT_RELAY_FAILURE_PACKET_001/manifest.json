@@ -1,0 +1,10 @@
+{
+  "packet_id": "GITHUB_CONNECTOR_AND_CONTENT_RELAY_FAILURE_PACKET_001",
+  "status": "SIDECHAT_RESEARCH_ONLY_NOT_PROMOTED",
+  "created_at": "2026-06-01T1229Z",
+  "source_count": 30,
+  "local_zip_name": "GITHUB_CONNECTOR_AND_CONTENT_RELAY_FAILURE_PACKET_001_20260601T1229Z.zip",
+  "local_zip_sha256": "48f9f5ae61c7f5ba1ac22569cddc8f72265f8ac2d37fa3c153eb70352d679564",
+  "relay_scope": "compact_manifest_only",
+  "next_recommended_action": "sidechat_continue_research_or_main_os_intake_later"
+}
