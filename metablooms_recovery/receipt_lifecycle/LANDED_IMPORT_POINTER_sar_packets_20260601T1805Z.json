@@ -1,0 +1,17 @@
+{
+  "schema": "mb.receipt_lifecycle.landed_import_pointer.v1",
+  "created_at_utc": "2026-06-01T18:05:20Z",
+  "stage": "EFFICIENCY_STAGE004A_IMPORT_SAR_PACKETS_LANDED_RECEIPT",
+  "decision": "PASS_COLD_ARCHIVE_BINARY_READBACK_IMPORTED__HOT_REMOVAL_GATE_ELIGIBLE",
+  "family": "sar_packets",
+  "archive_sha256": "782336db2dc1797af08e5d277fd1341de863a0a99d889fac20ca8e58bbb65140",
+  "archive_size_bytes": 17378177,
+  "landed_receipt_sha256": "f93ac2619e0637064d8412ebca18d5b5cc086b273a2235606b1443770d5b9449",
+  "import_receipt_sha256": "6941c0129c57e514e56cf9ae1c3bc5c6ca6e57025408123a53b461ff0977f2d2",
+  "validation_errors": 0,
+  "offsite_binary_readback_status": "PROVEN",
+  "hot_removal_eligible_for_next_gate": true,
+  "hot_removal_authorized_now": false,
+  "zero_hot_files_removed": true,
+  "next_gate": "EFFICIENCY_STAGE004B_HOT_REMOVE_SAR_PACKETS_AFTER_FINAL_PRECHECK"
+}
