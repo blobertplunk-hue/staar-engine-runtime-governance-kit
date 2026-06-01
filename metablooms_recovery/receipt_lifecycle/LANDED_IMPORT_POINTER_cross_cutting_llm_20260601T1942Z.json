@@ -1,0 +1,19 @@
+{
+  "schema":"mb.receipt_lifecycle.landed_import_pointer.v1",
+  "created_at_utc":"2026-06-01T19:42:00Z",
+  "stage":"EFFICIENCY_STAGE007A_IMPORT_CROSS_CUTTING_LLM_INTERLEAVING_LANDED_RECEIPT",
+  "decision":"PASS_COLD_ARCHIVE_BINARY_READBACK_IMPORTED__HOT_REMOVAL_GATE_ELIGIBLE",
+  "family":"cross_cutting_llm_interleaving_primitive",
+  "archive_sha256":"30e0e53193faa77dff994b8a0dcaf154699e0535d223e6e250ccfcebf02a8f86",
+  "archive_size_bytes":3347544,
+  "landed_receipt_sha256":"42149e382e14c6dc53c134db3b47d2482cdc5af45286467b23177208af67b609",
+  "import_receipt_sha256":"eb5aac873f5c8c919d2107d049e00dd134039594452d38a4f349d358b50cb2e6",
+  "validation_errors":0,
+  "offsite_binary_readback_status":"PROVEN",
+  "hot_removal_eligible_for_next_gate":true,
+  "hot_removal_authorized_now":false,
+  "zero_hot_files_removed":true,
+  "bundle_sha256":"9c106d8f9225055c1d1706a139ed1d7c8e171b89c175275afb2a1767d6833949",
+  "countdown":"5 of 6 hot-removed; final family eligible for hot removal; after removal 6 of 6",
+  "next_gate":"EFFICIENCY_STAGE007B_HOT_REMOVE_CROSS_CUTTING_LLM_INTERLEAVING_AFTER_FINAL_PRECHECK"
+}
