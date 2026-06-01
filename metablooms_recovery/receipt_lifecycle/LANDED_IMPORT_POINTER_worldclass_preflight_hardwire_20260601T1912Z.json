@@ -1,0 +1,19 @@
+{
+  "schema": "mb.receipt_lifecycle.landed_import_pointer.v1",
+  "created_at_utc": "2026-06-01T19:12:00Z",
+  "stage": "EFFICIENCY_STAGE006A_IMPORT_WORLDCLASS_PREFLIGHT_HARDWIRE_LANDED_RECEIPT",
+  "decision": "PASS_COLD_ARCHIVE_BINARY_READBACK_IMPORTED__HOT_REMOVAL_GATE_ELIGIBLE",
+  "family": "MB-WORLDCLASS-PLAN-8_CI_PREFLIGHT_HARDWIRE",
+  "archive_sha256": "c8949bfd6008936f552d29e1cc701928653be839a0af11356a62220113305745",
+  "archive_size_bytes": 4112930,
+  "landed_receipt_sha256": "0146e3791d29b5366f8f4a2dfed917332ac8ef9817b01006583a706587ce0f03",
+  "import_receipt_sha256": "d866419ba929e1e3231106a94adae7c3f5dd9985f65f88f24cbb577b14e65a93",
+  "validation_errors": 0,
+  "offsite_binary_readback_status": "PROVEN",
+  "hot_removal_eligible_for_next_gate": true,
+  "hot_removal_authorized_now": false,
+  "zero_hot_files_removed": true,
+  "bundle_sha256": "accc513581c0334e442d30f0315578f94d3370eb3145a4b63fdb05597832e5cc",
+  "countdown": "4 of 6 hot-removed; worldclass preflight hardwire eligible for hot removal; after removal 5 of 6",
+  "next_gate": "EFFICIENCY_STAGE006B_HOT_REMOVE_WORLDCLASS_PREFLIGHT_HARDWIRE_AFTER_FINAL_PRECHECK"
+}
