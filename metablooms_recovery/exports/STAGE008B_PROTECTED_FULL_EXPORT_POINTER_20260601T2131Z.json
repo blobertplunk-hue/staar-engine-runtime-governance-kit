@@ -1,0 +1,18 @@
+{
+  "schema":"mb.stage008b.protected_full_export_pointer.v1",
+  "created_at_utc":"2026-06-01T21:31:00Z",
+  "stage":"EFFICIENCY_STAGE008B_FINAL_EXPORT_HANDOFF_AND_PROVENANCE_LOCK",
+  "decision":"PASS_PROTECTED_FULL_OS_EXPORT_COLD_BOOT_PROVEN",
+  "archive":"METABLOOMS_FULL_OS_EXPORT_AFTER_RECEIPT_LIFECYCLE_SHRINK_PROTECTED_20260601T2115Z.tar.zst",
+  "archive_sha256":"38fe0f2d5f220a53acd13edc5ea0a25e6a1c4aaca38864ba1a2d8f785ed07add",
+  "archive_size_bytes":214258290,
+  "tar_list_entries":62139,
+  "restore_file_count":55580,
+  "cold_restore_boot_status":"PASS",
+  "included_protection_policy":true,
+  "included_export_guard":true,
+  "six_family_shrink_pass_status":"PASS_SIX_OF_SIX_HOT_REMOVED_READY_FOR_FULL_OS_EXPORT",
+  "proof_bundle":"STAGE008B_FINAL_EXPORT_HANDOFF_AND_PROVENANCE_LOCK_20260601T2115Z.zip",
+  "proof_bundle_sha256":"pending_sidecar_in_chat",
+  "note":"Archive generated with fast zstd level-1 route after export process protection was installed inside the OS. Full extraction needed continuation after timeout but completed; cold turn-boot passed."
+}
