@@ -1,0 +1,18 @@
+{
+  "schema": "mb.receipt_lifecycle.landed_import_pointer.v1",
+  "created_at_utc": "2026-06-01T18:29:00Z",
+  "stage": "EFFICIENCY_STAGE005A_IMPORT_SARP_STAGE1_LANDED_RECEIPT",
+  "decision": "PASS_COLD_ARCHIVE_BINARY_READBACK_IMPORTED__HOT_REMOVAL_GATE_ELIGIBLE",
+  "family": "sarp_stage1",
+  "archive_sha256": "a7c7b0b063dd4ad68876469fa737101031588578653bd4b0191fdea8e470c449",
+  "archive_size_bytes": 4136879,
+  "landed_receipt_sha256": "3090ddb25f0452bef8918afe9776d7727d927e2f0bc2dcdb1a11c0c10fb7bf25",
+  "validation_errors": 0,
+  "offsite_binary_readback_status": "PROVEN",
+  "hot_removal_eligible_for_next_gate": true,
+  "hot_removal_authorized_now": false,
+  "zero_hot_files_removed": true,
+  "bundle_sha256": "5b38587d5355dc1ad0280ab8db4bf693d086f50d097c5f8d9f5157ae4f804b57",
+  "countdown": "3 of 6 hot-removed; sarp_stage1 eligible for hot removal; after removal 4 of 6",
+  "next_gate": "EFFICIENCY_STAGE005B_HOT_REMOVE_SARP_STAGE1_AFTER_FINAL_PRECHECK"
+}
