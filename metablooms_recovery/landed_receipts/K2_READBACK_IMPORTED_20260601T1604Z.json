@@ -1,0 +1,13 @@
+{
+  "schema": "mb.metablooms.k2_readback_import_pointer.v1",
+  "created_at_utc": "2026-06-01T16:04:00Z",
+  "decision": "PASS_K2_RELEASE_ASSET_BINARY_READBACK_IMPORTED",
+  "asset": "METABLOOMS_FULL_OS_EXPORT_STAGE011K2_REBUILT_AFTER_PORTABLE_REPAIR_20260601T111108Z.tar.zst",
+  "sha256": "4efc7472396f79311a220d3acc2ddee4a0ec4c5e22dbf2b12c28742d50c50024",
+  "size_bytes": 248781629,
+  "source_upload_sha256": "aa965f3921e543c6c82d0a09e88032115b39f9a609efc5be325bad1d22f1033f",
+  "local_import_receipt_path": "runtime/generated/k2_readback_import_20260601T1604Z/K2_READBACK_IMPORT_RECEIPT.json",
+  "k2_offsite_binary_readback_status": "PROVEN",
+  "hot_receipt_removal_authorized": false,
+  "next_gate": "Each cold receipt archive must still be byte-proven before hot removal."
+}
