@@ -1,0 +1,21 @@
+{
+  "schema": "mb.receipt_lifecycle.cold_archive_pointer.v1",
+  "created_at_utc": "2026-06-01T17:55:00Z",
+  "stage": "EFFICIENCY_STAGE004_COLD_ARCHIVE_SAR_PACKETS_ONE_FAMILY",
+  "family": "sar_packets",
+  "decision": "PASS_LOCAL_COLD_ARCHIVE_AND_OFFSITE_PROOF_PACKAGE_CREATED__PHONE_READBACK_PENDING",
+  "archive_name": "METABLOOMS_COLD_RECEIPTS_sar_packets_20260601T1755Z.tar.zst",
+  "archive_sha256": "782336db2dc1797af08e5d277fd1341de863a0a99d889fac20ca8e58bbb65140",
+  "archive_size_bytes": 17378177,
+  "source_size_bytes": 25609206,
+  "file_count": 140,
+  "restore_verified_all": true,
+  "restore_missing_count": 0,
+  "restore_mismatch_count": 0,
+  "zero_hot_files_removed": true,
+  "hot_removal_authorized": false,
+  "package_name": "EFFICIENCY_STAGE004_SAR_PACKETS_OFFSITE_PROOF_PACKAGE_20260601T1755Z.zip",
+  "package_sha256": "02b594d6136fdb01698702cf5e2ac1f6faf14fb3a9a28b28d1678e78e05a2e7e",
+  "receipt_bundle_sha256": "a3c686cd8c36917763205fbfaff489d56e67397284c6d2d5440045f68278136a",
+  "next_required_receipt": "LANDED_COLD_ARCHIVE_sar_packets_*.json"
+}
