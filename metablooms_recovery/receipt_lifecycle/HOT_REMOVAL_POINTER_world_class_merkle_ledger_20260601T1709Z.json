@@ -1,0 +1,20 @@
+{
+  "schema": "mb.receipt_lifecycle.hot_removal_pointer.v1",
+  "created_at_utc": "2026-06-01T17:10:09Z",
+  "stage": "EFFICIENCY_STAGE002B_HOT_REMOVE_WORLD_CLASS_MERKLE_LEDGER_AFTER_FINAL_PRECHECK",
+  "decision": "PASS_HISTORICAL_HOT_FAMILY_REMOVED_POST_BOOT_MERKLE_PASS",
+  "family": "world_class_merkle_ledger",
+  "pre_file_count": 1740,
+  "pre_size_bytes": 34511795,
+  "post_boot_current_receipt_file_count_in_family": 2,
+  "post_boot_current_receipt_bytes_in_family": 579,
+  "net_hot_shrink_bytes_approx": 34511216,
+  "cold_archive_sha256": "eba7fbd4a0b9f473baf276573cfa9859acbf4ceb45d3db3b888ddd1a9337416e",
+  "cold_archive_offsite_proven": true,
+  "k2_floor_proven": true,
+  "post_boot_status": "PASS",
+  "post_merkle_status": "PASS",
+  "zero_unrecoverable_delete": true,
+  "bundle_sha256": "6a52495b7a4cd5ae169d501b796e601cdfdf050c3ffda39d198a912922d9bfc1",
+  "next_recommended_family": "rca_inline_router"
+}
