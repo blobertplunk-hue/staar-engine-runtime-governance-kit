@@ -1,0 +1,20 @@
+{
+  "schema": "mb.receipt_lifecycle.cold_archive_pointer.v1",
+  "created_at_utc": "2026-06-01T17:24:00Z",
+  "stage": "EFFICIENCY_STAGE003_COLD_ARCHIVE_RCA_INLINE_ROUTER_ONE_FAMILY",
+  "family": "rca_inline_router",
+  "decision": "PASS_LOCAL_COLD_ARCHIVE_AND_OFFSITE_PROOF_PACKAGE_CREATED__PHONE_READBACK_PENDING",
+  "archive_name": "METABLOOMS_COLD_RECEIPTS_rca_inline_router_20260601T1724Z.tar.zst",
+  "archive_sha256": "4d7da2fa1abacabfbcd9e51e13220fa199c4eccda18ba82f9669c6df8884992b",
+  "archive_size_bytes": 31527,
+  "source_size_bytes": 32610375,
+  "file_count": 868,
+  "restore_verified_all": true,
+  "restore_missing_count": 0,
+  "restore_mismatch_count": 0,
+  "zero_hot_files_removed": true,
+  "hot_removal_authorized": false,
+  "package_name": "EFFICIENCY_STAGE003_RCA_INLINE_ROUTER_OFFSITE_PROOF_PACKAGE_20260601T1724Z.zip",
+  "package_sha256": "2aaa2c6d21182448eeeb932978e66fa1184638f46ad9b8a5409a3c7e887a0d38",
+  "next_required_receipt": "LANDED_COLD_ARCHIVE_rca_inline_router_*.json"
+}
