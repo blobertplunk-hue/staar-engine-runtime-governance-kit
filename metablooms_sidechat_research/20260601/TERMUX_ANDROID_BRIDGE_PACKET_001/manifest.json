@@ -1,0 +1,12 @@
+{
+  "packet_id": "TERMUX_ANDROID_BRIDGE_PACKET_001",
+  "status": "SIDECHAT_RESEARCH_ONLY_NOT_PROMOTED",
+  "created_at": "2026-06-01T1319Z",
+  "source_count": 30,
+  "local_zip_name": "TERMUX_ANDROID_BRIDGE_PACKET_001_20260601T1319Z.zip",
+  "local_zip_sha256": "468bd19c90ccff3f0753f0e59199270e361d3fd52892471ad77050e65105b2ac",
+  "file_search_used": false,
+  "relay_scope": "compact_manifest_only",
+  "user_shielding_focus": true,
+  "next_recommended_action": "continue_sidechat_research_or_main_os_intake_later"
+}
