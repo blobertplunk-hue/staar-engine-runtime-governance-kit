@@ -1,0 +1,12 @@
+{
+  "packet_id": "LOCAL_PC_POWERSHELL_BRIDGE_PACKET_001",
+  "status": "SIDECHAT_RESEARCH_ONLY_NOT_PROMOTED",
+  "created_at": "2026-06-01T1336Z",
+  "source_count": 30,
+  "local_zip_name": "LOCAL_PC_POWERSHELL_BRIDGE_PACKET_001_20260601T1336Z.zip",
+  "local_zip_sha256": "439fca4974d2c92bf36ab4d474afbe839b29830ec5d5d13dbeee20fdeb598b40",
+  "file_search_used": false,
+  "relay_scope": "compact_manifest_only",
+  "user_shielding_focus": true,
+  "next_recommended_action": "continue_sidechat_research_or_main_os_intake_later"
+}
