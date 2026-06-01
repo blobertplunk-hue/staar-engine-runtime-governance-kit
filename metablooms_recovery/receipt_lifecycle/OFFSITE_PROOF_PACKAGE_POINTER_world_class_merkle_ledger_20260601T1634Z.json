@@ -1,0 +1,15 @@
+{
+  "schema": "mb.receipt_lifecycle.offsite_proof_package_pointer.v1",
+  "created_at_utc": "2026-06-01T16:34:00Z",
+  "stage": "EFFICIENCY_STAGE002A_PROVE_WORLD_CLASS_MERKLE_COLD_ARCHIVE_OFFSITE",
+  "decision": "PARTIAL_PASS_PACKAGE_CREATED__PHONE_UPLOAD_READBACK_PENDING",
+  "family": "world_class_merkle_ledger",
+  "archive_name": "METABLOOMS_COLD_RECEIPTS_world_class_merkle_ledger_20260601T1619Z.tar.zst",
+  "archive_sha256": "eba7fbd4a0b9f473baf276573cfa9859acbf4ceb45d3db3b888ddd1a9337416e",
+  "archive_size_bytes": 1261818,
+  "package_name": "EFFICIENCY_STAGE002A_WORLD_CLASS_MERKLE_OFFSITE_PROOF_PACKAGE_20260601T1634Z.zip",
+  "package_sha256": "7a596694bd6a5cd44e858486449ca3bfb599c9bd1374de89df1f16a0849da3ec",
+  "termux_script": "TERMUX_UPLOAD_AND_READBACK_world_class_merkle_ledger_20260601T1619Z.sh",
+  "hot_removal_authorized": false,
+  "next_required_receipt": "LANDED_COLD_ARCHIVE_world_class_merkle_ledger_*.json"
+}
