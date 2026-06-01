@@ -1,0 +1,16 @@
+{
+  "schema": "mb.receipt_lifecycle.landed_import_pointer.v1",
+  "created_at_utc": "2026-06-01T17:00:02Z",
+  "stage": "EFFICIENCY_STAGE002A_IMPORT_WORLD_CLASS_MERKLE_LANDED_RECEIPT",
+  "decision": "PASS_COLD_ARCHIVE_BINARY_READBACK_IMPORTED__HOT_REMOVAL_GATE_ELIGIBLE",
+  "family": "world_class_merkle_ledger",
+  "archive_sha256": "eba7fbd4a0b9f473baf276573cfa9859acbf4ceb45d3db3b888ddd1a9337416e",
+  "archive_size_bytes": 1261818,
+  "landed_receipt_sha256": "ecb93f66d8276e38a87ebddc07f29ae3db5872fc236601a790dae77c86848b7e",
+  "validation_errors": 0,
+  "offsite_binary_readback_status": "PROVEN",
+  "hot_removal_eligible_for_next_gate": true,
+  "hot_removal_authorized_now": false,
+  "zero_hot_files_removed": true,
+  "next_gate": "EFFICIENCY_STAGE002B_HOT_REMOVE_WORLD_CLASS_MERKLE_LEDGER_AFTER_FINAL_PRECHECK"
+}
