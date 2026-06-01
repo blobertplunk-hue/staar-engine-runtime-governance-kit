@@ -1,0 +1,23 @@
+{
+  "schema": "mb.receipt_lifecycle.cold_archive_pointer.v1",
+  "created_at_utc": "2026-06-01T18:20:00Z",
+  "stage": "EFFICIENCY_STAGE005_COLD_ARCHIVE_SARP_STAGE1_ONE_FAMILY",
+  "family": "sarp_stage1",
+  "decision": "PASS_LOCAL_COLD_ARCHIVE_AND_OFFSITE_PROOF_PACKAGE_CREATED__PHONE_READBACK_PENDING",
+  "archive_name": "METABLOOMS_COLD_RECEIPTS_sarp_stage1_20260601T1820Z.tar.zst",
+  "archive_sha256": "a7c7b0b063dd4ad68876469fa737101031588578653bd4b0191fdea8e470c449",
+  "archive_size_bytes": 4136879,
+  "source_size_bytes": 21255080,
+  "file_count": 48,
+  "restore_verified_all": true,
+  "restore_missing_count": 0,
+  "restore_mismatch_count": 0,
+  "zero_hot_files_removed": true,
+  "hot_removal_authorized": false,
+  "package_name": "EFFICIENCY_STAGE005_SARP_STAGE1_OFFSITE_PROOF_PACKAGE_20260601T1820Z.zip",
+  "package_sha256": "9907b2a73441362034f7d6f8e44417be38054d35dccfb9df29acd773191758b2",
+  "receipt_bundle_sha256": "0e5f6cccb18e8656cb4967d9898210de12263e65515000a1fabb40b6315ffb48",
+  "countdown": "3 of 6 hot-removed; this family pending offsite readback/import/hot-removal; then 2 remain",
+  "prior_false_positive_corrected": "Initial broad text search matched quarantined audit/tool paths; final active-ledger check parses entries and only blocks runtime/receipts/sarp_stage1 prefix.",
+  "next_required_receipt": "LANDED_COLD_ARCHIVE_sarp_stage1_*.json"
+}
