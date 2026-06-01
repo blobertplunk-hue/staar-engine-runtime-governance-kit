@@ -1,0 +1,12 @@
+{
+  "bundle_id": "SIDECHAT_RESEARCH_FULL_BUNDLE_20260601T1412Z",
+  "status": "SIDECHAT_AGGREGATE_BUNDLE_NOT_PROMOTED_TO_MAIN_OS",
+  "created_at": "2026-06-01T1412Z",
+  "local_zip_name": "SIDECHAT_RESEARCH_FULL_BUNDLE_20260601T1412Z.zip",
+  "local_zip_sha256": "c2601633f5b0cde44191d561f3cff01d081f943877cd91a247335ef24751c530",
+  "zip_members": 66,
+  "payload_files": 34,
+  "file_search_used": false,
+  "relay_scope": "compact_manifest_only",
+  "known_boot_note": "export operation boot was blocked by llm interleaving promotion hardwire; repair operation boot passed and aggregate was created as sidechat bundle only"
+}
