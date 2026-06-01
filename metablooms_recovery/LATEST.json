@@ -1,32 +1,41 @@
 {
-  "schema": "mb.metablooms.recovery.latest.v2",
-  "created_at_utc": "2026-05-31T22:59:00Z",
-  "decision": "PASS_LATEST_UPDATED_TO_RECOVERED_DURABLE_FULL_EXPORT",
+  "schema": "mb.metablooms.recovery.latest.v3",
+  "created_at_utc": "2026-06-01T13:30:00Z",
+  "decision": "PASS_LATEST_UPDATED_TO_STAGE011K2_REBUILT_COLD_VERIFIED_OFFSITE_PROVEN_FULL_EXPORT",
   "current_floor_pointers": "metablooms_recovery/FLOOR_POINTERS.json",
   "current_checkpoint_index": "metablooms_recovery/CHECKPOINT_INDEX.json",
   "current_harness_path": "scripts/metablooms_recover_from_mntdata_and_github_v1.sh",
   "current_recovery_runbook": "metablooms_recovery/20260531T2230Z_RECOVERY_POINTERS_AND_EXECUTABLE_HARNESS_RUNBOOK.md",
   "durable_floor": {
-    "name": "Recovered durable full OS export 20260531T2244Z",
-    "asset_name": "METABLOOMS_FULL_OS_EXPORT_RECOVERED_DURABLE_FULL_OS_EXPORT_20260531T2244Z.tar.zst",
-    "release_tag": "MB-FULL-RECOVERED-DURABLE-20260531T2244Z",
-    "sha256": "e544267babc40ea2f8cbc841c0904e74dc2928c1cbba08021037423ef2028e64",
-    "size_bytes": 234503739,
-    "release_url": "https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit/releases/tag/MB-FULL-RECOVERED-DURABLE-20260531T2244Z",
-    "asset_url": "https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit/releases/download/MB-FULL-RECOVERED-DURABLE-20260531T2244Z/METABLOOMS_FULL_OS_EXPORT_RECOVERED_DURABLE_FULL_OS_EXPORT_20260531T2244Z.tar.zst"
+    "name": "Stage011K2 rebuilt after portable repair full OS export",
+    "asset_name": "METABLOOMS_FULL_OS_EXPORT_STAGE011K2_REBUILT_AFTER_PORTABLE_REPAIR_20260601T111108Z.tar.zst",
+    "release_tag": "MB-FULL-STAGE011K2-20260601T111108Z",
+    "sha256": "4efc7472396f79311a220d3acc2ddee4a0ec4c5e22dbf2b12c28742d50c50024",
+    "size_bytes": 248781629,
+    "release_url": "https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit/releases/tag/MB-FULL-STAGE011K2-20260601T111108Z",
+    "asset_url": "https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit/releases/download/MB-FULL-STAGE011K2-20260601T111108Z/METABLOOMS_FULL_OS_EXPORT_STAGE011K2_REBUILT_AFTER_PORTABLE_REPAIR_20260601T111108Z.tar.zst",
+    "landed_receipt": "metablooms_recovery/landed_receipts/LANDED_RECEIPT_STAGE011L_20260601T130215Z.json",
+    "project_pack_name": "STAGE011J2_PROJECT_PACK_ASSEMBLY_ONLY_E5_RERUN_20260601T114055Z.zip",
+    "project_pack_sha256": "c0c5ebfc241ffc6105b1dbe039813ecbb851827f4b4e2bb46168b345c6de93ab"
   },
   "previous_floor": {
+    "name": "Recovered durable full OS export 20260531T2244Z",
+    "sha256": "e544267babc40ea2f8cbc841c0904e74dc2928c1cbba08021037423ef2028e64",
+    "status": "superseded_but_still_valid_fallback"
+  },
+  "fallback_floor": {
     "name": "Stage10A v2",
     "sha256": "c02432759e07036b4a672c2a0501e2ff9186e4c71fdcd5b7c6f4101516d0f8b4",
-    "status": "superseded_but_still_valid_fallback"
+    "tag": "MB-FLOOR-STAGE10A-20260530T115100Z"
   },
   "known_unavailable": {
     "stage003_cold_archive": "UNAVAILABLE_UNTIL_BYTES_PROVIDED_AND_OFFSITE_PROVEN"
   },
   "minimum_recovery_sets": {
     "A_live_root": "/mnt/data/Metablooms_OS boots and Merkle passes",
-    "B_local_new_archive": "new recovered full export archive plus expected hash present in /mnt/data",
-    "C_github_new_release": "new GitHub release asset retrievable and binary SHA equals expected",
-    "D_stage10a_fallback": "Stage10A release remains fallback if new floor unavailable"
+    "B_local_stage011k2_archive": "Stage011K2 rebuilt archive plus expected hash present in /mnt/data",
+    "C_github_stage011k2_release": "Stage011K2 GitHub release asset retrievable and binary SHA equals expected",
+    "D_previous_floor_fallback": "Recovered 20260531T2244Z release remains fallback if Stage011K2 unavailable",
+    "E_stage10a_fallback": "Stage10A release remains deeper fallback if newer floors unavailable"
   }
 }
