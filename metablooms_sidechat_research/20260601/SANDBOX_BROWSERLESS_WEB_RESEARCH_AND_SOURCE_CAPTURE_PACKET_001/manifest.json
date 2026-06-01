@@ -1,0 +1,11 @@
+{
+  "packet_id": "SANDBOX_BROWSERLESS_WEB_RESEARCH_AND_SOURCE_CAPTURE_PACKET_001",
+  "status": "SIDECHAT_RESEARCH_ONLY_NOT_PROMOTED",
+  "created_at": "2026-06-01T1346Z",
+  "source_count": 30,
+  "local_zip_name": "SANDBOX_BROWSERLESS_WEB_RESEARCH_AND_SOURCE_CAPTURE_PACKET_001_20260601T1346Z.zip",
+  "local_zip_sha256": "$(cut -d' ' -f1 /mnt/data/SANDBOX_BROWSERLESS_WEB_RESEARCH_AND_SOURCE_CAPTURE_PACKET_001_20260601T1346Z.zip.sha256 2>/dev/null || echo unknown)",
+  "file_search_used": false,
+  "relay_scope": "compact_manifest_only",
+  "next_recommended_action": "continue_sidechat_research_or_main_os_intake_later"
+}
