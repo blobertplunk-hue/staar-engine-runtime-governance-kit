@@ -1,0 +1,13 @@
+{
+  "schema": "mb.receipt_lifecycle.pointer.v1",
+  "created_at_utc": "2026-06-01T15:09:12Z",
+  "decision": "PASS_DRYRUN_ZERO_DELETE",
+  "stage": "EFFICIENCY_STAGE001",
+  "history_index_sha256": "8e5a9cb0aa209d833908cf0c1c5beee86a944ed00550109a4ef4431934d81368",
+  "receipt_sha256": "4979371b9baef8c162a5226ad06e0ce466e9cd18e45fadb3c7c7fbac50a5db3b",
+  "projected_shrink_mib": 148.533,
+  "file_count": 4121,
+  "zero_hot_files_removed": true,
+  "sqlite_speedup_factor": 28.654233390672406,
+  "k2_binary_readback_status": "PENDING_PHONE_TERMUX"
+}
