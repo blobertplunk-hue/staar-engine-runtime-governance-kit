@@ -17,6 +17,37 @@ exec > >(tee "$LOGDIR/COMMAND_LOG.txt") 2>&1
 say(){ printf '\n[%s] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"; }
 need(){ command -v "$1" >/dev/null 2>&1 || { echo "BLOCKED: missing dependency: $1"; exit 10; }; }
 
+download_asset(){
+  local url="https://github.com/${REPO}/releases/download/${TAG}/${ASSET}"
+  rm -f "$ASSET"
+
+  if command -v gh >/dev/null 2>&1; then
+    if gh auth status >/dev/null 2>&1; then
+      say "Downloading release asset via authenticated gh"
+      gh release download "$TAG" --repo "$REPO" --pattern "$ASSET" --dir .
+      return 0
+    fi
+    say "gh exists but is not authenticated; trying direct HTTPS fallback"
+  else
+    say "gh not found; trying direct HTTPS fallback"
+  fi
+
+  if command -v curl >/dev/null 2>&1; then
+    say "Downloading release asset via curl"
+    curl -fL --retry 3 --retry-delay 2 -o "$ASSET" "$url"
+    return 0
+  fi
+
+  if command -v wget >/dev/null 2>&1; then
+    say "Downloading release asset via wget"
+    wget -O "$ASSET" "$url"
+    return 0
+  fi
+
+  echo "BLOCKED: no release-download method available. Need authenticated gh, curl, or wget."
+  exit 12
+}
+
 say "Checking dependencies"
 need bash
 need tar
@@ -25,16 +56,14 @@ if ! command -v unzstd >/dev/null 2>&1 && ! command -v zstd >/dev/null 2>&1; the
   echo "BLOCKED: missing zstd/unzstd. Install zstd first."
   exit 11
 fi
-need gh
-
-say "Checking GitHub auth"
-gh auth status || { echo "BLOCKED: gh is not authenticated"; exit 12; }
+if ! command -v gh >/dev/null 2>&1 && ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+  echo "BLOCKED: missing release downloader. Need gh, curl, or wget."
+  exit 12
+fi
 
 cd "$WORKDIR"
 
-say "Downloading release asset"
-rm -f "$ASSET"
-gh release download "$TAG" --repo "$REPO" --pattern "$ASSET" --dir .
+download_asset
 
 say "Verifying SHA-256"
 printf '%s  %s\n' "$EXPECTED_SHA" "$ASSET" | sha256sum -c -
