@@ -4,17 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       artifact_path:
-        description: "Path to release ZIP or ZIP.ZST inside the checked-out repository. Optional."
+        description: "Path to release ZIP, ZIP.ZST, TAR, or TAR.ZST inside the checked-out repository. Optional. If empty, sticky release is audited."
         required: false
         default: ""
       release_tag:
-        description: "GitHub Release tag containing the artifact asset. Optional."
+        description: "GitHub Release tag containing the artifact asset. Defaults to current sticky release."
         required: false
-        default: ""
+        default: "MB-FULL-STICKY-RECEIPT-KEY-SELFVERIFY-20260601T2251Z"
       release_asset_name:
-        description: "GitHub Release asset name to download and audit. Optional."
+        description: "GitHub Release asset name to download and audit. Defaults to current sticky TAR.ZST release."
         required: false
-        default: ""
+        default: "METABLOOMS_FULL_OS_STICKY_AFTER_RECEIPT_KEY_SELFVERIFY_20260601T2251Z.tar.zst"
       expected_root:
         description: "Expected root directory inside release artifact."
         required: false
@@ -39,6 +39,10 @@ jobs:
     name: Audit release artifact and attest audit packet
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      DEFAULT_RELEASE_TAG: MB-FULL-STICKY-RECEIPT-KEY-SELFVERIFY-20260601T2251Z
+      DEFAULT_RELEASE_ASSET_NAME: METABLOOMS_FULL_OS_STICKY_AFTER_RECEIPT_KEY_SELFVERIFY_20260601T2251Z.tar.zst
+      DEFAULT_EXPECTED_ROOT: Metablooms_OS
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,7 +52,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y zstd zip unzip python3 gh
+          sudo apt-get install -y zstd zip unzip python3 curl
 
       - name: Locate harness
         id: locate
@@ -72,8 +76,6 @@ jobs:
 
       - name: Resolve artifact source
         id: resolve-artifact
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
@@ -81,15 +83,24 @@ jobs:
           ARTIFACT_PATH="${{ github.event.inputs.artifact_path || '' }}"
           RELEASE_TAG="${{ github.event.inputs.release_tag || '' }}"
           RELEASE_ASSET_NAME="${{ github.event.inputs.release_asset_name || '' }}"
+          if [ -z "$ARTIFACT_PATH" ] && [ -z "$RELEASE_TAG" ] && [ -z "$RELEASE_ASSET_NAME" ]; then
+            RELEASE_TAG="$DEFAULT_RELEASE_TAG"
+            RELEASE_ASSET_NAME="$DEFAULT_RELEASE_ASSET_NAME"
+            echo "No explicit artifact inputs supplied; defaulting to sticky release $RELEASE_TAG / $RELEASE_ASSET_NAME"
+          fi
           if [ -n "$RELEASE_TAG" ] && [ -n "$RELEASE_ASSET_NAME" ]; then
-            gh release download "$RELEASE_TAG" --repo "${{ github.repository }}" --pattern "$RELEASE_ASSET_NAME" --dir release_asset_download
-            gh release download "$RELEASE_TAG" --repo "${{ github.repository }}" --pattern "$RELEASE_ASSET_NAME.sha256" --dir release_asset_download
+            BASE_URL="https://github.com/${{ github.repository }}/releases/download/$RELEASE_TAG"
+            curl -fL --retry 3 --retry-delay 2 -o "release_asset_download/$RELEASE_ASSET_NAME" "$BASE_URL/$RELEASE_ASSET_NAME"
+            curl -fL --retry 3 --retry-delay 2 -o "release_asset_download/$RELEASE_ASSET_NAME.sha256" "$BASE_URL/$RELEASE_ASSET_NAME.sha256"
             ARTIFACT_PATH="release_asset_download/$RELEASE_ASSET_NAME"
             test -f "$ARTIFACT_PATH"
             test -f "$ARTIFACT_PATH.sha256"
+            echo "resolved_release_tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+            echo "resolved_release_asset_name=$RELEASE_ASSET_NAME" >> "$GITHUB_OUTPUT"
           fi
-          if [ -z "$ARTIFACT_PATH" ] && [ -f release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip ]; then
-            ARTIFACT_PATH="release_artifacts/stage6/Metablooms_OS_RELEASE_FIXTURE_STAGE6.zip"
+          if [ -z "$ARTIFACT_PATH" ]; then
+            echo "BLOCKED: no artifact path and no release tag/asset available. Refusing silent Stage6 fallback." >&2
+            exit 42
           fi
           echo "artifact_path=$ARTIFACT_PATH" >> "$GITHUB_OUTPUT"
           echo "resolved_artifact_path=$ARTIFACT_PATH"
@@ -99,18 +110,13 @@ jobs:
         run: |
           set -euo pipefail
           ARTIFACT_PATH="${{ steps.resolve-artifact.outputs.artifact_path }}"
-          EXPECTED_ROOT="${{ github.event.inputs.expected_root || 'Metablooms_OS' }}"
-          if [ -n "$ARTIFACT_PATH" ]; then
-            python3 -S "${{ steps.locate.outputs.runner }}" \
-              --artifact "$ARTIFACT_PATH" \
-              --expected-root "$EXPECTED_ROOT" \
-              --out-dir remote_audit_out \
-              --clean
-          else
-            printf '{"verdict":"SELF_TEST_ONLY","reason":"no artifact_path, no release asset inputs, and no Stage 6 fixture present"}\n' > remote_audit_out/audit_result.json
-            printf '# MetaBlooms Remote Audit\n\nSELF_TEST_ONLY: no release artifact path supplied.\n' > remote_audit_out/audit_report.md
-            zip -qr remote_audit_out/audit_packet.zip remote_audit_out/audit_result.json remote_audit_out/audit_report.md
-          fi
+          EXPECTED_ROOT="${{ github.event.inputs.expected_root || '' }}"
+          if [ -z "$EXPECTED_ROOT" ]; then EXPECTED_ROOT="$DEFAULT_EXPECTED_ROOT"; fi
+          python3 -S "${{ steps.locate.outputs.runner }}" \
+            --artifact "$ARTIFACT_PATH" \
+            --expected-root "$EXPECTED_ROOT" \
+            --out-dir remote_audit_out \
+            --clean
           sha256sum remote_audit_out/audit_packet.zip > remote_audit_out/audit_packet.zip.sha256
 
       - name: Upload audit packet
@@ -133,8 +139,6 @@ jobs:
           subject-path: remote_audit_out/audit_packet.zip
 
       - name: Verify GitHub artifact attestation for audit packet
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
@@ -151,6 +155,8 @@ jobs:
             echo "- Ref: ${{ github.ref }}"
             echo "- SHA: ${{ github.sha }}"
             echo "- Artifact path: ${{ steps.resolve-artifact.outputs.artifact_path }}"
+            echo "- Release tag: ${{ steps.resolve-artifact.outputs.resolved_release_tag }}"
+            echo "- Release asset: ${{ steps.resolve-artifact.outputs.resolved_release_asset_name }}"
             echo "- Artifact upload digest: ${{ steps.upload-audit-packet.outputs.digest }}"
             echo "- Attestation verification: completed by gh attestation verify"
             echo
