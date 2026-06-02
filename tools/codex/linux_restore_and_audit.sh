@@ -8,6 +8,7 @@ EXPECTED_SHA="${EXPECTED_SHA:-786fd1118a7a3be4f13bf618de2826e161765c0ba7ff5772b8
 TASK="${TASK:-Codex Linux repo-side OS audit}"
 OPERATION="${OPERATION:-validate}"
 WORKDIR="${WORKDIR:-$PWD/metablooms_codex_linux_restore}"
+AUTO_INSTALL_DEPS="${AUTO_INSTALL_DEPS:-1}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 LOGDIR="$WORKDIR/audit_logs_$STAMP"
 
@@ -16,6 +17,63 @@ exec > >(tee "$LOGDIR/COMMAND_LOG.txt") 2>&1
 
 say(){ printf '\n[%s] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"; }
 need(){ command -v "$1" >/dev/null 2>&1 || { echo "BLOCKED: missing dependency: $1"; exit 10; }; }
+
+run_pkg_install(){
+  local pkg="$1"
+  if [ "${AUTO_INSTALL_DEPS}" != "1" ]; then
+    return 1
+  fi
+  if command -v apt-get >/dev/null 2>&1; then
+    say "Installing dependency via apt-get: $pkg"
+    sudo apt-get update
+    sudo apt-get install -y "$pkg"
+    return 0
+  fi
+  if command -v apk >/dev/null 2>&1; then
+    say "Installing dependency via apk: $pkg"
+    sudo apk add --no-cache "$pkg"
+    return 0
+  fi
+  if command -v dnf >/dev/null 2>&1; then
+    say "Installing dependency via dnf: $pkg"
+    sudo dnf install -y "$pkg"
+    return 0
+  fi
+  if command -v yum >/dev/null 2>&1; then
+    say "Installing dependency via yum: $pkg"
+    sudo yum install -y "$pkg"
+    return 0
+  fi
+  return 1
+}
+
+ensure_zstd(){
+  if command -v unzstd >/dev/null 2>&1 || command -v zstd >/dev/null 2>&1; then
+    return 0
+  fi
+  say "zstd/unzstd missing; attempting bounded dependency repair"
+  run_pkg_install zstd || true
+  if command -v unzstd >/dev/null 2>&1 || command -v zstd >/dev/null 2>&1; then
+    say "zstd/unzstd dependency repaired"
+    return 0
+  fi
+  echo "BLOCKED: missing zstd/unzstd and automatic install failed or was disabled. Install zstd first."
+  exit 11
+}
+
+ensure_downloader(){
+  if command -v gh >/dev/null 2>&1 || command -v curl >/dev/null 2>&1 || command -v wget >/dev/null 2>&1; then
+    return 0
+  fi
+  say "No release downloader found; attempting bounded dependency repair for curl"
+  run_pkg_install curl || true
+  if command -v curl >/dev/null 2>&1 || command -v wget >/dev/null 2>&1 || command -v gh >/dev/null 2>&1; then
+    say "release downloader dependency repaired"
+    return 0
+  fi
+  echo "BLOCKED: missing release downloader and automatic install failed or was disabled. Need gh, curl, or wget."
+  exit 12
+}
 
 download_asset(){
   local url="https://github.com/${REPO}/releases/download/${TAG}/${ASSET}"
@@ -44,7 +102,7 @@ download_asset(){
     return 0
   fi
 
-  echo "BLOCKED: no release-download method available. Need authenticated gh, curl, or wget."
+  echo "BLOCKED: no release-download method available after dependency repair. Need authenticated gh, curl, or wget."
   exit 12
 }
 
@@ -52,14 +110,8 @@ say "Checking dependencies"
 need bash
 need tar
 need sha256sum
-if ! command -v unzstd >/dev/null 2>&1 && ! command -v zstd >/dev/null 2>&1; then
-  echo "BLOCKED: missing zstd/unzstd. Install zstd first."
-  exit 11
-fi
-if ! command -v gh >/dev/null 2>&1 && ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
-  echo "BLOCKED: missing release downloader. Need gh, curl, or wget."
-  exit 12
-fi
+ensure_zstd
+ensure_downloader
 
 cd "$WORKDIR"
 
@@ -102,6 +154,7 @@ cat > "$PKT/AUDIT_REPORT.md" <<REPORT
 - Expected SHA-256: \`$EXPECTED_SHA\`
 - Boot task: \`$TASK\`
 - Operation: \`$OPERATION\`
+- Auto-install dependencies: \`$AUTO_INSTALL_DEPS\`
 
 ## Result
 Restore, hash verification, extraction, and turn-boot completed. Continue the bounded audit from the active Codex prompt/issue.
@@ -114,6 +167,7 @@ cat > "$PKT/MACHINE_FINDINGS.json" <<JSON
   "release_tag": "$TAG",
   "asset": "$ASSET",
   "expected_sha256": "$EXPECTED_SHA",
+  "auto_install_deps": "$AUTO_INSTALL_DEPS",
   "decision": "PASS_RESTORE_BOOT_SCAFFOLD_READY"
 }
 JSON
