@@ -15,11 +15,20 @@ desired state, and concrete action items.
 | [BTS_FEEDBACK_LOOP_IMPROVEMENT_20260602.md](BTS_FEEDBACK_LOOP_IMPROVEMENT_20260602.md) | MetaBlooms OS | BTS/learning loop not driving real improvement | HIGH | 2026-06-02 |
 | [METABLOOMS_OS_CROSS_SESSION_WORKFLOW_IMPROVEMENT_20260602.md](METABLOOMS_OS_CROSS_SESSION_WORKFLOW_IMPROVEMENT_20260602.md) | MetaBlooms OS | Cross-session coordination missing snapshot and ordered backlog | HIGH | 2026-06-02 |
 | [METABLOOMS_OS_AGENT_HARNESS_IMPROVEMENT_20260602.md](METABLOOMS_OS_AGENT_HARNESS_IMPROVEMENT_20260602.md) | MetaBlooms OS | Agent harness plan gaps: stage order, OpenHands risk, context builder, build sequence | HIGH | 2026-06-02 |
+| [METABLOOMS_OS_BOOT_AND_RESEARCH_GATE_IMPROVEMENT_20260602.md](METABLOOMS_OS_BOOT_AND_RESEARCH_GATE_IMPROVEMENT_20260602.md) | MetaBlooms OS | Boot blocker recursion, BTS boot contract, and research-gate remediation | CRITICAL | 2026-06-02 |
+| [METABLOOMS_OS_VISUAL_FORENSICS_AND_ARTIFACT_INTENT_IMPROVEMENT_20260602.md](METABLOOMS_OS_VISUAL_FORENSICS_AND_ARTIFACT_INTENT_IMPROVEMENT_20260602.md) | MetaBlooms OS | Visual forensics, user correction ledger, generated-map QA, markdown artifact intent | HIGH | 2026-06-02 |
 
 ## Open action items at a glance
 
 | ID | Source | Item | Status | Blocks |
 |---|---|---|---|---|
+| B1 | Boot | Add recursive boot repair controller | OPEN | B2, B3, B4, B7 |
+| B2 | Boot | Add repeated-blocker detection and root-cause repair routing | OPEN | — |
+| B3 | Boot | Add boot-contract exception for missing BTS full-decision fields | OPEN | B1 |
+| B4 | Boot | Add research-gate remediation contract output | OPEN | B1, B5 |
+| B5 | Boot | Add explicit local-only repair exemption path with receipt/SAR | OPEN | B4 |
+| B6 | Boot | Couple behavior-changing repairs to export/diff-packet creation and readback validation | OPEN | B1 |
+| B7 | Boot | Add boot incident ledger with blocker fingerprints and recurrence counts | OPEN | B1, B2 |
 | A1 | BTS | Add Rule 6 to CODING_RELIABILITY_SOP (PASS turns → coverage record) | OPEN | — |
 | A2 | BTS | SOP invariant additions cite session receipt in commit message | OPEN | — |
 | A3 | BTS | Add turn_class-aware BTS path (audit turns → audit_evidence_quality) | OPEN | — |
@@ -35,3 +44,10 @@ desired state, and concrete action items.
 | H2 | Harness | Add OpenHands HIGH-risk containment requirement to ZIP plan | OPEN | — |
 | H3 | Harness | Write context builder sub-spec (relevance policy, token budget, secret filter) | OPEN | H4 |
 | H4 | Harness | Record governance decision: build CH fixture first, graduate to GO later | OPEN | — |
+| V1 | Visual | Add forensic_scene_reconstruction_schema | OPEN | V2, V3, V4 |
+| V2 | Visual | Add user_correction_supersession_ledger | OPEN | V3, V4, V7 |
+| V3 | Visual | Add visual_planning_image_gate before map-like image generation | OPEN | V4 |
+| V4 | Visual | Add generated visual QA checks for map-like outputs | OPEN | — |
+| V5 | Visual | Add markdown_artifact_intent_gate for downloadable `.md` defaults | OPEN | — |
+| V6 | Visual | Add deterministic SVG/HTML renderer for exact planning diagrams | OPEN | V1, V2 |
+| V7 | Visual | Add stale-artifact marker for generated images contradicted by user corrections | OPEN | V2 |
