@@ -32,6 +32,7 @@ permissions:
   contents: read
   id-token: write
   attestations: write
+  artifact-metadata: write
   actions: read
 
 jobs:
@@ -154,9 +155,9 @@ jobs:
             sleep 10
           done
           if [ "$rc" -eq 0 ]; then
-            printf '{"decision":"PASS","mode":"ATTESTATION_VERIFIED","attempts_max":6}\n' > remote_audit_out/attestation_verification_result.json
+            printf '{"decision":"PASS","mode":"ATTESTATION_VERIFIED","attempts_max":6,"root_cause_repair":"artifact-metadata-write-permission-added"}\n' > remote_audit_out/attestation_verification_result.json
           else
-            printf '{"decision":"ADVISORY_BLOCKED","mode":"ATTESTATION_VERIFY_FAILED_AFTER_AUDIT_PASS","attempts_max":6,"note":"Audit artifact, checksum, uploaded artifact digest, and audit_result.json remain the hard proof; attestation verification is advisory until root cause is repaired."}\n' > remote_audit_out/attestation_verification_result.json
+            printf '{"decision":"ADVISORY_BLOCKED","mode":"ATTESTATION_VERIFY_FAILED_AFTER_AUDIT_PASS","attempts_max":6,"root_cause_candidate":"missing-or-insufficient-artifact-metadata-storage-record-or-attestation-indexing","note":"Audit artifact, checksum, uploaded artifact digest, and audit_result.json remain the hard proof; attestation verification is advisory until root cause is repaired."}\n' > remote_audit_out/attestation_verification_result.json
             echo "::warning::Attestation verification failed after retries; audit proof remains available as uploaded artifact and checksum."
             exit 1
           fi
