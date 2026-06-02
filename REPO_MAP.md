@@ -1,5 +1,7 @@
 # REPO_MAP
 - governance/
+  - sops/
+  - improvement_log/
 - contracts/
 - runtimes/
 - source_materials/
