@@ -1,0 +1,8 @@
+{
+  "schema": "mb.fixture.landed_receipt.v1",
+  "fixture_purpose": "FIND-03: neither downloaded_sha256 nor download_sha256 is present. Expected decision: BLOCKED (missing_or_invalid_downloaded_sha256).",
+  "expected_decision": "BLOCKED",
+  "expected_errors": ["missing_or_invalid_downloaded_sha256"],
+  "asset": "fixture_asset.txt",
+  "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
