@@ -17,6 +17,7 @@ desired state, and concrete action items.
 | [METABLOOMS_OS_AGENT_HARNESS_IMPROVEMENT_20260602.md](METABLOOMS_OS_AGENT_HARNESS_IMPROVEMENT_20260602.md) | MetaBlooms OS | Agent harness plan gaps: stage order, OpenHands risk, context builder, build sequence | HIGH | 2026-06-02 |
 | [METABLOOMS_OS_BOOT_AND_RESEARCH_GATE_IMPROVEMENT_20260602.md](METABLOOMS_OS_BOOT_AND_RESEARCH_GATE_IMPROVEMENT_20260602.md) | MetaBlooms OS | Boot blocker recursion, BTS boot contract, and research-gate remediation | CRITICAL | 2026-06-02 |
 | [METABLOOMS_OS_VISUAL_FORENSICS_AND_ARTIFACT_INTENT_IMPROVEMENT_20260602.md](METABLOOMS_OS_VISUAL_FORENSICS_AND_ARTIFACT_INTENT_IMPROVEMENT_20260602.md) | MetaBlooms OS | Visual forensics, user correction ledger, generated-map QA, markdown artifact intent | HIGH | 2026-06-02 |
+| [METABLOOMS_OS_WCUQ_AND_POST_RUBRIC_REPAIR_IMPROVEMENT_20260602.md](METABLOOMS_OS_WCUQ_AND_POST_RUBRIC_REPAIR_IMPROVEMENT_20260602.md) | MetaBlooms OS | WCUQ stale tracker display and post-rubric repair carry-forward | HIGH | 2026-06-02 |
 
 ## Open action items at a glance
 
@@ -51,3 +52,15 @@ desired state, and concrete action items.
 | V5 | Visual | Add markdown_artifact_intent_gate for downloadable `.md` defaults | OPEN | — |
 | V6 | Visual | Add deterministic SVG/HTML renderer for exact planning diagrams | OPEN | V1, V2 |
 | V7 | Visual | Add stale-artifact marker for generated images contradicted by user corrections | OPEN | V2 |
+| WQ1 | WCUQ | Add WCUQ freshness gate for Visual Tracker | OPEN | WQ2, WQ3, WQ5 |
+| WQ2 | WCUQ | Separate calibration baseline from live per-turn WCUQ score | OPEN | WQ1, WQ3 |
+| WQ3 | WCUQ | Refresh WCUQ from current receipts or suppress numeric score | OPEN | WQ1 |
+| WQ4 | WCUQ | Add WCUQ input signatures and freshness decisions to receipts | OPEN | WQ1 |
+| WQ5 | WCUQ | Add Visual Tracker stale-WCUQ regression test | OPEN | WQ1 |
+| CR1 | Comparative Rubric | Promote Stage004G fast-proof tool and harness patches into native export | OPEN | CR3 |
+| CR2 | Comparative Rubric | Promote Gemini-amended matrix registry into native export | OPEN | — |
+| CR3 | Comparative Rubric | Make final harness rerun deterministic and resumable | OPEN | CR1 |
+| CR4 | Comparative Rubric | Codify export hygiene exclusions for restore/extract work directories | OPEN | CR3 |
+| CR5 | Comparative Rubric | Promote minor self-heal normalization gate | OPEN | — |
+| CR6 | Comparative Rubric | Build independent state-graph/security audit path before raising H above 1 | OPEN | — |
+| CR7 | Comparative Rubric | Add Stage004E router-security regression tests | OPEN | CR1 |
