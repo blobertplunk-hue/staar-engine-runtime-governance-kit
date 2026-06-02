@@ -1,0 +1,148 @@
+{
+  "schema": "mb.repo_side_audit.v1",
+  "created_utc": "2026-06-02T00:50:00Z",
+  "auditor": "Claude Code repo-side OS audit",
+  "release_tag": "MB-FULL-STICKY-RECEIPT-KEY-SELFVERIFY-20260601T2251Z",
+  "release_asset": "METABLOOMS_FULL_OS_STICKY_AFTER_RECEIPT_KEY_SELFVERIFY_20260601T2251Z.tar.zst",
+  "asset_sha256_expected": "786fd1118a7a3be4f13bf618de2826e161765c0ba7ff5772b85eae98e42f9e73",
+  "asset_sha256_observed": "786fd1118a7a3be4f13bf618de2826e161765c0ba7ff5772b85eae98e42f9e73",
+  "sha256_match": true,
+  "asset_size_bytes": 213513094,
+  "mpp_turn_boot_rc": 0,
+  "mpp_turn_boot_status": "PASS",
+  "findings": [
+    {
+      "id": "FIND-01",
+      "class": "sidecar_false_fail_prevention",
+      "severity": "MEDIUM",
+      "title": "No regression fixture for sidecar-present-but-wrong-hash",
+      "description": "In release_audit_harness_runner_v1.py, sidecar_hash() returns None when the sidecar is absent OR when its content is not a valid 64-hex string. Only the absent-sidecar case produces BLOCKED; a present-but-wrong-hash sidecar correctly produces FAIL. However the runner self-test (self_test/make_zip) always writes a correct sidecar — there is no case where the sidecar holds an intentionally wrong hash. A regression that silently made sidecar_hash() return None for a wrong hash (e.g. by broadening the regex) would not be caught.",
+      "affected_file": "runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py",
+      "affected_lines": "41-47, 133",
+      "status": "OPEN",
+      "recommended_action": "Add a self-test case where the sidecar file contains an intentionally wrong (but validly formatted) SHA-256. Expected check decision: FAIL.",
+      "first_pass_action": "Fixture and validator added (fixtures/release_audit_harness/sidecar_regression_validator.py)."
+    },
+    {
+      "id": "FIND-02",
+      "class": "sidecar_false_fail_prevention",
+      "severity": "LOW",
+      "title": "Malformed sidecar silently becomes BLOCKED, not documented",
+      "description": "If the sidecar file exists but contains non-hex content (e.g. 'MISSING' or a corrupt string), sidecar_hash() returns None. The resulting check decision is BLOCKED (same as absent sidecar). This prevents a false FAIL but is undocumented and untested. A malformed sidecar that should signal tampering is indistinguishable from a legitimately absent sidecar.",
+      "affected_file": "runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py",
+      "affected_lines": "41-47",
+      "status": "OPEN",
+      "recommended_action": "Distinguish 'sidecar absent' (BLOCKED) from 'sidecar malformed' (FAIL). Add fixture documenting current BLOCKED behavior.",
+      "first_pass_action": "Documented in fixture sidecar_regression_validator.py with expected BLOCKED decision."
+    },
+    {
+      "id": "FIND-03",
+      "class": "downloaded_sha256_vs_download_sha256_normalization",
+      "severity": "LOW",
+      "title": "Missing edge-case fixtures for downloaded_sha256/download_sha256 normalization",
+      "description": "fixtures/landed_receipt_self_verify/ has three cases: legacy_download_sha256_PASS (only download_sha256 present), both_keys_differ_BLOCKED, mismatched_asset_BLOCKED. Missing: (a) canonical_only_PASS: receipt has only downloaded_sha256, no download_sha256 field — the canonical path. (b) neither_key_BLOCKED: receipt has neither field — should produce BLOCKED. These gaps leave the normalizer untested for its canonical and total-absence paths.",
+      "affected_file": "fixtures/landed_receipt_self_verify/ (in OS archive)",
+      "status": "OPEN",
+      "recommended_action": "Add canonical_only_PASS.json and neither_key_BLOCKED.json fixtures. Run landed_receipt_self_verify_v1.py against them in CI.",
+      "first_pass_action": "Fixtures added to repo at fixtures/landed_receipt_self_verify/ (canonical_only_PASS.json, neither_key_BLOCKED.json)."
+    },
+    {
+      "id": "FIND-04",
+      "class": "landed_receipt_self_verification",
+      "severity": "LOW",
+      "title": "landed_receipt_self_verify_v1.py returns exit code 2 for PASS_RECEIPT_KEY_CONFIRMED",
+      "description": "main() returns 0 only for PASS_PROVEN; it returns 2 for PASS_RECEIPT_KEY_CONFIRMED. PASS_RECEIPT_KEY_CONFIRMED is a valid non-error outcome (asset not local, hashes match in receipt). CI callers that check exit code would treat a key-confirmed receipt as an error, forcing downstream workflows to either ignore exit codes or paper over the exit code with || true.",
+      "affected_file": "tools/metablooms/landed_receipt_self_verify_v1.py (in OS archive)",
+      "affected_lines": "168",
+      "status": "OPEN",
+      "recommended_action": "Return 0 for both PASS_PROVEN and PASS_RECEIPT_KEY_CONFIRMED. Return non-zero only for BLOCKED. Not fixing in first pass — requires OS-side code change.",
+      "first_pass_action": "Documented. Fixture neither_key_BLOCKED.json also covers the BLOCKED exit-code case."
+    },
+    {
+      "id": "FIND-05",
+      "class": "export_timeout_partial_archive_prevention",
+      "severity": "MEDIUM",
+      "title": "Partial decompressed file not deleted on zstd timeout",
+      "description": "In release_audit_harness_runner_v1.py, run_binary_to_file() opens the target file before starting subprocess.run(). On TimeoutExpired, the partial file may already have bytes written. materialize() sets the check to FAIL (correct) but the return expression `(target if target.exists() and target.stat().st_size > 0 else None)` can still return the partial file as zip_path. audit() then calls check_zip() on the corrupt partial file, producing misleading additional check rows in the output despite the upstream FAIL.",
+      "affected_file": "runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py",
+      "affected_lines": "59-68, 115-117",
+      "status": "OPEN",
+      "recommended_action": "In run_binary_to_file(), on TimeoutExpired, delete the partial target file before returning. In materialize(), guard zip_path return on returncode == 0. Not fixing in first pass — requires runner code change.",
+      "first_pass_action": "Documented. Noted in sidecar_regression_validator.py comments."
+    },
+    {
+      "id": "FIND-06",
+      "class": "github_release_readback_workflow_correctness",
+      "severity": "HIGH",
+      "title": "Release audit harness runner cannot process tar.zst releases",
+      "description": "The new sticky release (MB-FULL-STICKY-RECEIPT-KEY-SELFVERIFY-20260601T2251Z) uses the .tar.zst format. The runner's materialize() function only handles .zip and .zip.zst, returning BLOCKED with 'expected .zip or .zip.zst' for any other extension. The GitHub workflow (metablooms-release-audit-harness.yml) would therefore return BLOCKED when triaged against this release. The REQUIRED member paths ({root}/scripts/mpp/mpp.sh etc.) are also ZIP-path-based and would not apply to a tar archive. The prior durable release (metablooms-stage12-reconciled-20260522T0058Z) correctly uses .zip.zst and remains auditable.",
+      "affected_file": "runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py (materialize, check_zip); .github/workflows/metablooms-release-audit-harness.yml",
+      "affected_lines": "100-118 (materialize), 71-98 (check_zip)",
+      "release_assets_observed": [
+        "METABLOOMS_FULL_OS_STICKY_AFTER_RECEIPT_KEY_SELFVERIFY_20260601T2251Z.tar.zst",
+        "METABLOOMS_FULL_OS_STICKY_AFTER_RECEIPT_KEY_SELFVERIFY_20260601T2251Z.tar.zst.sha256",
+        "METABLOOMS_FULL_OS_STICKY_AFTER_RECEIPT_KEY_SELFVERIFY_20260601T2251Z.tar.zst.provenance.json"
+      ],
+      "sidecar_sha256_present_in_release": true,
+      "status": "OPEN",
+      "recommended_action": "Extend materialize() to handle .tar.zst; add tar-based required-member check. Alternatively, require future full-OS releases to use .zip.zst for harness compatibility. Not fixing in first pass — broad runner change.",
+      "first_pass_action": "Documented. A BLOCKED fixture expectation is recorded in sidecar_regression_validator.py."
+    },
+    {
+      "id": "FIND-07",
+      "class": "github_release_readback_workflow_correctness",
+      "severity": "LOW",
+      "title": "Workflow does not fail-fast on absent sidecar before passing to runner",
+      "description": "metablooms-release-audit-harness.yml downloads the release asset and sidecar, then passes artifact_path to the runner. If the .sha256 sidecar were absent from the release, gh release download would error on that asset but the workflow has no explicit pre-runner SHA check. The runner would then emit BLOCKED (not FAIL). This is acceptable but means a missing sidecar is treated as a blocker rather than a hard error at the workflow level.",
+      "affected_file": ".github/workflows/metablooms-release-audit-harness.yml",
+      "affected_lines": "84-88",
+      "status": "INFORMATIONAL",
+      "recommended_action": "Optionally add a workflow-level sha256sum verification step before invoking the runner, so sidecar absence is a hard workflow error rather than a runner BLOCKED.",
+      "first_pass_action": "Documented."
+    },
+    {
+      "id": "FIND-08",
+      "class": "durable_floor_proof_integrity",
+      "severity": "INFORMATIONAL",
+      "title": "New sticky release not in durability ledger — durable floor unchanged",
+      "description": "The sticky release (786fd1...) was published 2026-06-01T23:20Z. The durability ledger (DURABILITY_LEDGER_RECEIPT_KEY_NORMALIZED.json, created 2026-06-01T22:36Z) predates the release and contains no entry for it. The K2 floor (sha: 4efc7472..., binary_readback_real_hash_pass: true) is intact and is the current durable floor. The shrunk stage008B baseline (sha: 38fe0f2d...) is PENDING_PHONE_RELEASE_ASSET_READBACK. Per audit rule: binary readback proof is required before a new floor is declared. No action taken.",
+      "affected_file": "runtime/generated/sarp_receipt_key_selfverify_20260601T2232Z/DURABILITY_LEDGER_RECEIPT_KEY_NORMALIZED.json (in OS archive)",
+      "durable_floor": {
+        "name": "K2_stage011k2_floor",
+        "sha256": "4efc7472396f79311a220d3acc2ddee4a0ec4c5e22dbf2b12c28742d50c50024",
+        "binary_readback_real_hash_pass": true,
+        "receipt_path": "runtime/generated/k2_readback_import_20260601T1604Z/LANDED_ASSET_STAGE011K2_20260601T154518Z.json"
+      },
+      "status": "PASS_NO_ACTION",
+      "recommended_action": "After phone readback of the sticky release proves SHA match, add a durability ledger entry for 786fd1... with binary_readback_real_hash_pass: true. Do not replace K2 floor until a stronger binary readback proves a newer candidate.",
+      "first_pass_action": "None. K2 floor not touched."
+    },
+    {
+      "id": "FIND-09",
+      "class": "missing_regression_fixtures",
+      "severity": "MEDIUM",
+      "title": "Release audit harness self-test missing sidecar-mismatch and tar.zst cases",
+      "description": "The runner's self_test() exercises three cases: positive (PASS), missing_mpp (FAIL), traversal (FAIL). Missing: (1) sidecar present with wrong hash → expect FAIL on artifact_sha_sidecar. (2) sidecar file contains non-hex content → expect BLOCKED on artifact_sha_sidecar. (3) artifact is .tar.zst (unsupported) → expect BLOCKED on artifact_extension. Adding these to the runner's make_zip/cases list would catch future regressions.",
+      "affected_file": "runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py",
+      "affected_lines": "154-181 (make_zip, self_test)",
+      "status": "OPEN",
+      "recommended_action": "Extend make_zip() to accept a wrong_sidecar_hash=False and malformed_sidecar=False param; add cases to self_test() cases list. Not changing runner in first pass.",
+      "first_pass_action": "Standalone validator fixtures/release_audit_harness/sidecar_regression_validator.py covers these cases without modifying the runner."
+    }
+  ],
+  "open_count": 7,
+  "informational_count": 2,
+  "high_severity_count": 1,
+  "medium_severity_count": 2,
+  "low_severity_count": 3,
+  "durable_floor_replaced": false,
+  "release_assets_uploaded": false,
+  "broad_repairs_made": false,
+  "mpp_turn_boot_summary": {
+    "decision": "PASS",
+    "rc": 0,
+    "command": "turn-boot",
+    "operation": "validate",
+    "task": "Claude Code repo-side OS audit"
+  }
+}

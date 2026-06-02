@@ -1,0 +1,9 @@
+{
+  "schema": "mb.fixture.landed_receipt.v1",
+  "fixture_purpose": "FIND-03: canonical path — only downloaded_sha256 present, no legacy download_sha256 field. Expected decision: PASS_PROVEN (when fixture_asset.txt is present) or PASS_RECEIPT_KEY_CONFIRMED (when asset is absent).",
+  "expected_decision_with_asset": "PASS_PROVEN",
+  "expected_decision_without_asset": "PASS_RECEIPT_KEY_CONFIRMED",
+  "asset": "fixture_asset.txt",
+  "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "downloaded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
