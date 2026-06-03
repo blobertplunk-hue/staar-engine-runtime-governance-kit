@@ -26,6 +26,9 @@ from post_tool_failure_adapter import map_payload  # noqa: E402
 _CARTRIDGE_ID = "CHAT790_EXPORT_MINING_CARTRIDGE"
 _RUNNER_STAGE = "STAGE001"
 _HOOK_EVENT = "PostToolUseFailure"
+# Maximum mapped events stored in the receipt by default. Keeps memory bounded
+# regardless of input size. Pass max_events=None only for small/test inputs.
+_DEFAULT_MAX_EVENTS = 1000
 
 
 def _is_tool_failure(entry):
@@ -38,16 +41,24 @@ def _emit_error(message, exit_code):
     sys.exit(exit_code)
 
 
-def mine_stream(lines, max_entries=None):
+def mine_stream(lines, max_entries=None, max_events=_DEFAULT_MAX_EVENTS):
     """
     Parse JSONL lines, extract PostToolUseFailure entries, map to blocker events.
 
     Returns a receipt dict. Never writes to the ledger or filesystem.
     Malformed failure payloads are counted as unmappable instead of aborting the run.
+
+    max_events: maximum number of mapped events to store in the receipt.
+      - _DEFAULT_MAX_EVENTS (1000): default bounded mode.
+      - 0: counts only — events are mapped and counted but never stored (dry-run mode).
+      - None: unlimited — disables the cap (use only for small/test inputs).
+    All events are mapped and counted regardless of max_events; only storage is capped.
     """
     entries_seen = 0
     parse_errors = 0
     failures_found = 0
+    mapped_count = 0        # total successfully mapped (including those beyond the cap)
+    events_capped_count = 0 # mapped events not stored due to cap
     mapped_events = []
     unmappable_count = 0
 
@@ -78,7 +89,11 @@ def mine_stream(lines, max_entries=None):
         if status == "UNMAPPABLE":
             unmappable_count += 1
         else:
-            mapped_events.append({**event, "_adapter_status": status})
+            mapped_count += 1
+            if max_events is None or len(mapped_events) < max_events:
+                mapped_events.append({**event, "_adapter_status": status})
+            else:
+                events_capped_count += 1
 
     return {
         "cartridge_id": _CARTRIDGE_ID,
@@ -86,9 +101,11 @@ def mine_stream(lines, max_entries=None):
         "entries_seen": entries_seen,
         "parse_errors": parse_errors,
         "failures_found": failures_found,
-        "mapped": len(mapped_events),
+        "mapped": mapped_count,
         "unmappable": unmappable_count,
         "events": mapped_events,
+        "events_cap": max_events,
+        "events_capped": events_capped_count > 0,
     }
 
 
@@ -100,9 +117,22 @@ def main():
     parser.add_argument("--output", help="Path to write JSON receipt (default: stdout)")
     parser.add_argument("--max-entries", type=int, default=None,
                         help="Stop after processing N entries")
+    parser.add_argument(
+        "--max-events", type=int, default=None,
+        help=f"Maximum mapped events stored in receipt (default: {_DEFAULT_MAX_EVENTS}; "
+             "0 = counts only). Does not affect mapped/failure counts.",
+    )
     parser.add_argument("--dry-run", action="store_true",
-                        help="Parse and count only; emit events=[] in receipt")
+                        help="Parse and count only; store no events (sets --max-events 0)")
     args = parser.parse_args()
+
+    # Resolve effective max_events: dry-run always means 0 (never store events).
+    if args.dry_run:
+        effective_max_events = 0
+    elif args.max_events is not None:
+        effective_max_events = args.max_events
+    else:
+        effective_max_events = _DEFAULT_MAX_EVENTS
 
     if args.input:
         try:
@@ -113,7 +143,7 @@ def main():
         fh = sys.stdin
 
     try:
-        receipt = mine_stream(fh, max_entries=args.max_entries)
+        receipt = mine_stream(fh, max_entries=args.max_entries, max_events=effective_max_events)
     except Exception as exc:
         _emit_error(str(exc), 2)
     finally:
@@ -121,7 +151,6 @@ def main():
             fh.close()
 
     if args.dry_run:
-        receipt["events"] = []
         receipt["dry_run"] = True
 
     out = json.dumps(receipt, indent=2)

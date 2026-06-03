@@ -9,7 +9,8 @@
       "--input <path>": "Read JSONL from file instead of stdin",
       "--output <path>": "Write JSON receipt to file instead of stdout",
       "--max-entries <n>": "Stop after processing N entries (useful for sampling large exports)",
-      "--dry-run": "Validate input format; parse and count but emit events=[] in receipt"
+      "--max-events <n>": "Maximum mapped events stored in receipt (default: 1000; 0 = counts only). Does not affect mapped/failure counts.",
+      "--dry-run": "Parse and count only; store no events (implies --max-events 0)"
     }
   },
   "exit_codes": {
@@ -22,7 +23,7 @@
     "Will NOT access /mnt/data or any mounted OS path",
     "Will NOT make network requests",
     "Will emit a valid JSON receipt even if all entries are UNMAPPABLE or the export is empty",
-    "Will process entries one line at a time (constant memory regardless of input size)",
+    "Will process entries one line at a time; mapped event storage is bounded by --max-events (default: 1000) so memory grows with the cap, not with input size",
     "Will NOT modify any governance artifacts, hook scripts, or existing test files",
     "Will count parse errors without crashing",
     "Will output the receipt as valid JSON on stdout (or --output) and nothing else on stdout"
@@ -33,9 +34,11 @@
     "entries_seen": "int — count of successfully parsed JSON lines",
     "parse_errors": "int — count of lines that failed JSON parsing",
     "failures_found": "int — count of entries where hook_event_name == 'PostToolUseFailure'",
-    "mapped": "int — count of failures successfully mapped to blocker schema",
+    "mapped": "int — total failures successfully mapped (includes events beyond the cap)",
     "unmappable": "int — count of failures that could not be mapped (no tool_name)",
-    "events": "list — mapped blocker event dicts, each with _adapter_status field"
+    "events": "list — mapped blocker event dicts, each with _adapter_status field (capped at events_cap)",
+    "events_cap": "int|null — maximum events stored (0=dry-run/counts-only, N=bounded, null=unlimited)",
+    "events_capped": "bool — true if mapped events exceeded events_cap and were not stored"
   },
   "not_in_contract": [
     "Receipt does not include recurrence decisions (LOG_ONLY, FORCE_RCA, LOG_NEW_VARIANT) — those are Stage002+",
