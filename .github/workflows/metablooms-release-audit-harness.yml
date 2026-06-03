@@ -44,6 +44,7 @@ jobs:
       DEFAULT_RELEASE_TAG: MB-FULL-STICKY-RECEIPT-KEY-SELFVERIFY-20260601T2251Z
       DEFAULT_RELEASE_ASSET_NAME: METABLOOMS_FULL_OS_STICKY_AFTER_RECEIPT_KEY_SELFVERIFY_20260601T2251Z.tar.zst
       DEFAULT_EXPECTED_ROOT: Metablooms_OS
+      RELEASE_AUDIT_RUNNER: tools/metablooms/release_audit_harness_remote_runner_v1.py
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -55,17 +56,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y zstd zip unzip python3 curl gh
 
-      - name: Locate harness
-        id: locate
+      - name: Verify harness runner
         shell: bash
         run: |
           set -euo pipefail
-          if [ -f runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py ]; then
-            echo "runner=runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py" >> "$GITHUB_OUTPUT"
-          elif [ -f Metablooms_OS/runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py ]; then
-            echo "runner=Metablooms_OS/runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py" >> "$GITHUB_OUTPUT"
-          else
-            echo "release audit harness runner missing" >&2
+          if [ ! -f "$RELEASE_AUDIT_RUNNER" ]; then
+            echo "release audit harness runner missing: $RELEASE_AUDIT_RUNNER" >&2
             exit 41
           fi
 
@@ -73,7 +69,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -S "${{ steps.locate.outputs.runner }}" --self-test --out-dir remote_self_test --clean
+          python3 -S "$RELEASE_AUDIT_RUNNER" --self-test --out-dir remote_self_test --clean
 
       - name: Resolve artifact source
         id: resolve-artifact
@@ -113,7 +109,7 @@ jobs:
           ARTIFACT_PATH="${{ steps.resolve-artifact.outputs.artifact_path }}"
           EXPECTED_ROOT="${{ github.event.inputs.expected_root || '' }}"
           if [ -z "$EXPECTED_ROOT" ]; then EXPECTED_ROOT="$DEFAULT_EXPECTED_ROOT"; fi
-          python3 -S "${{ steps.locate.outputs.runner }}" \
+          python3 -S "$RELEASE_AUDIT_RUNNER" \
             --artifact "$ARTIFACT_PATH" \
             --expected-root "$EXPECTED_ROOT" \
             --out-dir remote_audit_out \
