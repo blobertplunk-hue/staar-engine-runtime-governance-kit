@@ -16,3 +16,4 @@ node_modules/
 .env.*
 *.token
 *.secret
+governance/blocker_ledger/ledger.json

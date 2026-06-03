@@ -1,0 +1,20 @@
+{
+  "id": "hook_blocked_mnt_data_file_search",
+  "description": "Subprocess call to tool_route_guard.py --hook-stdin with /mnt/data file_search must exit 1 and return BLOCKED.",
+  "proves": "hook path blocks file_search on mounted OS artifacts end-to-end via subprocess",
+  "hook_script": "governance/tool_routing/tool_route_guard.py",
+  "hook_args": ["--hook-stdin"],
+  "stdin": {
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "mpp.sh turn-boot",
+      "target_path": "/mnt/data/Metablooms_OS"
+    }
+  },
+  "expected": {
+    "exit_code": 1,
+    "decision": "BLOCKED",
+    "forbidden_tool_check": true,
+    "input_classification": "mounted_mnt_data_os_artifact_truth"
+  }
+}

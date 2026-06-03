@@ -1,0 +1,135 @@
+{
+  "schema": "mb.claude_code_stage_receipt.v1",
+  "workflow_id": "BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001",
+  "executor": "Claude Code",
+  "completed_at_utc": "2026-06-03T00:00:00Z",
+  "branch": "claude/boot-root-repair-chat790-lessons-stage001",
+  "base_branch": "main",
+  "predecessor_stage": "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001",
+  "predecessor_pr": "https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit/pull/11",
+
+  "g0_repo_survey": {
+    "gate": "G0_REPO_SURVEY",
+    "status": "PASS",
+    "findings": {
+      "tool_route_guard_on_main": "EXISTS — governance/tool_routing/tool_route_guard.py",
+      "repeated_blocker_guard_on_main": "EXISTS — governance/blocker_ledger/repeated_blocker_guard.py",
+      "tool_routing_policy_on_main": "EXISTS — governance/tool_routing/TOOL_ROUTING_POLICY_v1.json",
+      "blocker_ledger_schema_on_main": "EXISTS — governance/blocker_ledger/REPEATED_BLOCKER_LEDGER_SCHEMA_v1.json",
+      "claude_settings_json_pre_existing": false,
+      "native_os_source_paths_in_repo": false,
+      "note": "Native MetaBlooms OS source resides in /mnt/data/Metablooms_OS (sandbox). The STAAR repo carries proof artifacts and governance records only."
+    }
+  },
+
+  "g1_hook_config_design": {
+    "gate": "G1_HOOK_CONFIG_DESIGN",
+    "status": "PASS",
+    "settings_json_schema": {
+      "PreToolUse": {
+        "matcher": "*",
+        "command": "python3 governance/tool_routing/tool_route_guard.py --hook-stdin"
+      },
+      "PostToolUseFailure": {
+        "matcher": "*",
+        "command": "python3 governance/blocker_ledger/repeated_blocker_guard.py --hook-stdin --mode record-or-route"
+      }
+    },
+    "hook_path_coverage": [
+      "blocked_mnt_data_file_search → hook exit 1 (BLOCKED)",
+      "allowed_uploaded_semantic_query → hook exit 0 (ALLOW_WHEN_EXPLICITLY_APPROPRIATE)",
+      "repeat_blocker_forces_rca → hook exit 2 on second call (FORCE_RCA)",
+      "changed_inputs_not_repeat → hook exit 0 on second call (LOG_NEW_VARIANT)",
+      "hook_install_validates_ok → validator passes 8/8 checks"
+    ]
+  },
+
+  "g2_implementation": {
+    "gate": "G2_IMPLEMENTATION",
+    "status": "PASS",
+    "changed_files": [
+      ".claude/settings.json",
+      "governance/tool_routing/hook_install_validator.py",
+      "governance/claude_code_workflows/BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001/WORKFLOW_CONTRACT.json",
+      "governance/claude_code_workflows/BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001/CLAUDE_CODE_WORK_ORDER.md",
+      "governance/claude_code_workflows/BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001/GATES_AND_FIXTURES_SPEC.json",
+      "governance/claude_code_workflows/BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001/CLAUDE.md",
+      "tests/fixtures/hook_activation/hook_blocked_mnt_data_file_search.json",
+      "tests/fixtures/hook_activation/hook_allowed_uploaded_semantic_query.json",
+      "tests/fixtures/hook_activation/hook_repeat_blocker_forces_rca.json",
+      "tests/fixtures/hook_activation/hook_changed_inputs_not_repeat.json",
+      "tests/test_hook_activation.py",
+      "receipts/BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001_RECEIPT.json"
+    ],
+    "unrelated_changes": "none",
+    "native_carrier_classification": "native_repo_machinery"
+  },
+
+  "g3_validation": {
+    "gate": "G3_VALIDATION",
+    "status": "PASS",
+    "commands_run": [
+      {
+        "command": "python3 -m py_compile governance/tool_routing/tool_route_guard.py governance/blocker_ledger/repeated_blocker_guard.py",
+        "result": "COMPILE_OK",
+        "exit_code": 0
+      },
+      {
+        "command": "python3 tests/test_tool_routing_and_blocker_ledger.py",
+        "result": "Ran 34 tests in 0.005s — OK",
+        "exit_code": 0
+      },
+      {
+        "command": "python3 tests/test_hook_activation.py",
+        "result": "Ran 22 tests in 0.481s — OK",
+        "exit_code": 0
+      },
+      {
+        "command": "python3 governance/tool_routing/hook_install_validator.py",
+        "result": "PASS  (8/8 checks passed)",
+        "exit_code": 0
+      }
+    ],
+    "pytest_available": false,
+    "stdlib_runner_fallback": true,
+    "tests_total": 56,
+    "tests_passed": 56,
+    "tests_failed": 0,
+    "fixture_outcomes": [
+      {"id": "hook_blocked_mnt_data_file_search", "expected_exit": 1, "actual_exit": 1, "expected_decision": "BLOCKED", "actual_decision": "BLOCKED", "pass": true},
+      {"id": "hook_allowed_uploaded_semantic_query", "expected_exit": 0, "actual_exit": 0, "expected_decision": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE", "actual_decision": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE", "pass": true},
+      {"id": "hook_repeat_blocker_forces_rca", "pass1_exit": 0, "pass1_decision": "LOG_ONLY", "pass2_exit": 2, "pass2_decision": "FORCE_RCA", "pass": true},
+      {"id": "hook_changed_inputs_not_repeat", "pass1_exit": 0, "pass1_decision": "LOG_ONLY", "pass2_exit": 0, "pass2_decision": "LOG_NEW_VARIANT", "pass": true},
+      {"id": "hook_install_validates_ok", "checks_passed": 8, "checks_total": 8, "status": "PASS", "pass": true}
+    ]
+  },
+
+  "g4_pr_delivery": {
+    "gate": "G4_PR_DELIVERY",
+    "status": "PASS",
+    "pr_branch": "claude/boot-root-repair-chat790-lessons-stage001",
+    "pr_classification": "native_repo_machinery"
+  },
+
+  "hooks_status": {
+    "PreToolUse_tool_route_guard": {
+      "status": "ACTIVE",
+      "detail": ".claude/settings.json is present in the repo. Claude Code will enforce PreToolUse hook for all tool calls in future sessions on this repo. file_search with any /mnt/data or Metablooms_OS string (in any field, including arrays and nested dicts) is blocked with exit 1. All other tools pass through safely."
+    },
+    "PostToolUseFailure_repeated_blocker_guard": {
+      "status": "ACTIVE_WITH_FORMAT_CAVEAT",
+      "detail": "Hook is wired and the script runs without error. However, the exact JSON payload that Claude Code sends on PostToolUseFailure has not been validated against the blocker event schema in a live session. The script accepts any JSON dict and fingerprints whatever fields it finds; blocker_type/component/operation/normalized_command/target_path will all be empty strings for a raw Claude Code failure event, producing a low-discrimination fingerprint until a format adapter is built. The wiring is correct; semantic accuracy of RCA routing from live tool failures requires format adapter work in the next stage."
+    }
+  },
+
+  "limitations": [
+    "PostToolUseFailure hook format: Claude Code's native failure payload has not been mapped to the blocker event schema. All structural fields will be empty in live hook invocations; fingerprints will have low discrimination until a thin format adapter is added.",
+    "PreToolUse matcher '*' runs tool_route_guard.py for every tool call (minor subprocess overhead per call). Narrowing to 'file_search' would reduce overhead but miss aliased/namespaced tool names that canonicalize to file_search.",
+    "Ledger file governance/blocker_ledger/ledger.json is written by the PostToolUseFailure hook in live sessions. This file should be added to .gitignore to avoid accidental commits of session-specific blocker state.",
+    "Live session hook behavior depends on Claude Code reading .claude/settings.json at session startup. Hook enforcement is only active in Claude Code CLI/app sessions on this repo, not in plain Python or CI contexts.",
+    "Native MetaBlooms OS source (/mnt/data/Metablooms_OS) is absent from this repo; no OS-level boot or mpp.sh integration is performed here.",
+    "chat_export_mining cartridge not started; deferred per hard constraint."
+  ],
+
+  "next_stage_recommendation": "CHAT790_FORMAT_ADAPTER_AND_LEDGER_GITIGNORE — (1) Build a thin PostToolUseFailure format adapter that maps Claude Code's native failure JSON to the blocker event schema. (2) Add governance/blocker_ledger/ledger.json to .gitignore. (3) Run a live hook smoke test and record the real Claude Code hook payload format. After that, begin the chat_export_mining cartridge shell per improvement log items 3-11."
+}

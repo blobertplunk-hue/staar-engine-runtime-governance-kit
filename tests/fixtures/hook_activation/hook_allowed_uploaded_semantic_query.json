@@ -1,0 +1,21 @@
+{
+  "id": "hook_allowed_uploaded_semantic_query",
+  "description": "Subprocess call with uploaded semantic domain (no mounted path) must exit 0 and return ALLOW_WHEN_EXPLICITLY_APPROPRIATE.",
+  "proves": "hook path does not blanket-block all file_search; policy is precise",
+  "hook_script": "governance/tool_routing/tool_route_guard.py",
+  "hook_args": ["--hook-stdin"],
+  "stdin": {
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "what does the rubric say about MetaBlooms portability?",
+      "uploaded": true,
+      "domain": "uploaded_semantic_document_query"
+    }
+  },
+  "expected": {
+    "exit_code": 0,
+    "decision": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE",
+    "forbidden_tool_check": false,
+    "input_classification": "uploaded_semantic_document_query"
+  }
+}

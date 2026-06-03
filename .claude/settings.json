@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 governance/tool_routing/tool_route_guard.py --hook-stdin"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 governance/blocker_ledger/repeated_blocker_guard.py --hook-stdin --mode record-or-route"
+          }
+        ]
+      }
+    ]
+  }
+}

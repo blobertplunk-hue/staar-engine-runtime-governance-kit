@@ -1,0 +1,38 @@
+{
+  "id": "hook_changed_inputs_not_repeat",
+  "description": "Two subprocess calls with same structural fields but different input_digest must yield LOG_ONLY (exit 0) then LOG_NEW_VARIANT (exit 0). No false FORCE_RCA.",
+  "proves": "no false recurrence when material inputs change through hook path",
+  "hook_script": "governance/blocker_ledger/repeated_blocker_guard.py",
+  "hook_args": ["--hook-stdin", "--mode", "record-or-route"],
+  "event_pass1": {
+    "blocker_type": "tool_denied",
+    "component": "tool_route_guard",
+    "operation": "file_search",
+    "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+    "target_path": "/mnt/data/Metablooms_OS",
+    "input_digest": "aaa111bbb222ccc333ddd444eee555ff",
+    "evidence_digest": "fff666eee555ddd444ccc333bbb222aa"
+  },
+  "event_pass2": {
+    "blocker_type": "tool_denied",
+    "component": "tool_route_guard",
+    "operation": "file_search",
+    "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+    "target_path": "/mnt/data/Metablooms_OS",
+    "input_digest": "999888777666555444333222111000aa",
+    "evidence_digest": "000111222333444555666777888999bb"
+  },
+  "pass1_expected": {
+    "exit_code": 0,
+    "decision": "LOG_ONLY",
+    "rca_required": false,
+    "occurrence_count": 1
+  },
+  "pass2_expected": {
+    "exit_code": 0,
+    "decision": "LOG_NEW_VARIANT",
+    "rca_required": false,
+    "changed_inputs": true,
+    "occurrence_count": 2
+  }
+}
