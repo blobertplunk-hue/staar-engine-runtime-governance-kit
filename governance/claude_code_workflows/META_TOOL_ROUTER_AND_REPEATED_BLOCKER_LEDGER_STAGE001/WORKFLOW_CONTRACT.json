@@ -1,0 +1,86 @@
+{
+  "acceptance_criteria": [
+    "Attempting file_search for mounted /mnt/data OS artifact truth is blocked or fails closed.",
+    "Uploaded semantic-document query remains allowed when explicitly appropriate.",
+    "First blocker occurrence logs a ledger entry without forced RCA.",
+    "Second same normalized blocker without changed inputs forces RCA routing.",
+    "Changed inputs avoid false repeated-blocker classification.",
+    "Receipts include changed files, tests, pass/fail, route decisions, blocker fingerprints, and limitations."
+  ],
+  "base_branch": "main",
+  "created_at_utc": "2026-06-03T00:11:00Z",
+  "decision": "AUTHORIZED_STAGE_PLAN",
+  "executor": "Claude Code",
+  "forbidden_claims": [
+    "native MetaBlooms OS source was patched in the STAAR repo if native source paths are absent",
+    "workflow complete without tests/fixtures",
+    "research-backed without evidence_map entries",
+    "machine-enforced when only prose exists"
+  ],
+  "must_use_metablooms_processes": [
+    "artifact_first",
+    "fail_closed",
+    "one_bounded_stage",
+    "receipts_required",
+    "RCA_on_recurrence",
+    "no_false_native_patch_claims"
+  ],
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "schema": "mb.claude_code_governed_workflow_contract.v1",
+  "scope": {
+    "in_scope": [
+      "repo-native tool routing policy for mounted artifact workflows",
+      "pre-tool/pre-stage validator or hook-compatible script",
+      "repeated blocker fingerprint ledger schema and detector",
+      "fixtures for blocked/allowed tool routes and repeated/non-repeated blockers",
+      "test receipts and PR"
+    ],
+    "out_of_scope": [
+      "whole chat_export_mining cartridge implementation",
+      "native MetaBlooms OS source patch claims when source paths are absent from repo",
+      "unbounded repo rewrite",
+      "merge without review"
+    ]
+  },
+  "stage_gates": [
+    {
+      "id": "G0_REPO_SURVEY",
+      "must_pass": [
+        "locate referenced improvement-log and audit files",
+        "record whether native OS source paths exist"
+      ]
+    },
+    {
+      "id": "G1_POLICY_DESIGN",
+      "must_pass": [
+        "define tool route matrix",
+        "define blocker fingerprint schema",
+        "map policy to tests"
+      ]
+    },
+    {
+      "id": "G2_IMPLEMENTATION",
+      "must_pass": [
+        "add smallest viable policy/script/fixtures",
+        "avoid unrelated changes"
+      ]
+    },
+    {
+      "id": "G3_VALIDATION",
+      "must_pass": [
+        "run fixture suite",
+        "run available repo CI/test command",
+        "write receipt"
+      ]
+    },
+    {
+      "id": "G4_PR_DELIVERY",
+      "must_pass": [
+        "commit branch",
+        "open PR",
+        "PR body states native/carrier/both"
+      ]
+    }
+  ],
+  "workflow_id": "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001"
+}
