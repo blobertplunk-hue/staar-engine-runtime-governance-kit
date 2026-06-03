@@ -1,0 +1,36 @@
+{
+  "id": "raw_cc_payload_changed_input_variant",
+  "description": "Same tool_name but different tool_input across two calls: LOG_ONLY then LOG_NEW_VARIANT (no false FORCE_RCA).",
+  "proves": "changed tool_input produces different input_digest, yielding LOG_NEW_VARIANT not FORCE_RCA",
+  "raw_payload_pass1": {
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "first query variant",
+      "target_path": "/mnt/data/Metablooms_OS"
+    },
+    "tool_response": "Error: not permitted",
+    "session_id": "test-session-fixture-003a"
+  },
+  "raw_payload_pass2": {
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "second query variant — different content",
+      "target_path": "/mnt/data/Metablooms_OS"
+    },
+    "tool_response": "Error: not permitted",
+    "session_id": "test-session-fixture-003b"
+  },
+  "pass1_expected": {
+    "decision": "LOG_ONLY",
+    "exit_code": 0,
+    "occurrence_count": 1
+  },
+  "pass2_expected": {
+    "decision": "LOG_NEW_VARIANT",
+    "exit_code": 0,
+    "changed_inputs": true,
+    "occurrence_count": 2
+  }
+}

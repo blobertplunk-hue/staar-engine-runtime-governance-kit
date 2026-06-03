@@ -1,0 +1,88 @@
+{
+  "stage": "CHAT790_FORMAT_ADAPTER_AND_LEDGER_GITIGNORE",
+  "status": "COMPLETE",
+  "completed_date": "2026-06-03",
+  "branch": "claude/chat790-format-adapter-ledger-gitignore",
+  "builds_on": [
+    "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001 (PR #11, merged)",
+    "BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001 (PR #12, merged)"
+  ],
+  "goal": "Make PostToolUseFailure RCA routing semantically meaningful by adding a thin adapter that maps Claude Code native failure hook payloads into the repeated-blocker schema.",
+  "deliverables": {
+    "governance/blocker_ledger/post_tool_failure_adapter.py": {
+      "status": "NEW",
+      "description": "Adapter that maps {tool_name, tool_input, tool_response, ...} to blocker schema, then calls repeated_blocker_guard.classify(). Handles PASS_THROUGH (already adapted), MAPPED, and UNMAPPABLE (REVIEW_UNMAPPED_PAYLOAD) cases. Exit 0 on LOG_ONLY/LOG_NEW_VARIANT/REVIEW_UNMAPPED_PAYLOAD, exit 2 on FORCE_RCA."
+    },
+    ".claude/settings.json": {
+      "status": "UPDATED",
+      "change": "PostToolUseFailure hook command updated from repeated_blocker_guard.py to post_tool_failure_adapter.py --hook-stdin --mode record-or-route"
+    },
+    "governance/tool_routing/hook_install_validator.py": {
+      "status": "UPDATED",
+      "changes": [
+        "EXPECTED_POST_TOOL_FAILURE_CMD updated to reference post_tool_failure_adapter.py",
+        "Smoke test input format updated to raw CC payload (hook_event_name, tool_name, tool_input)",
+        "Smoke test label updated to post_tool_failure_adapter_smoke_test"
+      ]
+    },
+    "tests/test_post_tool_failure_adapter.py": {
+      "status": "NEW",
+      "test_count": 31,
+      "classes": [
+        "TestAdapterMapping (19 unit tests for map_payload, adapt_and_classify)",
+        "TestAdapterSubprocess (10 subprocess tests matching Claude Code hook invocation)",
+        "TestExistingSuiteNotBroken (2 regression tests for prior suites)"
+      ]
+    },
+    "tests/test_hook_activation.py": {
+      "status": "UPDATED",
+      "change": "test_post_tool_use_failure_hook_present updated to check for post_tool_failure_adapter.py"
+    },
+    "tests/fixtures/adapter/": {
+      "status": "NEW",
+      "files": [
+        "raw_cc_payload_mapped_to_blocker.json",
+        "raw_cc_payload_repeat_forces_rca.json",
+        "raw_cc_payload_changed_input_variant.json",
+        "malformed_payload_review.json"
+      ]
+    }
+  },
+  "design_decisions": {
+    "normalized_command_structural_only": "normalized_command (an identity fingerprint field) is built from tool_name + structural/path fields only (target_path, path, file_path, filepath, url, pattern). Free-text fields (query, content, etc.) are excluded so that different query strings targeting the same path produce the same identity fingerprint. Variability in free-text inputs is captured exclusively in input_digest.",
+    "fingerprint_identity_vs_variant": "Identity fingerprint: 5 structural fields (blocker_type, component, operation, normalized_command, target_path). Variant fields: input_digest, evidence_digest. Same fingerprint + changed variants → LOG_NEW_VARIANT. Same fingerprint + same variants → FORCE_RCA.",
+    "unmappable_exit_0": "Payloads without tool_name and without blocker schema fields yield REVIEW_UNMAPPED_PAYLOAD, exit 0. PostToolUseFailure is a notification hook (tool already failed); fail-closed would block the session unhelpfully.",
+    "pass_through_path": "If payload already contains all FINGERPRINT_FIELDS, it bypasses mapping and routes directly to classify(). Enables direct injection of pre-adapted events in tests and by future callers."
+  },
+  "test_results": {
+    "python3 -m py_compile governance/tool_routing/tool_route_guard.py governance/blocker_ledger/repeated_blocker_guard.py governance/blocker_ledger/post_tool_failure_adapter.py": "PASS",
+    "python3 tests/test_tool_routing_and_blocker_ledger.py": "PASS (34/34)",
+    "python3 tests/test_hook_activation.py": "PASS (22/22)",
+    "python3 governance/tool_routing/hook_install_validator.py": "PASS (8/8 checks)",
+    "python3 tests/test_post_tool_failure_adapter.py": "PASS (31/31)"
+  },
+  "hooks_active": {
+    "PreToolUse": {
+      "command": "python3 governance/tool_routing/tool_route_guard.py --hook-stdin",
+      "status": "ACTIVE"
+    },
+    "PostToolUseFailure": {
+      "command": "python3 governance/blocker_ledger/post_tool_failure_adapter.py --hook-stdin --mode record-or-route",
+      "status": "ACTIVE"
+    }
+  },
+  "hard_constraints_respected": [
+    "Did not start full chat_export_mining cartridge",
+    "Did not claim native MetaBlooms OS source patching in this repo",
+    "Did not use file_search for mounted /mnt/data OS artifact truth",
+    "Did not bypass or remove the PreToolUse guard",
+    "Did not proceed beyond one bounded stage"
+  ],
+  "limitations": [
+    "Ledger is per-filesystem: recurrence is not tracked across machines or ephemeral containers",
+    "normalized_command heuristic excludes dynamic fields (query, content, text); a tool with no path-like inputs may produce normalized_command equal to the bare tool_name, making fingerprint coarser",
+    "Session ID is stored as provenance (_session_id) but not used in fingerprint; cross-session recurrence is tracked by structural identity only",
+    "PostToolUseFailure is notification-only (exit code not observed by Claude Code); FORCE_RCA exit 2 is recorded in the receipt but does not block the session"
+  ],
+  "next_stage_recommendation": "CHAT790_EXPORT_MINING_CARTRIDGE_STAGE001 — begin structured ingestion of chat790 export logs to surface additional blocked-tool patterns and fuel the blocker ledger with real recurrence data"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "raw_cc_payload_mapped_to_blocker",
+  "description": "Raw Claude Code PostToolUseFailure payload is mapped to a complete blocker event with all required fields populated and non-empty fingerprint fields.",
+  "proves": "adapter output contains all required blocker fields; fingerprints are discriminating",
+  "raw_payload": {
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "mpp.sh turn-boot",
+      "target_path": "/mnt/data/Metablooms_OS"
+    },
+    "tool_response": "Error: file_search is forbidden for mounted OS artifacts. Use direct filesystem reads.",
+    "session_id": "test-session-fixture-001"
+  },
+  "expected_mapped_fields": {
+    "blocker_type": "tool_failure",
+    "component": "claude_code_hook",
+    "operation": "file_search",
+    "target_path": "/mnt/data/Metablooms_OS"
+  },
+  "expected_non_empty": ["blocker_type", "component", "operation", "normalized_command", "input_digest", "evidence_digest"],
+  "expected_adapter_status": "MAPPED"
+}
