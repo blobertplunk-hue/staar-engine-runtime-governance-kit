@@ -23,6 +23,10 @@ import governance.blocker_ledger.repeated_blocker_guard as rbg
 
 FIXTURES_TOOL = os.path.join(_REPO_ROOT, "tests", "fixtures", "tool_routing")
 FIXTURES_BLOCKER = os.path.join(_REPO_ROOT, "tests", "fixtures", "blocker_ledger")
+SCHEMA_PATH = os.path.join(
+    _REPO_ROOT, "governance", "blocker_ledger",
+    "REPEATED_BLOCKER_LEDGER_SCHEMA_v1.json"
+)
 
 
 def _load(path):
@@ -65,7 +69,7 @@ class TestToolRouteGuard(unittest.TestCase):
         self.assertEqual(fx["expected"]["decision"], "ALLOW_WHEN_EXPLICITLY_APPROPRIATE")
 
     def test_allowed_uploaded_semantic_query(self):
-        """file_search for uploaded semantic document must be ALLOW_WHEN_EXPLICITLY_APPROPRIATE."""
+        """file_search for uploaded semantic document (no mounted path) must be ALLOW_WHEN_EXPLICITLY_APPROPRIATE."""
         fx = _load(os.path.join(FIXTURES_TOOL, "allowed_uploaded_semantic_query.json"))
         result = trg.route(
             fx["input"]["tool_name"],
@@ -77,7 +81,119 @@ class TestToolRouteGuard(unittest.TestCase):
         self.assertEqual(result["input_classification"],
                          fx["expected"]["input_classification"])
 
-    # ── additional routing coverage ────────────────────────────────────────
+    # ── regression: explicit-domain bypass ────────────────────────────────
+
+    def test_explicit_domain_bypass_blocked_fixture_valid(self):
+        fx = _load(os.path.join(FIXTURES_TOOL, "explicit_domain_bypass_blocked.json"))
+        self.assertEqual(fx["expected"]["decision"], "BLOCKED")
+
+    def test_explicit_domain_bypass_blocked(self):
+        """domain=uploaded_semantic_document_query with target_path=/mnt/data must still BLOCK.
+
+        Mounted-path detection dominates explicit domain field; no bypass is possible."""
+        fx = _load(os.path.join(FIXTURES_TOOL, "explicit_domain_bypass_blocked.json"))
+        result = trg.route(
+            fx["input"]["tool_name"],
+            fx["input"]["tool_input"],
+            self.policy,
+        )
+        self.assertEqual(result["decision"], "BLOCKED",
+                         "Mounted-path detection must win over explicit domain field")
+        self.assertEqual(result["input_classification"], "mounted_mnt_data_os_artifact_truth")
+
+    def test_explicit_domain_bypass_via_query_field(self):
+        """domain=uploaded_semantic_document_query with /mnt/data in query string must still BLOCK."""
+        result = trg.route(
+            "file_search",
+            {
+                "domain": "uploaded_semantic_document_query",
+                "uploaded": True,
+                "query": "summarize /mnt/data/Metablooms_OS boot log",
+            },
+            self.policy,
+        )
+        self.assertEqual(result["decision"], "BLOCKED")
+
+    # ── regression: namespaced file_search canonicalization ───────────────
+
+    def test_namespaced_file_search_blocked_fixture_valid(self):
+        fx = _load(os.path.join(FIXTURES_TOOL, "namespaced_file_search_blocked.json"))
+        self.assertEqual(fx["expected"]["decision"], "BLOCKED")
+        self.assertEqual(fx["expected"]["selected_tool"], "file_search")
+
+    def test_namespaced_file_search_blocked(self):
+        """file_search.msearch canonicalizes to file_search and is BLOCKED for mounted paths."""
+        fx = _load(os.path.join(FIXTURES_TOOL, "namespaced_file_search_blocked.json"))
+        result = trg.route(
+            fx["input"]["tool_name"],
+            fx["input"]["tool_input"],
+            self.policy,
+        )
+        self.assertEqual(result["decision"], "BLOCKED")
+        self.assertEqual(result["selected_tool"], "file_search",
+                         "Namespaced tool must be canonicalized to 'file_search'")
+
+    def test_various_file_search_aliases_all_blocked(self):
+        """Multiple file_search name variants all canonicalize and block on mounted paths."""
+        variants = [
+            "file_search.msearch",
+            "openai.file_search",
+            "file_search.v2",
+            "FILE_SEARCH",
+        ]
+        input_ = {"target_path": "/mnt/data/Metablooms_OS"}
+        for name in variants:
+            with self.subTest(tool_name=name):
+                result = trg.route(name, input_, self.policy)
+                self.assertEqual(result["decision"], "BLOCKED",
+                                 f"'{name}' should be canonicalized and blocked")
+                self.assertEqual(result["selected_tool"], "file_search")
+
+    def test_non_file_search_alias_not_collapsed(self):
+        """A tool with 'search' in its name but not 'file_search' is not collapsed."""
+        result = trg.route(
+            "web_search",
+            {"query": "STAAR governance schema"},
+            self.policy,
+        )
+        self.assertNotEqual(result.get("selected_tool"), "file_search")
+
+    # ── regression: recursive nested-path scanning ────────────────────────
+
+    def test_nested_mnt_data_in_queries_array_fixture_valid(self):
+        fx = _load(os.path.join(FIXTURES_TOOL, "nested_mnt_data_in_queries_array_blocked.json"))
+        self.assertEqual(fx["expected"]["decision"], "BLOCKED")
+
+    def test_nested_mnt_data_in_queries_array_blocked(self):
+        """Mounted path buried in queries[] array must BLOCK."""
+        fx = _load(os.path.join(FIXTURES_TOOL, "nested_mnt_data_in_queries_array_blocked.json"))
+        result = trg.route(
+            fx["input"]["tool_name"],
+            fx["input"]["tool_input"],
+            self.policy,
+        )
+        self.assertEqual(result["decision"], "BLOCKED")
+        self.assertEqual(result["input_classification"], "mounted_mnt_data_os_artifact_truth")
+
+    def test_nested_mnt_data_in_deeply_nested_dict_blocked(self):
+        """Mounted path in a nested dict value must BLOCK."""
+        result = trg.route(
+            "file_search",
+            {"options": {"filter": {"path": "/mnt/data/Metablooms_OS/archive.zip"}}},
+            self.policy,
+        )
+        self.assertEqual(result["decision"], "BLOCKED")
+
+    def test_queries_array_without_mounted_path_not_blocked(self):
+        """queries[] with no mounted paths must not BLOCK."""
+        result = trg.route(
+            "file_search",
+            {"queries": ["what is the governance schema?", "list receipts"]},
+            self.policy,
+        )
+        self.assertNotEqual(result["decision"], "BLOCKED")
+
+    # ── existing coverage ─────────────────────────────────────────────────
 
     def test_path_field_also_triggers_block(self):
         """Mounted path in 'path' field (not 'target_path') also triggers block."""
@@ -201,9 +317,8 @@ class TestRepeatedBlockerGuard(unittest.TestCase):
         self.assertEqual(rbg.compute_fingerprint(e1), rbg.compute_fingerprint(e2))
 
     def test_input_digest_not_in_fingerprint(self):
-        """input_digest/evidence_digest are NOT fingerprint fields; changing them keeps the same fingerprint.
-        This is by design: identity fingerprint captures structural blocker type, not volatile digests.
-        Changed-inputs detection is a separate ledger comparison."""
+        """input_digest/evidence_digest are NOT identity fingerprint fields; changing them
+        keeps the same fingerprint. Changed-inputs detection uses ledger comparison."""
         e1 = {
             "blocker_type": "tool_denied",
             "component": "c",
@@ -215,11 +330,10 @@ class TestRepeatedBlockerGuard(unittest.TestCase):
         }
         e2 = dict(e1, input_digest="digest_B", evidence_digest="ev_B")
         self.assertEqual(rbg.compute_fingerprint(e1), rbg.compute_fingerprint(e2),
-                         "Events differing only in input_digest/evidence_digest must share fingerprint"
-                         " — changed-inputs detection uses ledger comparison, not fingerprint.")
+                         "variant_fields must not affect identity fingerprint")
 
     def test_different_operation_different_fingerprint(self):
-        """Events with different structural fields produce different fingerprints."""
+        """Events with different identity fields produce different fingerprints."""
         e1 = {
             "blocker_type": "tool_denied",
             "component": "c",
@@ -277,8 +391,44 @@ class TestPolicySchemaCoverage(unittest.TestCase):
             if r["domain"] != "mounted_mnt_data_os_artifact_truth":
                 self.assertNotIn(
                     "file_search", r.get("forbidden_tools", []),
-                    f"file_search should only be forbidden for mounted domain, not '{r['domain']}'",
+                    f"file_search should only be forbidden for mounted domain, "
+                    f"not '{r['domain']}'",
                 )
+
+    # ── regression: schema-vs-implementation consistency ──────────────────
+
+    def test_schema_identity_fingerprint_fields_match_implementation(self):
+        """REPEATED_BLOCKER_LEDGER_SCHEMA_v1.json identity_fingerprint_fields must
+        exactly match repeated_blocker_guard.FINGERPRINT_FIELDS."""
+        schema = _load(SCHEMA_PATH)
+        schema_fields = set(schema["identity_fingerprint_fields"])
+        impl_fields = set(rbg.FINGERPRINT_FIELDS)
+        self.assertEqual(
+            schema_fields, impl_fields,
+            f"Schema identity_fingerprint_fields {schema_fields} "
+            f"!= implementation FINGERPRINT_FIELDS {impl_fields}",
+        )
+
+    def test_schema_variant_fields_not_in_fingerprint(self):
+        """variant_fields in schema must NOT be in implementation FINGERPRINT_FIELDS."""
+        schema = _load(SCHEMA_PATH)
+        variant_fields = set(schema["variant_fields"])
+        impl_fields = set(rbg.FINGERPRINT_FIELDS)
+        overlap = variant_fields & impl_fields
+        self.assertFalse(
+            overlap,
+            f"variant_fields {overlap} should not appear in FINGERPRINT_FIELDS",
+        )
+
+    def test_schema_has_identity_and_variant_field_keys(self):
+        """Schema must use identity_fingerprint_fields / variant_fields (not the old fingerprint_fields)."""
+        schema = _load(SCHEMA_PATH)
+        self.assertIn("identity_fingerprint_fields", schema,
+                      "Schema must have 'identity_fingerprint_fields' key")
+        self.assertIn("variant_fields", schema,
+                      "Schema must have 'variant_fields' key")
+        self.assertNotIn("fingerprint_fields", schema,
+                         "Old 'fingerprint_fields' key must not exist in updated schema")
 
 
 if __name__ == "__main__":

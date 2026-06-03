@@ -1,0 +1,18 @@
+{
+  "id": "namespaced_file_search_blocked",
+  "description": "file_search.msearch targeting /mnt/data must be canonicalized to file_search and BLOCKED.",
+  "proves": "tool-name canonicalization prevents bypass via namespaced tool variants",
+  "input": {
+    "tool_name": "file_search.msearch",
+    "tool_input": {
+      "query": "Metablooms_OS boot status",
+      "target_path": "/mnt/data/Metablooms_OS"
+    }
+  },
+  "expected": {
+    "decision": "BLOCKED",
+    "forbidden_tool_check": true,
+    "input_classification": "mounted_mnt_data_os_artifact_truth",
+    "selected_tool": "file_search"
+  }
+}

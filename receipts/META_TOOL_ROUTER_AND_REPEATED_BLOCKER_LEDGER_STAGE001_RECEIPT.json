@@ -3,6 +3,7 @@
   "workflow_id": "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001",
   "executor": "Claude Code",
   "completed_at_utc": "2026-06-03T00:00:00Z",
+  "revision": 2,
   "branch": "claude/meta-tool-router-blocker-ledger-stage001-pcQBS",
   "base_branch": "main",
 
@@ -14,7 +15,7 @@
       "audit_COMPARATIVE_RUBRIC": "EXISTS — audits/METABLOOMS_COMPARATIVE_GOVERNANCE_RUBRIC_20260602.md",
       "improvement_log_NATIVE_OS_PATCH": "EXISTS — governance/improvement_log/NATIVE_METABLOOMS_OS_SOURCE_PATCH_LOCATION_AND_EXPORT_LINEAGE_BINDING_20260602.md",
       "native_os_source_paths_in_repo": false,
-      "note": "Native MetaBlooms OS source resides in /mnt/data/Metablooms_OS (sandbox). The STAAR repo carries proof artifacts and governance records only. This PR must not claim native OS source was patched here."
+      "note": "Native MetaBlooms OS source resides in /mnt/data/Metablooms_OS (sandbox). The STAAR repo carries proof artifacts and governance records only. This PR does not claim native OS source was patched here."
     }
   },
 
@@ -22,19 +23,24 @@
     "gate": "G1_POLICY_DESIGN",
     "status": "PASS",
     "tool_route_matrix": {
-      "mounted_mnt_data_os_artifact_truth + file_search": "BLOCKED",
-      "uploaded_semantic_document_query + file_search": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE",
+      "mounted_mnt_data_os_artifact_truth + file_search (any variant)": "BLOCKED",
+      "uploaded_semantic_document_query + file_search (no mounted path)": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE",
       "github_repo_state": "ALLOW_REPO_TOOLS",
       "external_current_evidence": "REQUIRE_SOURCE_BINDING"
     },
+    "mounted_path_detection_priority": "Recursive scan of ALL string values in tool_input (including arrays and nested dicts) runs BEFORE the explicit domain field is checked. Mounted-path detection cannot be bypassed by setting domain=uploaded_semantic_document_query.",
+    "tool_canonicalization": "file_search.msearch, openai.file_search, FILE_SEARCH, file_search.v2 all canonicalize to 'file_search' before policy lookup.",
     "blocker_fingerprint_design": {
-      "identity_fields": ["blocker_type", "component", "operation", "normalized_command", "target_path"],
-      "tracked_separately": ["input_digest", "evidence_digest"],
-      "rationale": "input_digest/evidence_digest are not in the fingerprint hash so that the same structural blocker recurrence is detected even if inputs change. Changed inputs produce LOG_NEW_VARIANT; unchanged inputs produce FORCE_RCA."
+      "identity_fingerprint_fields": ["blocker_type", "component", "operation", "normalized_command", "target_path"],
+      "variant_fields": ["input_digest", "evidence_digest"],
+      "rationale": "identity_fingerprint_fields are hashed to detect structural recurrence. variant_fields are stored and compared separately; changed variant_fields yield LOG_NEW_VARIANT; unchanged yield FORCE_RCA."
     },
     "test_map": [
       {"fixture": "blocked_mnt_data_file_search", "test": "test_blocked_mnt_data_file_search"},
       {"fixture": "allowed_uploaded_semantic_query", "test": "test_allowed_uploaded_semantic_query"},
+      {"fixture": "explicit_domain_bypass_blocked", "test": "test_explicit_domain_bypass_blocked"},
+      {"fixture": "namespaced_file_search_blocked", "test": "test_namespaced_file_search_blocked"},
+      {"fixture": "nested_mnt_data_in_queries_array_blocked", "test": "test_nested_mnt_data_in_queries_array_blocked"},
       {"fixture": "first_blocker_logs", "test": "test_first_blocker_logs"},
       {"fixture": "repeat_blocker_forces_rca", "test": "test_repeat_blocker_forces_rca"},
       {"fixture": "changed_inputs_not_repeat", "test": "test_changed_inputs_not_repeat"}
@@ -55,15 +61,19 @@
       "tests/__init__.py",
       "tests/fixtures/tool_routing/blocked_mnt_data_file_search.json",
       "tests/fixtures/tool_routing/allowed_uploaded_semantic_query.json",
+      "tests/fixtures/tool_routing/explicit_domain_bypass_blocked.json",
+      "tests/fixtures/tool_routing/namespaced_file_search_blocked.json",
+      "tests/fixtures/tool_routing/nested_mnt_data_in_queries_array_blocked.json",
       "tests/fixtures/blocker_ledger/first_blocker_logs.json",
       "tests/fixtures/blocker_ledger/repeat_blocker_forces_rca.json",
       "tests/fixtures/blocker_ledger/changed_inputs_not_repeat.json",
       "tests/test_tool_routing_and_blocker_ledger.py",
-      "receipts/META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001_RECEIPT.json"
+      "receipts/META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001_RECEIPT.json",
+      ".gitignore"
     ],
     "unrelated_changes": "none",
     "native_carrier_classification": "native_repo_machinery",
-    "note": "All files are new repo-native machinery (policy, scripts, fixtures, tests). No existing files modified."
+    "note": "All files are new repo-native machinery (policy, scripts, fixtures, tests). No existing non-governance files modified except .gitignore cleanup."
   },
 
   "g3_validation": {
@@ -77,19 +87,22 @@
       },
       {
         "command": "python3 tests/test_tool_routing_and_blocker_ledger.py",
-        "result": "Ran 20 tests in 0.003s — OK",
+        "result": "Ran 34 tests in 0.006s — OK",
         "exit_code": 0,
         "note": "pytest not available in this environment; stdlib unittest runner used. Fallback recorded per work order requirement."
       }
     ],
     "pytest_available": false,
     "stdlib_runner_fallback": true,
-    "tests_total": 20,
-    "tests_passed": 20,
+    "tests_total": 34,
+    "tests_passed": 34,
     "tests_failed": 0,
     "fixture_results": [
       {"id": "blocked_mnt_data_file_search", "expected": "BLOCKED", "actual": "BLOCKED", "pass": true},
       {"id": "allowed_uploaded_semantic_query", "expected": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE", "actual": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE", "pass": true},
+      {"id": "explicit_domain_bypass_blocked", "expected": "BLOCKED", "actual": "BLOCKED", "pass": true},
+      {"id": "namespaced_file_search_blocked", "expected": "BLOCKED", "actual": "BLOCKED", "pass": true},
+      {"id": "nested_mnt_data_in_queries_array_blocked", "expected": "BLOCKED", "actual": "BLOCKED", "pass": true},
       {"id": "first_blocker_logs", "expected": "LOG_ONLY", "actual": "LOG_ONLY", "pass": true},
       {"id": "repeat_blocker_forces_rca", "expected": "FORCE_RCA", "actual": "FORCE_RCA", "pass": true},
       {"id": "changed_inputs_not_repeat", "expected": "LOG_NEW_VARIANT", "actual": "LOG_NEW_VARIANT", "pass": true}
@@ -99,13 +112,23 @@
   "g4_pr_delivery": {
     "gate": "G4_PR_DELIVERY",
     "status": "PASS",
+    "pr_url": "https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit/pull/11",
     "pr_branch": "claude/meta-tool-router-blocker-ledger-stage001-pcQBS",
     "pr_classification": "native_repo_machinery"
   },
 
+  "review_fixes_revision2": {
+    "fix1_mounted_path_dominates_explicit_domain": "classify_domain() now runs _any_string_matches_mounted(tool_input) BEFORE checking tool_input.get('domain'). A call with domain=uploaded_semantic_document_query and any nested /mnt/data path is classified as mounted_mnt_data_os_artifact_truth and BLOCKED.",
+    "fix2_tool_name_canonicalization": "canonicalize_tool_name() uses a regex to detect any tool name containing 'file_search' (dot- or underscore-separated) and returns 'file_search'. Covers file_search.msearch, openai.file_search, FILE_SEARCH, file_search.v2.",
+    "fix3_recursive_string_scan": "_any_string_matches_mounted() recursively walks dicts, lists, and scalars. Catches /mnt/data in queries[], nested filter dicts, and any other structure in tool_input.",
+    "fix4_schema_corrected": "REPEATED_BLOCKER_LEDGER_SCHEMA_v1.json now uses identity_fingerprint_fields (5 structural fields) and variant_fields (input_digest, evidence_digest). Old fingerprint_fields key removed.",
+    "fix5_regression_tests_added": "8 new tests added: test_explicit_domain_bypass_blocked, test_explicit_domain_bypass_via_query_field, test_namespaced_file_search_blocked_fixture_valid, test_namespaced_file_search_blocked, test_various_file_search_aliases_all_blocked, test_non_file_search_alias_not_collapsed, test_nested_mnt_data_in_queries_array_fixture_valid, test_nested_mnt_data_in_queries_array_blocked, test_nested_mnt_data_in_deeply_nested_dict_blocked, test_queries_array_without_mounted_path_not_blocked, test_schema_identity_fingerprint_fields_match_implementation, test_schema_variant_fields_not_in_fingerprint, test_schema_has_identity_and_variant_field_keys."
+  },
+
   "limitations": [
     "Hook integration requires installing Claude Code hooks config (CLAUDE_CODE_HOOKS_TEMPLATE.json); this PR ships the hook scripts but does not modify .claude/settings.json.",
-    "tool_route_guard.py domain classification relies on path-pattern matching; a tool call to /mnt/data via an indirect alias would not be caught.",
+    "canonicalize_tool_name() detects 'file_search' via dot/underscore word-boundary regex. A deliberately obfuscated alias not containing the literal string 'file_search' would not be caught. Remediation: maintain an explicit allowlist of approved tool names.",
+    "Recursive string scan walks all values in tool_input at call time. It does not resolve variable references or late-binding tool input fields set by agent runtime after guard invocation.",
     "repeated_blocker_guard.py ledger is a plain JSON file; concurrent writes from parallel hook invocations are not atomic. Acceptable for single-operator governance sessions.",
     "Native MetaBlooms OS source (/mnt/data/Metablooms_OS) is absent from this repo; no OS-level boot or mpp.sh integration is performed here.",
     "pytest not available in this environment; stdlib unittest fallback used. Add pytest to environment for richer output and CI integration.",

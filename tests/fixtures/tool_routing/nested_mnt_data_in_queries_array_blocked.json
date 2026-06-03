@@ -1,0 +1,19 @@
+{
+  "id": "nested_mnt_data_in_queries_array_blocked",
+  "description": "file_search with /mnt/data path buried in a queries[] array must BLOCK. Recursive scan required.",
+  "proves": "recursive tool_input scanning catches nested and array-embedded mounted OS paths",
+  "input": {
+    "tool_name": "file_search",
+    "tool_input": {
+      "queries": [
+        "what is the STAAR schema version?",
+        "/mnt/data/Metablooms_OS/scripts/mpp/mpp.sh"
+      ]
+    }
+  },
+  "expected": {
+    "decision": "BLOCKED",
+    "forbidden_tool_check": true,
+    "input_classification": "mounted_mnt_data_os_artifact_truth"
+  }
+}
