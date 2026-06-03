@@ -1,0 +1,62 @@
+{
+  "created_at_utc": "2026-06-03T19:27:01Z",
+  "decisions": [
+    {
+      "authority_class": "github_authoritative",
+      "chosen_side": "github_main",
+      "github_blob_sha": "81317a6cade87b2141cb601a908543297c6b7471",
+      "github_ref": "main@071166ddce9ba585f783f24bdd4f927868ea47b8",
+      "os_ref": "/mnt/data/Metablooms_OS",
+      "os_sha256": "0218401951473e4603749ef76fc1232bacf611d673732e392af6aad48d920117",
+      "path": ".github/workflows/metablooms-repo-manifest.yml",
+      "rationale": "GitHub workflow files are repo control-plane. Current GitHub main includes the PR-triggerable workflow repair from Stage0F; the local OS copy is the older push-only version. Later import to OS is appropriate, but no file movement is authorized in Stage0I.",
+      "required_followup": "import_current_github_workflow_to_os_after_authority_map_acceptance",
+      "sha256_after_merge": "DEFERRED_NO_FILE_MOVEMENT"
+    },
+    {
+      "authority_class": "github_authoritative",
+      "chosen_side": "manual_merge_required_union",
+      "github_blob_sha": "f6801079e98e5215bd44476778906f72fe7c5015",
+      "github_ref": "main@071166ddce9ba585f783f24bdd4f927868ea47b8",
+      "os_ref": "/mnt/data/Metablooms_OS",
+      "os_sha256": "a14ea8082d46dd4c047afec124f0b64ceb1e59e346be200d9778d5f8dc9c4acd",
+      "path": ".gitignore",
+      "rationale": "GitHub contains normal repo hygiene ignores and blocker-ledger exclusion; OS contains lockfile exclusions. Correct resolution is a union merge in GitHub, not unilateral overwrite by either side.",
+      "required_followup": "create_gitignore_union_merge_pr_or_include_in_next_projection",
+      "sha256_after_merge": "DEFERRED_UNION_MERGE_REQUIRED"
+    },
+    {
+      "authority_class": "os_authoritative",
+      "chosen_side": "os",
+      "github_blob_sha": "7db374ff6c4c2e1225a1650bbb5a133fc54af56a",
+      "github_ref": "main@071166ddce9ba585f783f24bdd4f927868ea47b8",
+      "os_ref": "/mnt/data/Metablooms_OS",
+      "os_sha256": "6ff281ddfa055567a2f46ac3af32f45ffa0f8e126a4bdda33be1f3e3c23f787d",
+      "path": "runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py",
+      "rationale": "This path is in the OS runtime/data plane. The GitHub version is a remote-safe CI harness variant, while the OS version is the fuller local runtime harness. To avoid losing OS behavior, OS remains authoritative. A future stage should split the repo remote-safe harness into a repo-control path instead of sharing this runtime path.",
+      "required_followup": "split_or_rename_remote_safe_harness_path_before_projecting_runtime_changes",
+      "sha256_after_merge": "DEFERRED_NO_FILE_MOVEMENT"
+    },
+    {
+      "authority_class": "github_authoritative",
+      "chosen_side": "already_converged_or_github_main",
+      "github_blob_sha": "f902b74ecb5846d96217762a8f162a47dfe9834b",
+      "github_ref": "main@071166ddce9ba585f783f24bdd4f927868ea47b8",
+      "os_ref": "/mnt/data/Metablooms_OS",
+      "os_sha256": "0d7a7c83d023128286a07d2637a76952717f7b14c4223d7fabbcc8ed3c53905c",
+      "path": "tools/metablooms/github_repo_manifest_generator_v1.py",
+      "rationale": "Stage0H reported this common path as different from the older manifest, but current OS and GitHub content are effectively converged by Stage0I review. It is a repo manifest tool and remains GitHub authoritative for future repo-side changes.",
+      "required_followup": "none_unless_fresh_main_manifest_shows_drift",
+      "sha256_after_merge": "0d7a7c83d023128286a07d2637a76952717f7b14c4223d7fabbcc8ed3c53905c"
+    }
+  ],
+  "movement_authorized": false,
+  "receipt_id": "STAGE0I_COMMON_DIFF_ADJUDICATION_20260603T192701Z",
+  "reviewer": "ChatGPT governed Stage0I adjudicator acting under user command",
+  "schema": "mb.github_os_sync.common_diff_adjudication_receipt.v1",
+  "source_context": {
+    "github_main_after_pr17_merge_sha": "071166ddce9ba585f783f24bdd4f927868ea47b8",
+    "note": "Current GitHub main was rechecked for workflow, .gitignore, manifest generator, and release audit runner before this receipt.",
+    "stage0h_authority_map": "runtime/receipts/github_os_sync_stage0h/STAGE0H_20260603T192108Z/SYNC_AUTHORITY_MAP_DRAFT_v1.json"
+  }
+}
