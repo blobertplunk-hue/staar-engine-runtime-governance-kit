@@ -1,0 +1,102 @@
+{
+  "schema": "mb.claude_code_gates_and_fixtures_spec.v1",
+  "workflow_id": "BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001",
+  "hook_activation_fixtures": [
+    {
+      "id": "hook_blocked_mnt_data_file_search",
+      "description": "Subprocess invocation of tool_route_guard.py --hook-stdin with /mnt/data file_search input must exit 1 and return decision=BLOCKED.",
+      "stdin": {
+        "tool_name": "file_search",
+        "tool_input": {
+          "query": "mpp.sh turn-boot",
+          "target_path": "/mnt/data/Metablooms_OS"
+        }
+      },
+      "expected_exit_code": 1,
+      "expected_decision": "BLOCKED",
+      "proves": "hook path blocks file_search on mounted OS artifacts end-to-end"
+    },
+    {
+      "id": "hook_allowed_uploaded_semantic_query",
+      "description": "Subprocess invocation with uploaded semantic domain (no mounted path) must exit 0 and return ALLOW_WHEN_EXPLICITLY_APPROPRIATE.",
+      "stdin": {
+        "tool_name": "file_search",
+        "tool_input": {
+          "query": "what does the rubric say about MetaBlooms portability?",
+          "uploaded": true,
+          "domain": "uploaded_semantic_document_query"
+        }
+      },
+      "expected_exit_code": 0,
+      "expected_decision": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE",
+      "proves": "hook path does not blanket-block all file_search; policy is precise"
+    },
+    {
+      "id": "hook_repeat_blocker_forces_rca",
+      "description": "Two subprocess invocations of repeated_blocker_guard.py with identical event and no ledger mutation between them must yield LOG_ONLY then FORCE_RCA.",
+      "event": {
+        "blocker_type": "tool_denied",
+        "component": "tool_route_guard",
+        "operation": "file_search",
+        "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+        "target_path": "/mnt/data/Metablooms_OS",
+        "input_digest": "abc123def456",
+        "evidence_digest": "fed321cba654"
+      },
+      "pass1_expected_exit_code": 0,
+      "pass1_expected_decision": "LOG_ONLY",
+      "pass2_expected_exit_code": 2,
+      "pass2_expected_decision": "FORCE_RCA",
+      "proves": "recurrence detection works through subprocess hook path"
+    },
+    {
+      "id": "hook_changed_inputs_not_repeat",
+      "description": "Two invocations with same structural fields but different input_digest must yield LOG_ONLY then LOG_NEW_VARIANT (exit 0 both times).",
+      "event_pass1": {
+        "blocker_type": "tool_denied",
+        "component": "tool_route_guard",
+        "operation": "file_search",
+        "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+        "target_path": "/mnt/data/Metablooms_OS",
+        "input_digest": "aaa111",
+        "evidence_digest": "bbb222"
+      },
+      "event_pass2": {
+        "blocker_type": "tool_denied",
+        "component": "tool_route_guard",
+        "operation": "file_search",
+        "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+        "target_path": "/mnt/data/Metablooms_OS",
+        "input_digest": "ccc333",
+        "evidence_digest": "ddd444"
+      },
+      "pass1_expected_exit_code": 0,
+      "pass1_expected_decision": "LOG_ONLY",
+      "pass2_expected_exit_code": 0,
+      "pass2_expected_decision": "LOG_NEW_VARIANT",
+      "proves": "no false recurrence when material inputs change through hook path"
+    },
+    {
+      "id": "hook_install_validates_ok",
+      "description": "hook_install_validator.py must pass all structural checks: settings.json present, valid JSON, commands reference existing scripts.",
+      "expected_status": "PASS",
+      "checks": [
+        "settings_json_exists",
+        "settings_json_valid_json",
+        "pre_tool_use_hook_configured",
+        "post_tool_use_failure_hook_configured",
+        "tool_route_guard_script_exists",
+        "repeated_blocker_guard_script_exists"
+      ],
+      "proves": "hook config path can be installed and validated without breaking normal repo workflows"
+    }
+  ],
+  "minimum_receipt_fields": [
+    "changed_files",
+    "commands_run",
+    "fixture_outcomes",
+    "hooks_status",
+    "limitations",
+    "next_stage_recommendation"
+  ]
+}

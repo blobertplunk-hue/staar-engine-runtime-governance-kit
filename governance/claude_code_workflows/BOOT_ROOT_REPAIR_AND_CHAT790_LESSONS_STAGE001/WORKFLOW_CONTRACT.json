@@ -1,0 +1,93 @@
+{
+  "schema": "mb.claude_code_governed_workflow_contract.v1",
+  "workflow_id": "BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001",
+  "created_at_utc": "2026-06-03T00:00:00Z",
+  "base_branch": "main",
+  "executor": "Claude Code",
+  "decision": "AUTHORIZED_STAGE_PLAN",
+  "predecessor_stage": "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001",
+  "predecessor_pr": "https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit/pull/11",
+  "predecessor_receipt": "receipts/META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001_RECEIPT.json",
+  "scope": {
+    "in_scope": [
+      "activate merged tool-routing and repeated-blocker guard scripts as Claude Code repo hooks via .claude/settings.json",
+      "add hook install validator script to prove hook config integrity",
+      "add subprocess-based hook activation fixtures and tests",
+      "stage workflow pack for BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001",
+      "stage receipt"
+    ],
+    "out_of_scope": [
+      "chat_export_mining cartridge implementation",
+      "native MetaBlooms OS source patch claims (source lives in /mnt/data, not in this repo)",
+      "live OS boot root repair (requires /mnt/data sandbox, not available in repo)",
+      "unbounded repo rewrite",
+      "merge without review"
+    ]
+  },
+  "must_use_metablooms_processes": [
+    "artifact_first",
+    "fail_closed",
+    "one_bounded_stage",
+    "receipts_required",
+    "RCA_on_recurrence",
+    "no_false_native_patch_claims"
+  ],
+  "forbidden_claims": [
+    "native MetaBlooms OS source was patched in the STAAR repo if native source paths are absent",
+    "hooks are enforced at the OS/sandbox level — they are repo-level Claude Code session hooks only",
+    "workflow complete without tests/fixtures/receipts"
+  ],
+  "acceptance_criteria": [
+    ".claude/settings.json exists, is valid JSON, and references the correct guard scripts",
+    "hook_install_validator.py passes all structural checks",
+    "subprocess invocation of tool_route_guard.py blocks file_search on /mnt/data (exit 1)",
+    "subprocess invocation of tool_route_guard.py allows uploaded semantic file_search (exit 0)",
+    "subprocess invocation of repeated_blocker_guard.py produces LOG_ONLY on first occurrence",
+    "subprocess invocation of repeated_blocker_guard.py produces FORCE_RCA on recurrence",
+    "subprocess invocation of repeated_blocker_guard.py produces LOG_NEW_VARIANT when inputs change",
+    "existing 34-test suite still passes on main after hook activation"
+  ],
+  "stage_gates": [
+    {
+      "id": "G0_REPO_SURVEY",
+      "must_pass": [
+        "confirm predecessor scripts exist on main",
+        "check .claude directory state"
+      ]
+    },
+    {
+      "id": "G1_HOOK_CONFIG_DESIGN",
+      "must_pass": [
+        "specify exact settings.json schema and hook commands",
+        "define install validator contract",
+        "map hook path to fixture set"
+      ]
+    },
+    {
+      "id": "G2_IMPLEMENTATION",
+      "must_pass": [
+        "write .claude/settings.json",
+        "write hook_install_validator.py",
+        "write hook-activation fixtures",
+        "write subprocess-based tests"
+      ]
+    },
+    {
+      "id": "G3_VALIDATION",
+      "must_pass": [
+        "python3 -m py_compile both guard scripts",
+        "python3 tests/test_tool_routing_and_blocker_ledger.py",
+        "python3 tests/test_hook_activation.py",
+        "write receipt"
+      ]
+    },
+    {
+      "id": "G4_PR_DELIVERY",
+      "must_pass": [
+        "commit branch",
+        "open PR",
+        "PR body states native/carrier, active vs installable, exact tests, limitations, next stage"
+      ]
+    }
+  ]
+}

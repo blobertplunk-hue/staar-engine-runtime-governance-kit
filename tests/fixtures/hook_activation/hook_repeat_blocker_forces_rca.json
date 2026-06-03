@@ -1,0 +1,28 @@
+{
+  "id": "hook_repeat_blocker_forces_rca",
+  "description": "Two subprocess calls with identical event and unchanged inputs must yield LOG_ONLY (exit 0) then FORCE_RCA (exit 2).",
+  "proves": "recurrence detection works through subprocess hook path",
+  "hook_script": "governance/blocker_ledger/repeated_blocker_guard.py",
+  "hook_args": ["--hook-stdin", "--mode", "record-or-route"],
+  "event": {
+    "blocker_type": "tool_denied",
+    "component": "tool_route_guard",
+    "operation": "file_search",
+    "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+    "target_path": "/mnt/data/Metablooms_OS",
+    "input_digest": "abc123def456aabbccddeeff00112233",
+    "evidence_digest": "fed321cba654ffeeddccbbaa99887766"
+  },
+  "pass1_expected": {
+    "exit_code": 0,
+    "decision": "LOG_ONLY",
+    "rca_required": false,
+    "occurrence_count": 1
+  },
+  "pass2_expected": {
+    "exit_code": 2,
+    "decision": "FORCE_RCA",
+    "rca_required": true,
+    "occurrence_count": 2
+  }
+}
