@@ -1,0 +1,41 @@
+{
+  "schema": "mb.repeated_blocker_ledger.v1",
+  "workflow_id": "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001",
+  "created_at_utc": "2026-06-03T00:00:00Z",
+  "fingerprint_fields": [
+    "blocker_type",
+    "component",
+    "operation",
+    "normalized_command",
+    "target_path",
+    "input_digest",
+    "evidence_digest"
+  ],
+  "normalize_rules": [
+    "strip volatile timestamps matching ISO-8601 patterns",
+    "replace absolute temp dirs (/tmp/... or OS equiv) with <TMP>",
+    "collapse runs of whitespace to single space",
+    "preserve target repo/path and command semantics"
+  ],
+  "recurrence_rule": "same fingerprint twice without changed input_digest or evidence_digest forces FORCE_RCA route",
+  "decisions": {
+    "LOG_ONLY": "First occurrence; ledger entry written; no RCA required.",
+    "FORCE_RCA": "Same normalized fingerprint recurred with unchanged inputs; RCA routing required.",
+    "LOG_NEW_VARIANT": "Same fingerprint skeleton but input_digest or evidence_digest changed; treated as a new variant, not a recurrence."
+  },
+  "minimum_receipt_fields": [
+    "fingerprint",
+    "occurrence_count",
+    "changed_inputs",
+    "decision",
+    "rca_required",
+    "ledger_path"
+  ],
+  "ledger_entry_schema": {
+    "fingerprint": "sha256 hex string of normalized fingerprint fields",
+    "occurrence_count": "integer >= 1",
+    "last_input_digest": "last seen input_digest value",
+    "last_evidence_digest": "last seen evidence_digest value",
+    "events": "array of raw event objects"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "changed_inputs_not_repeat",
+  "description": "Same blocker_type/component/operation but different input_digest must yield LOG_NEW_VARIANT, not FORCE_RCA.",
+  "proves": "no false recurrence when material inputs change",
+  "mode": "two-pass",
+  "event_pass1": {
+    "blocker_type": "tool_denied",
+    "component": "tool_route_guard",
+    "operation": "file_search",
+    "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+    "target_path": "/mnt/data/Metablooms_OS",
+    "input_digest": "abc123def456aabbccddeeff00112233",
+    "evidence_digest": "fed321cba654ffeeddccbbaa99887766"
+  },
+  "event_pass2": {
+    "blocker_type": "tool_denied",
+    "component": "tool_route_guard",
+    "operation": "file_search",
+    "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+    "target_path": "/mnt/data/Metablooms_OS",
+    "input_digest": "999888777666555444333222111000aa",
+    "evidence_digest": "000111222333444555666777888999bb"
+  },
+  "pass1_expected": {
+    "decision": "LOG_ONLY",
+    "rca_required": false,
+    "occurrence_count": 1
+  },
+  "pass2_expected": {
+    "decision": "LOG_NEW_VARIANT",
+    "rca_required": false,
+    "changed_inputs": true,
+    "occurrence_count": 2
+  }
+}

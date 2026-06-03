@@ -1,0 +1,26 @@
+{
+  "id": "first_blocker_logs",
+  "description": "First occurrence of a normalized blocker logs a ledger entry; no RCA required.",
+  "proves": "first incident records evidence",
+  "mode": "classify-only",
+  "input": {
+    "event": {
+      "blocker_type": "tool_denied",
+      "component": "tool_route_guard",
+      "operation": "file_search",
+      "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+      "target_path": "/mnt/data/Metablooms_OS",
+      "input_digest": "abc123def456aabbccddeeff00112233",
+      "evidence_digest": "fed321cba654ffeeddccbbaa99887766"
+    },
+    "ledger": {
+      "entries": {}
+    }
+  },
+  "expected": {
+    "decision": "LOG_ONLY",
+    "rca_required": false,
+    "occurrence_count": 1,
+    "changed_inputs": false
+  }
+}

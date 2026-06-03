@@ -1,0 +1,17 @@
+{
+  "id": "blocked_mnt_data_file_search",
+  "description": "file_search targeting /mnt/data/Metablooms_OS must be blocked.",
+  "proves": "wrong-tool prevention for mounted OS truth",
+  "input": {
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "mpp.sh turn-boot",
+      "target_path": "/mnt/data/Metablooms_OS"
+    }
+  },
+  "expected": {
+    "decision": "BLOCKED",
+    "forbidden_tool_check": true,
+    "input_classification": "mounted_mnt_data_os_artifact_truth"
+  }
+}

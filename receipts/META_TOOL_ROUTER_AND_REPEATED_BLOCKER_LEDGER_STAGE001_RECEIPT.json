@@ -1,0 +1,116 @@
+{
+  "schema": "mb.claude_code_stage_receipt.v1",
+  "workflow_id": "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001",
+  "executor": "Claude Code",
+  "completed_at_utc": "2026-06-03T00:00:00Z",
+  "branch": "claude/meta-tool-router-blocker-ledger-stage001-pcQBS",
+  "base_branch": "main",
+
+  "g0_repo_survey": {
+    "gate": "G0_REPO_SURVEY",
+    "status": "PASS",
+    "findings": {
+      "improvement_log_CHAT790": "EXISTS — governance/improvement_log/METABLOOMS_CHAT790_POSTMORTEM_URGENT_OS_CHANGES_20260602.md",
+      "audit_COMPARATIVE_RUBRIC": "EXISTS — audits/METABLOOMS_COMPARATIVE_GOVERNANCE_RUBRIC_20260602.md",
+      "improvement_log_NATIVE_OS_PATCH": "EXISTS — governance/improvement_log/NATIVE_METABLOOMS_OS_SOURCE_PATCH_LOCATION_AND_EXPORT_LINEAGE_BINDING_20260602.md",
+      "native_os_source_paths_in_repo": false,
+      "note": "Native MetaBlooms OS source resides in /mnt/data/Metablooms_OS (sandbox). The STAAR repo carries proof artifacts and governance records only. This PR must not claim native OS source was patched here."
+    }
+  },
+
+  "g1_policy_design": {
+    "gate": "G1_POLICY_DESIGN",
+    "status": "PASS",
+    "tool_route_matrix": {
+      "mounted_mnt_data_os_artifact_truth + file_search": "BLOCKED",
+      "uploaded_semantic_document_query + file_search": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE",
+      "github_repo_state": "ALLOW_REPO_TOOLS",
+      "external_current_evidence": "REQUIRE_SOURCE_BINDING"
+    },
+    "blocker_fingerprint_design": {
+      "identity_fields": ["blocker_type", "component", "operation", "normalized_command", "target_path"],
+      "tracked_separately": ["input_digest", "evidence_digest"],
+      "rationale": "input_digest/evidence_digest are not in the fingerprint hash so that the same structural blocker recurrence is detected even if inputs change. Changed inputs produce LOG_NEW_VARIANT; unchanged inputs produce FORCE_RCA."
+    },
+    "test_map": [
+      {"fixture": "blocked_mnt_data_file_search", "test": "test_blocked_mnt_data_file_search"},
+      {"fixture": "allowed_uploaded_semantic_query", "test": "test_allowed_uploaded_semantic_query"},
+      {"fixture": "first_blocker_logs", "test": "test_first_blocker_logs"},
+      {"fixture": "repeat_blocker_forces_rca", "test": "test_repeat_blocker_forces_rca"},
+      {"fixture": "changed_inputs_not_repeat", "test": "test_changed_inputs_not_repeat"}
+    ]
+  },
+
+  "g2_implementation": {
+    "gate": "G2_IMPLEMENTATION",
+    "status": "PASS",
+    "changed_files": [
+      "governance/tool_routing/TOOL_ROUTING_POLICY_v1.json",
+      "governance/tool_routing/tool_route_guard.py",
+      "governance/blocker_ledger/REPEATED_BLOCKER_LEDGER_SCHEMA_v1.json",
+      "governance/blocker_ledger/repeated_blocker_guard.py",
+      "governance/__init__.py",
+      "governance/tool_routing/__init__.py",
+      "governance/blocker_ledger/__init__.py",
+      "tests/__init__.py",
+      "tests/fixtures/tool_routing/blocked_mnt_data_file_search.json",
+      "tests/fixtures/tool_routing/allowed_uploaded_semantic_query.json",
+      "tests/fixtures/blocker_ledger/first_blocker_logs.json",
+      "tests/fixtures/blocker_ledger/repeat_blocker_forces_rca.json",
+      "tests/fixtures/blocker_ledger/changed_inputs_not_repeat.json",
+      "tests/test_tool_routing_and_blocker_ledger.py",
+      "receipts/META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001_RECEIPT.json"
+    ],
+    "unrelated_changes": "none",
+    "native_carrier_classification": "native_repo_machinery",
+    "note": "All files are new repo-native machinery (policy, scripts, fixtures, tests). No existing files modified."
+  },
+
+  "g3_validation": {
+    "gate": "G3_VALIDATION",
+    "status": "PASS",
+    "commands_run": [
+      {
+        "command": "python3 -m py_compile governance/tool_routing/tool_route_guard.py governance/blocker_ledger/repeated_blocker_guard.py",
+        "result": "COMPILE_OK",
+        "exit_code": 0
+      },
+      {
+        "command": "python3 tests/test_tool_routing_and_blocker_ledger.py",
+        "result": "Ran 20 tests in 0.003s — OK",
+        "exit_code": 0,
+        "note": "pytest not available in this environment; stdlib unittest runner used. Fallback recorded per work order requirement."
+      }
+    ],
+    "pytest_available": false,
+    "stdlib_runner_fallback": true,
+    "tests_total": 20,
+    "tests_passed": 20,
+    "tests_failed": 0,
+    "fixture_results": [
+      {"id": "blocked_mnt_data_file_search", "expected": "BLOCKED", "actual": "BLOCKED", "pass": true},
+      {"id": "allowed_uploaded_semantic_query", "expected": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE", "actual": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE", "pass": true},
+      {"id": "first_blocker_logs", "expected": "LOG_ONLY", "actual": "LOG_ONLY", "pass": true},
+      {"id": "repeat_blocker_forces_rca", "expected": "FORCE_RCA", "actual": "FORCE_RCA", "pass": true},
+      {"id": "changed_inputs_not_repeat", "expected": "LOG_NEW_VARIANT", "actual": "LOG_NEW_VARIANT", "pass": true}
+    ]
+  },
+
+  "g4_pr_delivery": {
+    "gate": "G4_PR_DELIVERY",
+    "status": "PASS",
+    "pr_branch": "claude/meta-tool-router-blocker-ledger-stage001-pcQBS",
+    "pr_classification": "native_repo_machinery"
+  },
+
+  "limitations": [
+    "Hook integration requires installing Claude Code hooks config (CLAUDE_CODE_HOOKS_TEMPLATE.json); this PR ships the hook scripts but does not modify .claude/settings.json.",
+    "tool_route_guard.py domain classification relies on path-pattern matching; a tool call to /mnt/data via an indirect alias would not be caught.",
+    "repeated_blocker_guard.py ledger is a plain JSON file; concurrent writes from parallel hook invocations are not atomic. Acceptable for single-operator governance sessions.",
+    "Native MetaBlooms OS source (/mnt/data/Metablooms_OS) is absent from this repo; no OS-level boot or mpp.sh integration is performed here.",
+    "pytest not available in this environment; stdlib unittest fallback used. Add pytest to environment for richer output and CI integration.",
+    "ATTIC/SAR review not performed in this stage; deferred to human reviewer and next-stage authorization."
+  ],
+
+  "next_stage_recommendation": "BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_INTEGRATION — integrate hook config, extend ATTIC advisory to hard-block mounted-path file_search, add chat_export_mining cartridge shell per improvement log items 3-11."
+}

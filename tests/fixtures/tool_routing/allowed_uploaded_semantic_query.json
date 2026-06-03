@@ -1,0 +1,18 @@
+{
+  "id": "allowed_uploaded_semantic_query",
+  "description": "file_search over an explicitly uploaded document must be allowed.",
+  "proves": "policy is precise, not a blanket anti-file-search rule",
+  "input": {
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "what does the governance rubric say about MetaBlooms portability?",
+      "uploaded": true,
+      "domain": "uploaded_semantic_document_query"
+    }
+  },
+  "expected": {
+    "decision": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE",
+    "forbidden_tool_check": false,
+    "input_classification": "uploaded_semantic_document_query"
+  }
+}

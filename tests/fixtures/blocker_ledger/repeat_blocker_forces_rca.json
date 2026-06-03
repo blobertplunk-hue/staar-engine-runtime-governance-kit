@@ -1,0 +1,25 @@
+{
+  "id": "repeat_blocker_forces_rca",
+  "description": "Same normalized blocker with unchanged inputs on second occurrence forces FORCE_RCA.",
+  "proves": "recurrence cannot loop without RCA",
+  "mode": "two-pass",
+  "event": {
+    "blocker_type": "tool_denied",
+    "component": "tool_route_guard",
+    "operation": "file_search",
+    "normalized_command": "file_search /mnt/data/Metablooms_OS mpp.sh",
+    "target_path": "/mnt/data/Metablooms_OS",
+    "input_digest": "abc123def456aabbccddeeff00112233",
+    "evidence_digest": "fed321cba654ffeeddccbbaa99887766"
+  },
+  "pass1_expected": {
+    "decision": "LOG_ONLY",
+    "rca_required": false,
+    "occurrence_count": 1
+  },
+  "pass2_expected": {
+    "decision": "FORCE_RCA",
+    "rca_required": true,
+    "occurrence_count": 2
+  }
+}
