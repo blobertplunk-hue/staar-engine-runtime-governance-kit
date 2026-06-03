@@ -1,0 +1,41 @@
+# TRACKER_SOURCE_GREP audit — 2026-06-03
+# Command: grep -R "ACTIVE_TRACKER_PREVIEW|WCUQ_STATUS|SARP_PROCESS_TRACKER|BUILD_OVERVIEW|90.35|083%|STAGE011I2|Visual Tracker"
+#           tools runtime 0_kernel scripts -n
+# Repo: blobertplunk-hue/staar-engine-runtime-governance-kit
+# Branch: claude/visual-tracker-stale-data-4RAA4
+#
+# Result: 0 matches.
+#
+# Diagnosis:
+#   The stale tracker data (WCUQ 90.35, Progress 10/12 083%, Next STAGE011I2,
+#   K2 archive rebuild) is NOT present in this GitHub repo. It resides in the
+#   native MetaBlooms OS sandbox at /mnt/data/Metablooms_OS.
+#
+#   Files referenced by the binding gate that are missing from this repo:
+#     tools/metablooms/visual_teacher_final_response_binding_gate_v1.py  MISSING
+#     tools/metablooms/web_coding_usage_score_status_surface_v1.py       MISSING
+#     tools/metablooms/wcuq_status_schema_validator_v1.py                MISSING
+#     0_kernel/registry/wcuq/WCUQ_STATUS_SCHEMA_v2.json                  MISSING
+#     runtime/state/WCUQ_STATUS.json                                     MISSING
+#     runtime/state/WCUQ_STATUS.txt                                      MISSING
+#     runtime/state/ACTIVE_TRACKER_PREVIEW.txt                           MISSING
+#     runtime/state/ACTIVE_WORK.json                                     MISSING
+#
+# Action:
+#   Create all missing files in this session.
+#   WCUQ schema v2 + freshness-gate logic sourced from base64 patch stored at
+#   governance/improvement_log/WCUQ_STAGE004_REMOTE_PATCH_BASE64_20260602.md
+#   (decoded SHA-256 a582ec350a111cea9b03a1d86c5e1b5f190843560533a2ee18eaa84f0f6fd8af).
+#   Current work scope: GitHub sync / PR #20 / parity / tracker repair.
+#   Native OS next step (STAGE011I2) belongs in floor history, not active scope.
+#
+# ── POST-REPAIR STATE ─────────────────────────────────────────────────────────
+# All files created. Re-ran grep — sources now wired correctly.
+# Key regression checks (run by binding gate + validator):
+#   stale_9035_absent:        true   (score 90.35 exists ONLY under last_known_calibration, not in preview)
+#   suppress_text_present:    true   (ACTIVE_TRACKER_PREVIEW.txt contains the suppression text)
+#   binding_gate_decision:    PASS
+#   wcuq_validator_decision:  PASS
+# Preview: runtime/state/ACTIVE_TRACKER_PREVIEW.txt
+# Receipts: runtime/receipts/visual_tracker_repair/BINDING_GATE_RECEIPT.json
+#           runtime/receipts/visual_tracker_repair/WCUQ_VALIDATOR_RECEIPT.json

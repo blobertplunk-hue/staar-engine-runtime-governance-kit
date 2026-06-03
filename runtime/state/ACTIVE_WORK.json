@@ -1,0 +1,19 @@
+{
+  "schema": "mb.visual_tracker.active_work.v1",
+  "created_at_utc": "2026-06-03T00:00:00Z",
+  "stage": "VISUAL_TRACKER_HUMAN_UX_REDESIGN_AND_DYNAMIC_SOURCE_BINDING",
+  "scope_note": "GitHub repo context. Native OS pending step STAGE011I2 is in floor history; it is not the active work scope here.",
+  "progress": [
+    {"label": "GitHub sync stages 0E-0U_R3", "status": "DONE"},
+    {"label": "PR #20 merged to main", "status": "DONE"},
+    {"label": "WCUQ schema v2 tools + state committed to repo", "status": "IN_PROGRESS"},
+    {"label": "Visual Tracker source binding repair", "status": "IN_PROGRESS"}
+  ],
+  "next": "commit and push repaired Visual Tracker tools + state to branch claude/visual-tracker-stale-data-4RAA4",
+  "floor": {
+    "name": "Stage011K2 rebuilt archive",
+    "sha256": "4efc7472396f79311a220d3acc2ddee4a0ec4c5e22dbf2b12c28742d50c50024",
+    "tag": "MB-FULL-STAGE011K2-20260601T111108Z",
+    "note": "Native OS next step after this floor is STAGE011I2_ARCHIVE_INSPECT_ONLY_E4_RERUN; blocked pending GitHub sync/parity completion"
+  }
+}

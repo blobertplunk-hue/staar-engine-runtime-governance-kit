@@ -1,0 +1,19 @@
+MetaBlooms Visual Tracker
+stage VISUAL_TRACKER_HUMAN_UX_REDESIGN_AND_DYNAMIC_SOURCE_BINDING
+generated 2026-06-03T23:39:37Z
+
+WCUQ:
+  WCUQ stale/unavailable; numeric score suppressed
+
+active work:
+  GitHub sync stages 0E-0U_R3: DONE
+  PR #20 merged to main: DONE
+  WCUQ schema v2 tools + state committed to repo: IN_PROGRESS
+  Visual Tracker source binding repair: IN_PROGRESS
+
+next:
+  commit and push repaired Visual Tracker tools + state to branch claude/visual-tracker-stale-data-4RAA4
+
+floor:
+  Stage011K2 rebuilt archive
+  SHA256 4efc7472396f79311a220d3acc2ddee4a0ec4c5e22dbf2b12c28742d50c50024
