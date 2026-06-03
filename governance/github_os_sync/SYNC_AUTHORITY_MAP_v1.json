@@ -1,0 +1,133 @@
+{
+  "authority_map_bootstrap": {
+    "authority_class": "os_authoritative_with_github_pr_proposal_path",
+    "github_changes_allowed_only_as": "pull_request_proposal",
+    "os_version_wins_until_import_gate_accepts_proposal": true,
+    "path": "governance/github_os_sync/SYNC_AUTHORITY_MAP_v1.json"
+  },
+  "conflict_policy": {
+    "automatic_resolution_allowed": false,
+    "bidirectional_source_divergence": "BLOCK_UNTIL_HUMAN_MERGE_RECEIPT",
+    "common_path_content_diff": "BLOCK_MOVEMENT_UNTIL_STAGE0I_ADJUDICATION_RECEIPT",
+    "stage0i_adjudication_receipt": "governance/github_os_sync/STAGE0I_COMMON_DIFF_ADJUDICATION_RECEIPT_20260603T192701Z.json"
+  },
+  "created_at_utc": "2026-06-03T19:27:01Z",
+  "divergence_summary": {
+    "common_paths": 6,
+    "content_or_metadata_diff_common_paths_stage0h": 4,
+    "fresh_main_manifest_required_before_movement": true,
+    "github_captured_file_count": 211,
+    "github_only_paths": 205,
+    "local_file_count": 57599,
+    "local_only_paths": 57593,
+    "stage0i_adjudicated_common_diffs": 4,
+    "unclassifiable_split_brain_paths": 0
+  },
+  "map_id": "SYNC_AUTHORITY_MAP_STAGE0I_20260603T192701Z",
+  "maturity_policy": {
+    "block_after_round_trip_validation": true,
+    "current_cycle": "stage0_authority_map_pr_proposal",
+    "stage5_warn_cycles": 3
+  },
+  "movement_authorized": false,
+  "path_authorities": [
+    {
+      "authority_class": "os_authoritative_with_github_pr_proposal_path",
+      "path": "governance/github_os_sync/SYNC_AUTHORITY_MAP_v1.json",
+      "presence": "os_required_github_proposal_path",
+      "reason": "bootstrap reconciliation authority; OS copy wins until import gate accepts PR proposal"
+    },
+    {
+      "authority_class": "github_authoritative",
+      "chosen_side": "github_main",
+      "conflict_resolution_required": true,
+      "human_merge_receipt": "governance/github_os_sync/STAGE0I_COMMON_DIFF_ADJUDICATION_RECEIPT_20260603T192701Z.json",
+      "path": ".github/workflows/metablooms-repo-manifest.yml",
+      "presence": "both",
+      "reason": "GitHub workflow files are repo control-plane. Current GitHub main includes the PR-triggerable workflow repair from Stage0F; the local OS copy is the older push-only version. Later import to OS is appropriate, but no file movement is authorized in Stage0I.",
+      "required_followup": "import_current_github_workflow_to_os_after_authority_map_acceptance"
+    },
+    {
+      "authority_class": "github_authoritative",
+      "chosen_side": "manual_merge_required_union",
+      "conflict_resolution_required": true,
+      "human_merge_receipt": "governance/github_os_sync/STAGE0I_COMMON_DIFF_ADJUDICATION_RECEIPT_20260603T192701Z.json",
+      "path": ".gitignore",
+      "presence": "both",
+      "reason": "GitHub contains normal repo hygiene ignores and blocker-ledger exclusion; OS contains lockfile exclusions. Correct resolution is a union merge in GitHub, not unilateral overwrite by either side.",
+      "required_followup": "create_gitignore_union_merge_pr_or_include_in_next_projection"
+    },
+    {
+      "authority_class": "os_authoritative",
+      "chosen_side": "os",
+      "conflict_resolution_required": true,
+      "human_merge_receipt": "governance/github_os_sync/STAGE0I_COMMON_DIFF_ADJUDICATION_RECEIPT_20260603T192701Z.json",
+      "path": "runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py",
+      "presence": "both",
+      "reason": "This path is in the OS runtime/data plane. The GitHub version is a remote-safe CI harness variant, while the OS version is the fuller local runtime harness. To avoid losing OS behavior, OS remains authoritative. A future stage should split the repo remote-safe harness into a repo-control path instead of sharing this runtime path.",
+      "required_followup": "split_or_rename_remote_safe_harness_path_before_projecting_runtime_changes"
+    },
+    {
+      "authority_class": "github_authoritative",
+      "chosen_side": "already_converged_or_github_main",
+      "conflict_resolution_required": false,
+      "human_merge_receipt": "governance/github_os_sync/STAGE0I_COMMON_DIFF_ADJUDICATION_RECEIPT_20260603T192701Z.json",
+      "path": "tools/metablooms/github_repo_manifest_generator_v1.py",
+      "presence": "both_currently_converged_by_stage0i_review",
+      "reason": "Stage0H reported this common path as different from the older manifest, but current OS and GitHub content are effectively converged by Stage0I review. It is a repo manifest tool and remains GitHub authoritative for future repo-side changes.",
+      "required_followup": "none_unless_fresh_main_manifest_shows_drift"
+    },
+    {
+      "authority_class": "github_authoritative",
+      "path": "governance/github_os_sync/PATH_CLASSIFICATION_RULES_v1.json",
+      "presence": "github_main_after_pr17",
+      "reason": "repo-side classifier gate source/control-plane"
+    },
+    {
+      "authority_class": "github_authoritative",
+      "path": "tools/metablooms/github_os_sync_gate_v1.py",
+      "presence": "github_main_after_pr17",
+      "reason": "repo-side classifier gate source/control-plane"
+    },
+    {
+      "authority_class": "github_authoritative",
+      "path": "tests/test_github_os_sync_gate_v1.py",
+      "presence": "github_main_after_pr17",
+      "reason": "repo-side classifier gate validation source"
+    }
+  ],
+  "projected_policy": {
+    "github_control_plane_prefixes": [
+      ".github/",
+      ".claude/",
+      "governance/tool_routing/",
+      "governance/blocker_ledger/",
+      "governance/claude_code_workflows/",
+      "governance/chat_export_mining/",
+      "governance/github_os_sync/",
+      "tests/"
+    ],
+    "os_runtime_data_plane_prefixes": [
+      "runtime/",
+      "0_kernel/",
+      "1_cartridges/",
+      "1_governance/",
+      "2_engines/",
+      "2_evidence/",
+      "3_data/"
+    ],
+    "release_asset_only_patterns": [
+      "*.tar.zst",
+      "*.zip",
+      "release_artifacts/",
+      "externalization/"
+    ]
+  },
+  "schema": "mb.github_os_sync.sync_authority_map.v1",
+  "source_refs": {
+    "github_main_after_pr17_merge_sha": "071166ddce9ba585f783f24bdd4f927868ea47b8",
+    "stage0h_authority_map": "runtime/receipts/github_os_sync_stage0h/STAGE0H_20260603T192108Z/SYNC_AUTHORITY_MAP_DRAFT_v1.json",
+    "stage0i_adjudication_receipt": "runtime/receipts/github_os_sync_stage0i/STAGE0I_20260603T192701Z/STAGE0I_COMMON_DIFF_ADJUDICATION_RECEIPT.json"
+  },
+  "status": "DRAFT_PR_PROPOSAL_NOT_APPROVED_FOR_MOVEMENT"
+}
