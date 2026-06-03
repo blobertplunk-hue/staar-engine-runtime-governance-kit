@@ -1,0 +1,109 @@
+{
+  "blocker_fingerprint_policy": {
+    "fingerprint_fields": [
+      "blocker_type",
+      "component",
+      "operation",
+      "normalized_command",
+      "target_path",
+      "input_digest",
+      "evidence_digest"
+    ],
+    "minimum_receipt_fields": [
+      "fingerprint",
+      "occurrence_count",
+      "changed_inputs",
+      "decision",
+      "rca_required",
+      "ledger_path"
+    ],
+    "normalize_rules": [
+      "strip volatile timestamps",
+      "replace absolute temp dirs with <TMP>",
+      "collapse whitespace",
+      "preserve target repo/path and command semantics"
+    ],
+    "recurrence_rule": "same fingerprint twice without changed input_digest/evidence_digest forces RCA route"
+  },
+  "fixtures": [
+    {
+      "expected": "BLOCKED",
+      "id": "blocked_mnt_data_file_search",
+      "proves": "wrong-tool prevention for mounted OS truth"
+    },
+    {
+      "expected": "ALLOW_FILE_SEARCH",
+      "id": "allowed_uploaded_semantic_query",
+      "proves": "policy is precise, not blanket anti-file-search"
+    },
+    {
+      "expected": "LOG_ONLY",
+      "id": "first_blocker_logs",
+      "proves": "first incident records evidence"
+    },
+    {
+      "expected": "FORCE_RCA",
+      "id": "repeat_blocker_forces_rca",
+      "proves": "recurrence cannot loop"
+    },
+    {
+      "expected": "LOG_NEW_VARIANT",
+      "id": "changed_inputs_not_repeat",
+      "proves": "no false recurrence when material inputs change"
+    }
+  ],
+  "schema": "mb.claude_code_gates_and_fixtures_spec.v1",
+  "tool_route_policy": {
+    "minimum_receipt_fields": [
+      "route_id",
+      "input_classification",
+      "selected_tool",
+      "forbidden_tool_check",
+      "decision",
+      "evidence_path"
+    ],
+    "routes": [
+      {
+        "decision": "BLOCK_FILE_SEARCH",
+        "domain": "mounted_mnt_data_os_artifact_truth",
+        "forbidden_tools": [
+          "file_search"
+        ],
+        "preferred_tools": [
+          "filesystem",
+          "container_shell",
+          "python_stdlib",
+          "tar",
+          "zip",
+          "sha256sum"
+        ]
+      },
+      {
+        "decision": "ALLOW_REPO_TOOLS",
+        "domain": "github_repo_state",
+        "forbidden_tools": [],
+        "preferred_tools": [
+          "git",
+          "GitHub connector",
+          "GitHub Actions"
+        ]
+      },
+      {
+        "decision": "REQUIRE_SOURCE_BINDING",
+        "domain": "external_current_evidence",
+        "preferred_tools": [
+          "web.run",
+          "captured SEE evidence"
+        ]
+      },
+      {
+        "decision": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE",
+        "domain": "uploaded_semantic_document_query",
+        "preferred_tools": [
+          "file_search"
+        ]
+      }
+    ]
+  },
+  "workflow_id": "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001"
+}
