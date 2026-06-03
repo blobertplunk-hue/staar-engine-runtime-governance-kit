@@ -1,0 +1,58 @@
+{
+  "stage": "CHAT790_OS_REPAIRS_STAGE_A_BOOT_ROOT_AND_TOOL_ROUTING_GUARDS",
+  "status": "COMPLETE",
+  "completed_date": "2026-06-03",
+  "branch": "claude/metablooms-os-audit-hr5ET",
+  "source_documents": [
+    "governance/improvement_log/METABLOOMS_CHAT790_POSTMORTEM_URGENT_OS_CHANGES_20260602.md",
+    "governance/implementation_plans/CLAUDE_CODE_IMPLEMENTATION_PLAN_FOR_CHAT790_OS_REPAIRS.md"
+  ],
+  "file_search_used": false,
+  "files_added": [
+    "governance/tool_routing/TOOL_ROUTING_POLICY_v1.json",
+    "governance/tool_routing/FILE_SEARCH_BAN_FOR_MOUNTED_ARTIFACTS_v1.md",
+    "governance/boot/BOOT_ROOT_REPAIR_POLICY_v1.json",
+    "governance/boot/BOOT_ROOT_REPAIR_POLICY_v1.md",
+    "tests/__init__.py",
+    "tests/governance/__init__.py",
+    "tests/governance/test_tool_routing_policy.py",
+    "tests/governance/test_boot_root_repair_policy.py",
+    "receipts/CHAT790_OS_REPAIRS_STAGE_A_RECEIPT.json"
+  ],
+  "files_modified": [],
+  "test_results": {
+    "python3 tests/governance/test_tool_routing_policy.py": "PASS (21/21)",
+    "python3 tests/governance/test_boot_root_repair_policy.py": "PASS (26/26)",
+    "total": "47/47"
+  },
+  "acceptance_criteria_met": {
+    "1_mounted_mnt_data_must_not_route_to_file_search": {
+      "met": true,
+      "evidence": "TOOL_ROUTING_POLICY_v1.json route 'mounted_mnt_data_os_artifact_truth' has forbidden_tools=['file_search'] and decision='BLOCK_FILE_SEARCH'. Tests: test_file_search_in_forbidden_tools, test_decision_is_blocking, test_global_rule_bans_file_search."
+    },
+    "2_direct_filesystem_python_archive_are_preferred": {
+      "met": true,
+      "evidence": "Route preferred_methods includes 'direct filesystem read', 'Python open/read', 'zipfile member read', 'tarfile member read'. Tests: test_direct_filesystem_read_is_preferred, test_python_read_is_preferred, test_archive_read_is_preferred."
+    },
+    "3_missing_mpp_sh_is_boot_blocker": {
+      "met": true,
+      "evidence": "BOOT_ROOT_REPAIR_POLICY_v1.json blocking_checks[mpp_sh_exists] has severity='BLOCKER', check_type='file_exists', path='scripts/mpp/mpp.sh', error_message='BLOCKED: ...'. Tests: test_mpp_sh_severity_is_blocker_not_warning, test_mpp_sh_error_message_contains_blocked, test_policy_fails_closed."
+    },
+    "4_boot_repair_requires_same_run_receipt": {
+      "met": true,
+      "evidence": "receipt_requirements.same_run_boot_receipt=true with required_receipt_fields including mpp_sh_verified, turn_boot_exit_code, session_id, receipt_timestamp. Tests: test_same_run_boot_receipt_is_true, test_receipt_requires_session_id, test_receipt_requires_receipt_timestamp."
+    }
+  },
+  "design_notes": {
+    "policy_as_json": "Both policies are machine-readable JSON, consistent with repo conventions (TOOL_ROUTING_POLICY_v1 format). Tests validate the documents directly without needing live mounts.",
+    "boot_policy_companion_md": "BOOT_ROOT_REPAIR_POLICY_v1.md is a human-readable companion per the implementation plan's .md requirement; BOOT_ROOT_REPAIR_POLICY_v1.json is the machine-testable source of truth.",
+    "no_live_mount_required": "Tests validate policy documents only. They do not require /mnt/data to be mounted or mpp.sh to exist in the test environment.",
+    "bug_found_and_fixed": "test_md_mentions_fail_closed: test initially matched only 'fail_closed'/'fail closed' but markdown used hyphenated 'fail-closed'. Fixed test to accept all three forms."
+  },
+  "limitations": [
+    "Stage A establishes governance policies and tests. It does not install a running pre-tool-call guard for live sessions — that requires the guard script from BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001 on main branch, which is on a different branch lineage.",
+    "BOOT_ROOT_REPAIR_POLICY_v1 documents what a boot checker must do but does not implement a live /mnt/data boot check in this repo.",
+    "Stage B (cartridge skeleton), Stage C (R7/R8/R8C validators), and Stage D (export/countdown gates) are not implemented."
+  ],
+  "next_stage": "CHAT790_OS_REPAIRS_STAGE_B_CHAT_EXPORT_MINING_CARTRIDGE_SKELETON"
+}

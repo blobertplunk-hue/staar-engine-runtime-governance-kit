@@ -1,0 +1,51 @@
+{
+  "policy_id": "BOOT_ROOT_REPAIR_POLICY_v1",
+  "description": "MetaBlooms OS boot-root repair and verification policy. Governs the pre-work gate that ensures the live OS root at /mnt/data/Metablooms_OS is boot-sound before any governed work proceeds.",
+  "version": "1",
+  "live_root": "/mnt/data/Metablooms_OS",
+  "blocking_checks": [
+    {
+      "id": "mpp_sh_exists",
+      "description": "scripts/mpp/mpp.sh must exist in the live root. Its absence means the boot entrypoint is missing and the runtime cannot execute governed operations.",
+      "path": "scripts/mpp/mpp.sh",
+      "check_type": "file_exists",
+      "severity": "BLOCKER",
+      "repair_action": "restore_from_verified_archive",
+      "error_message": "BLOCKED: /mnt/data/Metablooms_OS exists but scripts/mpp/mpp.sh is missing"
+    },
+    {
+      "id": "turn_boot_passes",
+      "description": "bash scripts/mpp/mpp.sh turn-boot must exit 0 after mpp.sh is confirmed present.",
+      "command": "bash scripts/mpp/mpp.sh turn-boot --task boot_verify --operation check --print-summary",
+      "check_type": "command_exit_0",
+      "severity": "BLOCKER",
+      "repair_action": "restore_from_verified_archive",
+      "error_message": "BLOCKED: mpp.sh exists but turn-boot failed — root is structurally unsound"
+    }
+  ],
+  "receipt_requirements": {
+    "same_run_boot_receipt": true,
+    "description": "A boot receipt must be written in the same run that performs the repair. It cannot be carried over from a prior session.",
+    "required_receipt_fields": [
+      "boot_policy_id",
+      "live_root",
+      "mpp_sh_verified",
+      "turn_boot_exit_code",
+      "repair_performed",
+      "verified_archive_source",
+      "receipt_timestamp",
+      "session_id"
+    ]
+  },
+  "repair_strategy": {
+    "primary": "restore_from_latest_verified_full_os_archive",
+    "archive_candidates": [
+      "METABLOOMS_FULL_OS_WITH_CLAUDE_GITHUB_WORK_20260603T021048Z.tar.zst",
+      "sticky durable-floor archive (latest verified)"
+    ],
+    "verification_required_before_promotion": true,
+    "description": "Extract the full OS archive to a staging location, verify mpp.sh is present and turn-boot passes, then promote to the live root. Write receipt before proceeding."
+  },
+  "failure_mode": "fail_closed",
+  "description_of_failure_class": "directory_existence_treated_as_runtime_soundness — /mnt/data/Metablooms_OS exists does NOT imply the runtime is bootable. This policy prevents that false assumption."
+}

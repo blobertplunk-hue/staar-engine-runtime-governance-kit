@@ -1,0 +1,69 @@
+{
+  "policy_id": "TOOL_ROUTING_POLICY_v1",
+  "description": "MetaBlooms OS tool routing policy. Routes work to the strongest available tool. Forbids weak or wrong-domain tools per domain.",
+  "version": "1",
+  "routes": [
+    {
+      "id": "mounted_mnt_data_os_artifact_truth",
+      "description": "Work that reads truth from mounted OS artifacts at /mnt/data or Metablooms_OS. Direct filesystem, Python, and archive reads are authoritative. file_search is forbidden: it produces incomplete or stale results on mounted paths and bypasses the direct-read audit trail.",
+      "match": {
+        "target_contains_any": ["/mnt/data", "Metablooms_OS"]
+      },
+      "forbidden_tools": ["file_search"],
+      "preferred_tools": ["Bash", "Read", "Python"],
+      "preferred_methods": [
+        "direct filesystem read",
+        "Python open/read",
+        "zipfile member read",
+        "tarfile member read",
+        "checksum verification",
+        "manifest read"
+      ],
+      "decision": "BLOCK_FILE_SEARCH",
+      "human_override_required": true,
+      "rationale": "file_search returns incomplete, potentially stale, or semantically wrong results for mounted OS artifacts. Direct reads are auditable, deterministic, and produce evidence suitable for receipts."
+    },
+    {
+      "id": "uploaded_semantic_document_query",
+      "description": "Semantic search over user-uploaded documents (not mounted OS paths). file_search is permitted only when the target is a user upload and no mounted-OS-path string is present.",
+      "match": {
+        "explicit_domain": "uploaded_semantic_document_query"
+      },
+      "forbidden_tools": [],
+      "preferred_tools": ["file_search"],
+      "preferred_methods": ["semantic search over uploaded content"],
+      "decision": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE",
+      "human_override_required": false,
+      "rationale": "Semantic search is the appropriate tool for uploaded document queries when mounted OS paths are not involved."
+    },
+    {
+      "id": "github_repo_changes",
+      "description": "Reading or writing GitHub repository content.",
+      "match": {
+        "explicit_domain": "github_repo_changes"
+      },
+      "forbidden_tools": ["file_search"],
+      "preferred_tools": ["Bash"],
+      "preferred_methods": [
+        "git read",
+        "GitHub connector",
+        "verified git tooling"
+      ],
+      "decision": "ALLOW_GIT_TOOLING",
+      "human_override_required": false,
+      "rationale": "GitHub repo content must be read through git or the GitHub API for auditability and correct branch targeting."
+    }
+  ],
+  "global_rules": [
+    {
+      "id": "no_file_search_for_mounted_truth",
+      "description": "file_search must never be used as the evidence source for mounted OS artifact truth without explicit human re-authorization.",
+      "severity": "BLOCKER"
+    },
+    {
+      "id": "receipts_record_tool_path",
+      "description": "All tool path selections must be recorded in the stage receipt with a justification string.",
+      "severity": "REQUIRED"
+    }
+  ]
+}
