@@ -1,0 +1,37 @@
+{
+  "schema": "mb.github_os_sync.github_tree_enumerator_contract.v1",
+  "contract_id": "GITHUB_TREE_ENUMERATOR_CONTRACT_v1",
+  "status": "ACTIVE_DRAFT_MACHINE_ENFORCED",
+  "purpose": "Produce a complete GitHub repository file inventory when sandbox direct clone/API tree traversal is unavailable.",
+  "repository": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "preferred_methods": [
+    "local git clone when network permits",
+    "GitHub API non-recursive tree traversal when a tree-read API is available",
+    "repo-side GitHub Actions manifest generator when sandbox/connector cannot enumerate full tree"
+  ],
+  "selected_repair_method": "repo_side_github_actions_manifest_generator",
+  "outputs": [
+    "github_main_manifest.tsv",
+    "github_main_manifest.tsv.sha256",
+    "github_manifest_receipt.json"
+  ],
+  "manifest_columns": [
+    "path",
+    "size",
+    "sha256",
+    "executable_bit"
+  ],
+  "exclusions": [
+    ".git/",
+    "github_main_manifest.tsv",
+    "github_main_manifest.tsv.sha256",
+    "github_manifest_receipt.json"
+  ],
+  "gates": {
+    "must_run_inside_github_checkout": true,
+    "must_record_github_ref": true,
+    "must_hash_manifest_after_generation": true,
+    "must_upload_manifest_artifact": true,
+    "must_not_mutate_repository_contents": true
+  }
+}
