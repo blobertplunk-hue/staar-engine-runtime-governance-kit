@@ -1,0 +1,61 @@
+{
+  "schema": "mb.tool_routing_policy.v1",
+  "workflow_id": "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001",
+  "created_at_utc": "2026-06-03T00:00:00Z",
+  "routes": [
+    {
+      "domain": "mounted_mnt_data_os_artifact_truth",
+      "description": "Mounted /mnt/data OS artifact inspection. Direct filesystem/ZIP/tar/hash tools only.",
+      "forbidden_tools": ["file_search"],
+      "preferred_tools": ["filesystem", "container_shell", "python_stdlib", "tar", "zip", "sha256sum"],
+      "decision": "BLOCK_FILE_SEARCH",
+      "rationale": "file_search is unreliable and non-auditable for mounted OS artifacts. Direct reads produce verifiable output."
+    },
+    {
+      "domain": "github_repo_state",
+      "description": "GitHub/git repository state queries.",
+      "forbidden_tools": [],
+      "preferred_tools": ["git", "github_connector", "github_actions"],
+      "decision": "ALLOW_REPO_TOOLS"
+    },
+    {
+      "domain": "external_current_evidence",
+      "description": "External web evidence required for factual claims.",
+      "forbidden_tools": [],
+      "preferred_tools": ["web_run", "captured_see_evidence"],
+      "decision": "REQUIRE_SOURCE_BINDING"
+    },
+    {
+      "domain": "uploaded_semantic_document_query",
+      "description": "Semantic queries over explicitly uploaded user documents. file_search allowed.",
+      "forbidden_tools": [],
+      "preferred_tools": ["file_search"],
+      "decision": "ALLOW_WHEN_EXPLICITLY_APPROPRIATE"
+    }
+  ],
+  "classify_triggers": {
+    "mounted_mnt_data_os_artifact_truth": {
+      "path_patterns": ["/mnt/data", "Metablooms_OS"],
+      "domain_field_match": "mounted_mnt_data_os_artifact_truth"
+    },
+    "uploaded_semantic_document_query": {
+      "input_flag": "uploaded",
+      "domain_field_match": "uploaded_semantic_document_query"
+    },
+    "github_repo_state": {
+      "tool_names": ["git", "gh", "github"],
+      "domain_field_match": "github_repo_state"
+    },
+    "external_current_evidence": {
+      "domain_field_match": "external_current_evidence"
+    }
+  },
+  "minimum_receipt_fields": [
+    "route_id",
+    "input_classification",
+    "selected_tool",
+    "forbidden_tool_check",
+    "decision",
+    "evidence_path"
+  ]
+}

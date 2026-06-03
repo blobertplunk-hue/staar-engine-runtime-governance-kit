@@ -1,0 +1,19 @@
+{
+  "id": "explicit_domain_bypass_blocked",
+  "description": "file_search with domain=uploaded_semantic_document_query but target_path in /mnt/data must still BLOCK. Mounted-path detection dominates explicit domain.",
+  "proves": "explicit-domain bypass is not possible; mounted-path check always wins",
+  "input": {
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "find mpp.sh",
+      "target_path": "/mnt/data/Metablooms_OS",
+      "uploaded": true,
+      "domain": "uploaded_semantic_document_query"
+    }
+  },
+  "expected": {
+    "decision": "BLOCKED",
+    "forbidden_tool_check": true,
+    "input_classification": "mounted_mnt_data_os_artifact_truth"
+  }
+}
