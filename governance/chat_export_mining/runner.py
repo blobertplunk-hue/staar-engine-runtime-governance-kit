@@ -32,11 +32,18 @@ def _is_tool_failure(entry):
     return isinstance(entry, dict) and entry.get("hook_event_name") == _HOOK_EVENT
 
 
+def _emit_error(message, exit_code):
+    """Emit a bounded JSON error object to stderr and exit."""
+    print(json.dumps({"error": message, "exit_code": exit_code}), file=sys.stderr)
+    sys.exit(exit_code)
+
+
 def mine_stream(lines, max_entries=None):
     """
     Parse JSONL lines, extract PostToolUseFailure entries, map to blocker events.
 
     Returns a receipt dict. Never writes to the ledger or filesystem.
+    Malformed failure payloads are counted as unmappable instead of aborting the run.
     """
     entries_seen = 0
     parse_errors = 0
@@ -62,7 +69,11 @@ def mine_stream(lines, max_entries=None):
             continue
 
         failures_found += 1
-        event, status = map_payload(entry)
+        try:
+            event, status = map_payload(entry)
+        except (TypeError, ValueError, KeyError, AttributeError):
+            unmappable_count += 1
+            continue
 
         if status == "UNMAPPABLE":
             unmappable_count += 1
@@ -97,16 +108,14 @@ def main():
         try:
             fh = open(args.input, encoding="utf-8")
         except OSError as exc:
-            print(json.dumps({"error": str(exc), "exit_code": 1}), file=sys.stderr)
-            sys.exit(1)
+            _emit_error(str(exc), 1)
     else:
         fh = sys.stdin
 
     try:
         receipt = mine_stream(fh, max_entries=args.max_entries)
     except Exception as exc:
-        print(json.dumps({"error": str(exc), "exit_code": 2}), file=sys.stderr)
-        sys.exit(2)
+        _emit_error(str(exc), 2)
     finally:
         if args.input:
             fh.close()
@@ -118,8 +127,11 @@ def main():
     out = json.dumps(receipt, indent=2)
 
     if args.output:
-        with open(args.output, "w", encoding="utf-8") as f:
-            f.write(out)
+        try:
+            with open(args.output, "w", encoding="utf-8") as f:
+                f.write(out)
+        except OSError as exc:
+            _emit_error(str(exc), 1)
     else:
         print(out)
 
