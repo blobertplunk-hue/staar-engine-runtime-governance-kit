@@ -17,3 +17,6 @@ node_modules/
 *.token
 *.secret
 governance/blocker_ledger/ledger.json
+.registry_mutation.lock
+artifact_registry.json.lock
+*.lock
