@@ -1,0 +1,6 @@
+{"hook_event_name": "SessionStart", "session_id": "fixture-multi-001", "cwd": "/home/user/staar-engine-runtime-governance-kit"}
+{"hook_event_name": "PostToolUseFailure", "tool_name": "file_search", "tool_input": {"query": "boot-sound", "target_path": "/mnt/data/Metablooms_OS"}, "tool_response": "Error: forbidden on mounted path", "session_id": "fixture-multi-001", "tool_use_id": "toolu_fixture_m01"}
+{"hook_event_name": "PostToolUse", "tool_name": "Read", "tool_input": {"file_path": "/home/user/CLAUDE.md"}, "tool_response": "OK", "session_id": "fixture-multi-001"}
+{"hook_event_name": "PostToolUseFailure", "tool_name": "Bash", "tool_input": {"command": "rm -rf /mnt/data/Metablooms_OS/critical", "description": "dangerous delete"}, "tool_response": "Error: permission denied", "session_id": "fixture-multi-001", "tool_use_id": "toolu_fixture_m02"}
+{"hook_event_name": "PostToolUseFailure", "tool_name": "Write", "tool_input": {"file_path": "/mnt/data/Metablooms_OS/output.txt", "content": "modified"}, "tool_response": "Error: read-only filesystem", "session_id": "fixture-multi-001", "tool_use_id": "toolu_fixture_m03"}
+{"hook_event_name": "Stop", "session_id": "fixture-multi-001"}

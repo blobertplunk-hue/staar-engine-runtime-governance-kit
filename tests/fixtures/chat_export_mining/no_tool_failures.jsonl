@@ -1,0 +1,6 @@
+{"hook_event_name": "SessionStart", "session_id": "fixture-nofail-001", "cwd": "/home/user/staar-engine-runtime-governance-kit"}
+{"hook_event_name": "PreToolUse", "tool_name": "Read", "tool_input": {"file_path": "/home/user/staar-engine-runtime-governance-kit/CLAUDE.md"}, "session_id": "fixture-nofail-001"}
+{"hook_event_name": "PostToolUse", "tool_name": "Read", "tool_input": {"file_path": "/home/user/staar-engine-runtime-governance-kit/CLAUDE.md"}, "tool_response": "OK", "session_id": "fixture-nofail-001"}
+{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"command": "git status", "description": "check status"}, "session_id": "fixture-nofail-001"}
+{"hook_event_name": "PostToolUse", "tool_name": "Bash", "tool_input": {"command": "git status", "description": "check status"}, "tool_response": "On branch main", "session_id": "fixture-nofail-001"}
+{"hook_event_name": "Stop", "session_id": "fixture-nofail-001"}

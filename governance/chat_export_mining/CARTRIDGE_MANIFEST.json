@@ -1,0 +1,56 @@
+{
+  "cartridge_id": "CHAT790_EXPORT_MINING_CARTRIDGE",
+  "stage": "STAGE001",
+  "status": "SHELL_ACTIVE",
+  "description": "Structured ingestor for Claude Code session JSONL exports. Extracts PostToolUseFailure events and maps them to the blocker schema. Stage001 is the bounded shell: parse, filter, map — no ledger writes, no pattern clustering, no /mnt/data access.",
+  "stage001_scope": {
+    "does": [
+      "Accept a JSONL chat export (one JSON object per line)",
+      "Validate each line as parseable JSON",
+      "Filter entries where hook_event_name == 'PostToolUseFailure'",
+      "Map each PostToolUseFailure entry through post_tool_failure_adapter.map_payload (no ledger writes)",
+      "Emit a mining receipt: entries_seen, parse_errors, failures_found, mapped, unmappable, events"
+    ],
+    "does_not": [
+      "Write to the blocker ledger (no recurrence tracking in Stage001)",
+      "Access /mnt/data or any mounted OS path",
+      "Claim to have fully mined the actual chat790 export",
+      "Perform pattern clustering, frequency analysis, or RCA candidate ranking",
+      "Fetch from network or external sources",
+      "Modify any existing governance artifacts or hook scripts"
+    ]
+  },
+  "future_stages": [
+    "STAGE002: ledger feed — pipe mapped events through adapt_and_classify to track recurrence across export entries",
+    "STAGE003: pattern analysis — cluster by fingerprint, compute frequency, emit ranked RCA candidate list",
+    "STAGE004: full chat790 export ingestion with session-aware deduplication and cross-session recurrence tracking"
+  ],
+  "dependencies": {
+    "merged_stages": [
+      "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001 (PR #11)",
+      "BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001 (PR #12)",
+      "CHAT790_FORMAT_ADAPTER_AND_LEDGER_GITIGNORE (PR #13)"
+    ],
+    "scripts_used": [
+      "governance/blocker_ledger/post_tool_failure_adapter.py (map_payload only)",
+      "governance/blocker_ledger/repeated_blocker_guard.py (transitively, via adapter)"
+    ],
+    "scripts_not_used_in_stage001": [
+      "governance/blocker_ledger/repeated_blocker_guard.py classify() — no ledger writes",
+      "governance/tool_routing/tool_route_guard.py — not needed for export mining"
+    ]
+  },
+  "runner": "governance/chat_export_mining/runner.py",
+  "input_schema": "governance/chat_export_mining/CHAT_EXPORT_ENTRY_SCHEMA_v1.json",
+  "runner_contract": "governance/chat_export_mining/BOUNDED_RUNNER_CONTRACT_v1.json",
+  "output_receipt_fields": [
+    "cartridge_id",
+    "runner_stage",
+    "entries_seen",
+    "parse_errors",
+    "failures_found",
+    "mapped",
+    "unmappable",
+    "events"
+  ]
+}

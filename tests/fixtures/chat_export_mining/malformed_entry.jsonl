@@ -1,0 +1,6 @@
+{"hook_event_name": "SessionStart", "session_id": "fixture-malform-001"}
+this is not valid json at all {{{
+{"hook_event_name": "PostToolUseFailure", "tool_name": "file_search", "tool_input": {"query": "valid entry after bad line", "target_path": "/mnt/data/Metablooms_OS"}, "tool_response": "Error: forbidden", "session_id": "fixture-malform-001"}
+{"incomplete_json": true
+{"hook_event_name": "PostToolUseFailure", "tool_response": "Error: missing tool_name field — should be UNMAPPABLE"}
+{"hook_event_name": "Stop", "session_id": "fixture-malform-001"}

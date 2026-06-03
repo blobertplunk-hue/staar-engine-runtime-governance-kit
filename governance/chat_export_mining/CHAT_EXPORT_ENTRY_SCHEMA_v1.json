@@ -1,0 +1,71 @@
+{
+  "schema_id": "CHAT_EXPORT_ENTRY_SCHEMA_v1",
+  "description": "Schema for a single entry in a Claude Code session JSONL export. Each line of the export is one JSON object matching this schema. The runner filters for entries where hook_event_name == 'PostToolUseFailure'.",
+  "filter_condition": "hook_event_name == 'PostToolUseFailure'",
+  "fields": {
+    "hook_event_name": {
+      "type": "string",
+      "required": true,
+      "description": "Event type emitted by the Claude Code hook system.",
+      "known_values": [
+        "PostToolUseFailure",
+        "PreToolUse",
+        "PostToolUse",
+        "Stop",
+        "SessionStart"
+      ]
+    },
+    "tool_name": {
+      "type": "string",
+      "required_for_mining": true,
+      "description": "Name of the tool that failed (for PostToolUseFailure entries)."
+    },
+    "tool_input": {
+      "type": "object",
+      "required_for_mining": false,
+      "default": {},
+      "description": "Input arguments passed to the tool."
+    },
+    "tool_response": {
+      "type": "string",
+      "required_for_mining": false,
+      "description": "Error text from the failed tool call. Alias: 'error'."
+    },
+    "error": {
+      "type": "string",
+      "required_for_mining": false,
+      "description": "Alias for tool_response used in some export formats."
+    },
+    "session_id": {
+      "type": "string",
+      "required_for_mining": false,
+      "description": "UUID of the Claude Code session that produced this event."
+    },
+    "tool_use_id": {
+      "type": "string",
+      "required_for_mining": false,
+      "description": "Unique ID for the individual tool invocation."
+    },
+    "cwd": {
+      "type": "string",
+      "required_for_mining": false,
+      "description": "Working directory at the time of the hook event."
+    },
+    "duration_ms": {
+      "type": "number",
+      "required_for_mining": false,
+      "description": "Time taken by the tool call in milliseconds."
+    },
+    "is_interrupt": {
+      "type": "boolean",
+      "required_for_mining": false,
+      "description": "True if the tool call was interrupted before completing."
+    }
+  },
+  "notes": [
+    "Lines that are not valid JSON are counted as parse_errors and skipped.",
+    "Empty lines are silently skipped.",
+    "Entries without hook_event_name are counted in entries_seen but not as failures.",
+    "The runner does not enforce strict type checking on individual fields; it relies on the adapter to handle missing/malformed values gracefully."
+  ]
+}
