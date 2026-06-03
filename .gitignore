@@ -1,7 +1,18 @@
 .DS_Store
 Thumbs.db
-*.swp *.swo *~
-.cache/ tmp/
-__pycache__/ *.pyc
-.venv/ venv/ node_modules/
-.env .env.* *.token *.secret
+*.swp
+*.swo
+*~
+.cache/
+tmp/
+__pycache__/
+**/__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+.env
+.env.*
+*.token
+*.secret
+governance/blocker_ledger/ledger.json
