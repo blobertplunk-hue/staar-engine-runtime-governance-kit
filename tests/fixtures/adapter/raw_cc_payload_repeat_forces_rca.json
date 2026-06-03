@@ -1,0 +1,27 @@
+{
+  "id": "raw_cc_payload_repeat_forces_rca",
+  "description": "Two identical raw CC PostToolUseFailure payloads: first yields LOG_ONLY, second yields FORCE_RCA.",
+  "proves": "recurrence detection works end-to-end through the format adapter",
+  "raw_payload": {
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "file_search",
+    "tool_input": {
+      "query": "boot-sound root check",
+      "target_path": "/mnt/data/Metablooms_OS"
+    },
+    "tool_response": "Error: operation not permitted on mounted path",
+    "session_id": "test-session-fixture-002"
+  },
+  "pass1_expected": {
+    "decision": "LOG_ONLY",
+    "exit_code": 0,
+    "rca_required": false,
+    "occurrence_count": 1
+  },
+  "pass2_expected": {
+    "decision": "FORCE_RCA",
+    "exit_code": 2,
+    "rca_required": true,
+    "occurrence_count": 2
+  }
+}

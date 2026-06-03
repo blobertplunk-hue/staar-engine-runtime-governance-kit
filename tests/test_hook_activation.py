@@ -78,8 +78,8 @@ class TestSettingsJsonStructure(unittest.TestCase):
                       "PostToolUseFailure hook must be configured")
         cmds = [h["command"] for e in hooks["PostToolUseFailure"] for h in e.get("hooks", [])]
         self.assertTrue(
-            any("repeated_blocker_guard.py" in c for c in cmds),
-            f"repeated_blocker_guard.py not referenced in PostToolUseFailure hooks: {cmds}",
+            any("post_tool_failure_adapter.py" in c for c in cmds),
+            f"post_tool_failure_adapter.py not referenced in PostToolUseFailure hooks: {cmds}",
         )
 
     def test_guard_scripts_exist_on_disk(self):

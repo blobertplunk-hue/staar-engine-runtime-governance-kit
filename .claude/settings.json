@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 governance/blocker_ledger/repeated_blocker_guard.py --hook-stdin --mode record-or-route"
+            "command": "python3 governance/blocker_ledger/post_tool_failure_adapter.py --hook-stdin --mode record-or-route"
           }
         ]
       }

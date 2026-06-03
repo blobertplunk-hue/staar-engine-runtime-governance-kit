@@ -21,7 +21,7 @@ SETTINGS_PATH = os.path.join(_REPO_ROOT, ".claude", "settings.json")
 
 EXPECTED_PRE_TOOL_USE_CMD = "python3 governance/tool_routing/tool_route_guard.py --hook-stdin"
 EXPECTED_POST_TOOL_FAILURE_CMD = (
-    "python3 governance/blocker_ledger/repeated_blocker_guard.py --hook-stdin --mode record-or-route"
+    "python3 governance/blocker_ledger/post_tool_failure_adapter.py --hook-stdin --mode record-or-route"
 )
 
 # Safe, non-blocking smoke input for tool_route_guard
@@ -30,16 +30,14 @@ _SAFE_ROUTE_INPUT = json.dumps({
     "tool_input": {"path": "README.md"},
 })
 
-# Safe first-occurrence blocker event for repeated_blocker_guard (classify-only)
+# Safe first-occurrence raw CC payload for post_tool_failure_adapter (classify-only)
 _SAFE_BLOCKER_INPUT = json.dumps({
     "event": {
-        "blocker_type": "tool_denied",
-        "component": "hook_install_validator",
-        "operation": "smoke_test",
-        "normalized_command": "smoke_test",
-        "target_path": "/smoke/test",
-        "input_digest": "smoke_digest_000",
-        "evidence_digest": "smoke_evidence_000",
+        "hook_event_name": "PostToolUseFailure",
+        "tool_name": "bash",
+        "tool_input": {"command": "echo smoke-test"},
+        "tool_response": "smoke-test",
+        "session_id": "smoke-session-000",
     },
     "ledger": {"entries": {}},
 })
@@ -121,12 +119,12 @@ def validate():
     except Exception as exc:
         results.append(_check("tool_route_guard_smoke_test", False, str(exc)))
 
-    # 8. Smoke test: repeated_blocker_guard with safe classify-only input
+    # 8. Smoke test: post_tool_failure_adapter with safe classify-only raw CC payload
     try:
         proc = subprocess.run(
             [
                 sys.executable,
-                "governance/blocker_ledger/repeated_blocker_guard.py",
+                "governance/blocker_ledger/post_tool_failure_adapter.py",
                 "--hook-stdin", "--mode", "classify-only",
             ],
             input=_SAFE_BLOCKER_INPUT,
@@ -135,12 +133,12 @@ def validate():
         out = json.loads(proc.stdout) if proc.stdout.strip() else {}
         smoke_ok = proc.returncode == 0 and out.get("decision") == "LOG_ONLY"
         results.append(_check(
-            "repeated_blocker_guard_smoke_test",
+            "post_tool_failure_adapter_smoke_test",
             smoke_ok,
             f"exit={proc.returncode} decision={out.get('decision')}",
         ))
     except Exception as exc:
-        results.append(_check("repeated_blocker_guard_smoke_test", False, str(exc)))
+        results.append(_check("post_tool_failure_adapter_smoke_test", False, str(exc)))
 
     print("=" * 70)
     passed = sum(results)

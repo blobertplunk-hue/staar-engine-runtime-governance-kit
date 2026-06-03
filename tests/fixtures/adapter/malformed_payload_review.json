@@ -1,0 +1,16 @@
+{
+  "id": "malformed_payload_review",
+  "description": "Payload without tool_name/tool and without blocker schema fields yields REVIEW_UNMAPPED_PAYLOAD (exit 0, no crash, no false FORCE_RCA).",
+  "proves": "malformed/unknown payload routes to REVIEW_UNMAPPED_PAYLOAD, does not fail closed or produce empty-string fingerprint collisions",
+  "raw_payload": {
+    "unknown_key": "garbage_value",
+    "some_other_field": 42,
+    "nested": {"also_unknown": true}
+  },
+  "expected": {
+    "decision": "REVIEW_UNMAPPED_PAYLOAD",
+    "exit_code": 0,
+    "rca_required": false,
+    "fingerprint": null
+  }
+}
