@@ -1,0 +1,38 @@
+{
+  "schema": "mb.metablooms_recovery.exports.remote_pointer.v1",
+  "created_at_utc": "2026-06-03T03:29:00Z",
+  "stage": "REMOTE_POINTER_LOCK_OR_EXTERNAL_DISTRIBUTION_OPTIONAL",
+  "decision": "PASS_REMOTE_POINTER_LOCK_ATTEMPT_READY",
+  "remote_lock_scope": "GitHub repository pointer metadata only; binary archive remains delivered as ChatGPT sandbox artifact, not committed to GitHub",
+  "repository_full_name": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "target_branch": "claude/metablooms-os-audit-hr5ET",
+  "target_path": "metablooms_recovery/exports/METABLOOMS_FULL_OS_WITH_CLAUDE_GITHUB_WORK_REMOTE_POINTER_20260603T0329Z.json",
+  "archive": {
+    "filename": "METABLOOMS_FULL_OS_WITH_CLAUDE_GITHUB_WORK_20260603T021048Z.tar.zst",
+    "sha256": "68ff9f317045d9d888b04489478bde268589c4c48d60e68bd2062d6972a44925",
+    "size_bytes": 211690951,
+    "sidecar_filename": "METABLOOMS_FULL_OS_WITH_CLAUDE_GITHUB_WORK_20260603T021048Z.tar.zst.sha256"
+  },
+  "export_receipt": {
+    "filename": "METABLOOMS_FULL_OS_WITH_CLAUDE_GITHUB_WORK_20260603T021048Z.receipt.json",
+    "sha256": "7f82f4760b00f923f1647a6b4ca42eb30fc6dc31a4451973922d1861e4aaa74d",
+    "sidecar_filename": "METABLOOMS_FULL_OS_WITH_CLAUDE_GITHUB_WORK_20260603T021048Z.receipt.json.sha256"
+  },
+  "local_verified_pointer": {
+    "path": "/mnt/data/Metablooms_OS/runtime/state/VERIFIED_FULL_OS_BUNDLE_POINTER_v1.json",
+    "decision": "PASS_LOCAL_DELIVERY_LOCK",
+    "created_at_utc": "2026-06-03T03:26:39.747308Z"
+  },
+  "verification_chain": {
+    "archive_inspect": "PASS",
+    "cold_restore": "PASS",
+    "cold_restore_receipt": "/mnt/data/Metablooms_OS/runtime/receipts/e6_cold_restore_verify_only/E6_COLD_RESTORE_VERIFY_ONLY_20260603T031956Z.json",
+    "finalize_receipt": "/mnt/data/Metablooms_OS/runtime/receipts/finalize_full_os_bundle_delivery_or_pointer_lock/FINALIZE_FULL_OS_BUNDLE_DELIVERY_OR_POINTER_LOCK_20260603T032638Z.json"
+  },
+  "distribution_status": {
+    "github_pointer_metadata": "CREATED_BY_GITHUB_CONNECTOR",
+    "github_binary_archive_upload": "NOT_ATTEMPTED_UNSUITABLE_FOR_TEXT_CONTENTS_API",
+    "chatgpt_sandbox_artifact_delivery": "PASS_LINKS_PROVIDED_PREVIOUS_STAGE"
+  },
+  "operator_note": "This pointer tells an external reviewer which full OS artifact was verified and delivered in ChatGPT. It is not itself the archive. The archive must be downloaded from the ChatGPT artifact links or another binary-safe distribution channel and verified against the SHA-256 above."
+}
