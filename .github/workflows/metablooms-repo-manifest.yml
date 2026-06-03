@@ -36,7 +36,9 @@ jobs:
           python3 tools/metablooms/github_repo_manifest_generator_v1.py \
             --root . \
             --output github_main_manifest.tsv \
-            --receipt github_manifest_receipt.json
+            --receipt github_manifest_receipt.json \
+            --exclude github_checkout_head.txt \
+            --exclude github_checkout_status.txt
           sha256sum github_main_manifest.tsv github_manifest_receipt.json github_checkout_head.txt > github_manifest_outputs.sha256
       - name: Upload manifest artifact
         uses: actions/upload-artifact@v4
