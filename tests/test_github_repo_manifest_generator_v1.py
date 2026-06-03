@@ -35,5 +35,31 @@ class TestGitHubRepoManifestGenerator(unittest.TestCase):
             self.assertEqual(receipt_data["manifest_sha256"], result["manifest_sha256"])
 
 
+    def test_checkout_proof_files_excluded_from_manifest_when_excluded(self):
+        """Verifies --exclude github_checkout_head.txt and --exclude github_checkout_status.txt
+        keep proof files out of the TSV while still leaving them available for upload."""
+        with tempfile.TemporaryDirectory() as td:
+            root = pathlib.Path(td)
+            (root / "repo_file.txt").write_text("tracked", encoding="utf-8")
+            (root / "github_checkout_head.txt").write_text("abc123\n", encoding="utf-8")
+            (root / "github_checkout_status.txt").write_text("", encoding="utf-8")
+            out = root / "github_main_manifest.tsv"
+            receipt = root / "github_manifest_receipt.json"
+            excludes = list(mod.DEFAULT_EXCLUDES) + [
+                "github_checkout_head.txt",
+                "github_checkout_status.txt",
+            ]
+            result = mod.write_manifest(root, out, receipt, excludes)
+            self.assertEqual(result["decision"], "PASS")
+            self.assertEqual(result["file_count"], 1)
+            text = out.read_text(encoding="utf-8")
+            self.assertIn("repo_file.txt", text)
+            self.assertNotIn("github_checkout_head.txt", text)
+            self.assertNotIn("github_checkout_status.txt", text)
+            # Proof files still exist on disk for artifact upload
+            self.assertTrue((root / "github_checkout_head.txt").is_file())
+            self.assertTrue((root / "github_checkout_status.txt").is_file())
+
+
 if __name__ == "__main__":
     unittest.main()
