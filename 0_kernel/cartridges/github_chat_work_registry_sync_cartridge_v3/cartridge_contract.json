@@ -1,0 +1,29 @@
+{
+  "schema": "mb.cartridge.github_chat_work_registry_sync.v3",
+  "name": "github_chat_work_registry_sync_cartridge_v3",
+  "status": "projected_to_github",
+  "artifact_sha256": "80c5c5a0797c5d0197a9544e796bba156cd4c9374c3fc3e6e5f55f6b645f6ed2",
+  "mandatory_invariants": [
+    "REGISTERED_WORK_SESSION == true before durable progress claims",
+    "chat URL or durable chat ID must be requested if unavailable",
+    "repo resolution is cartridge responsibility before asking user",
+    "draft PR is default for code changes",
+    "artifact pointers require digests"
+  ],
+  "repo_resolution_order": [
+    "existing_registry",
+    "artifact_provenance",
+    "git_remotes",
+    "prior_receipts",
+    "installed_github_repo_search",
+    "github_code_marker_search",
+    "weak_name_similarity"
+  ],
+  "default_registry_repo_for_this_projection": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "current_chat": {
+    "chat_url_status": "SHARE_URL_PROVIDED",
+    "chat_url": "https://chatgpt.com/share/6a21debb-b41c-83ea-b4b4-7f0784844f04",
+    "share_id": "6a21debb-b41c-83ea-b4b4-7f0784844f04",
+    "source": "USER_PROVIDED"
+  }
+}
