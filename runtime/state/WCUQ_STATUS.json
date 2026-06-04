@@ -1,0 +1,23 @@
+{
+  "schema": "mb.quality_scoring.wcuq_visual_teacher_status.v2",
+  "created_at_utc": "2026-06-02T23:00:18Z",
+  "status_state": "stale_or_unavailable",
+  "display_text": "WCUQ stale/unavailable; numeric score suppressed",
+  "live_score": null,
+  "last_known_calibration": {
+    "schema": "mb.quality_scoring.wcuq_visual_teacher_status.v1",
+    "created_at_utc": "2026-05-29T21:45:41Z",
+    "text": "score 90.35; band A; promotion_ready=True; gate=PASS_WCUQ_CONTROLLER_PROMOTION; field_schema=STRICT_SCHEMA_READY; calibration=INITIAL_BASELINE_NEEDS_FIELD_DATA; controller_injection=STAGE9_BATCH",
+    "preserved_as": "historical_calibration_not_live_score",
+    "validation": "runtime/receipts/web_coding_usage_score_formula/20260529T205200Z_stage6_workflow_enforcement_baseline_calibration/PASS_STAGE3_FIELD_VALIDATION.json",
+    "gate": "runtime/receipts/web_coding_usage_score_formula/20260529T214303Z_stage9_controller_injection_batch_or_field_calibration_thresholds/WCUQ_EMBEDDED_GUARD_PASS_STAGE9_PACKET.json"
+  },
+  "stale_or_unavailable": {
+    "numeric_score_suppressed": true,
+    "reason": "migrated_legacy_status_requires_fresh_live_score_receipt"
+  },
+  "sources": {
+    "validation": "runtime/receipts/web_coding_usage_score_formula/20260529T205200Z_stage6_workflow_enforcement_baseline_calibration/PASS_STAGE3_FIELD_VALIDATION.json",
+    "gate": "runtime/receipts/web_coding_usage_score_formula/20260529T214303Z_stage9_controller_injection_batch_or_field_calibration_thresholds/WCUQ_EMBEDDED_GUARD_PASS_STAGE9_PACKET.json"
+  }
+}

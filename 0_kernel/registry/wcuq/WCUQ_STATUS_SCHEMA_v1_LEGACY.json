@@ -1,0 +1,10 @@
+{
+  "schema": "mb.schema_descriptor.v1",
+  "schema_id": "mb.quality_scoring.wcuq_visual_teacher_status.v1",
+  "title": "WCUQ Visual Tracker Status Schema v1 (LEGACY)",
+  "status": "SUPERSEDED_BY_V2",
+  "superseded_by": "0_kernel/registry/wcuq/WCUQ_STATUS_SCHEMA_v2.json",
+  "note": "v1 stored a single free-text score surface. That allowed historical calibration scores to be rendered as live. v2 separates live_score, last_known_calibration, and stale_or_unavailable.",
+  "required_fields": ["schema", "created_at_utc", "text"],
+  "known_defect": "text field rendered as live score even when content was a historical calibration baseline"
+}

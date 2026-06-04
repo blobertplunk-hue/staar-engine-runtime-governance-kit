@@ -1,0 +1,20 @@
+MetaBlooms Visual Tracker
+=========================
+
+Floor:
+  Stage011K2 rebuilt after portable repair
+  Release: MB-FULL-STAGE011K2-20260601T111108Z
+
+Current Stage:
+  WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION
+
+Current Work:
+  Apply WCUQ v2 schema patch to GitHub branch; open PR for review
+
+Next Action:
+  WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION
+
+WCUQ:
+  WCUQ stale/unavailable; numeric score suppressed
+
+file_search_used: false

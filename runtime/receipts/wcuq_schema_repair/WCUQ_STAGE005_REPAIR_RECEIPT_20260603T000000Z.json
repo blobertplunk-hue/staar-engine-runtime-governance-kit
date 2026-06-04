@@ -1,0 +1,31 @@
+{
+  "schema": "mb.wcuq.repair_receipt.v1",
+  "created_at_utc": "2026-06-03T00:00:00Z",
+  "decision": "PASS",
+  "stage": "WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION",
+  "description": "Native apply of WCUQ v2 schema patch to GitHub branch claude/visual-tracker-repair-verify-QZ6R1. Files created from Stage004 base64 patch and governance documentation.",
+  "files_created_or_modified": [
+    "tools/metablooms/visual_teacher_final_response_binding_gate_v1.py",
+    "tools/metablooms/web_coding_usage_score_status_surface_v1.py",
+    "tools/metablooms/wcuq_status_schema_validator_v1.py",
+    "0_kernel/registry/wcuq/WCUQ_STATUS_SCHEMA_v2.json",
+    "0_kernel/registry/wcuq/WCUQ_STATUS_SCHEMA_v1_LEGACY.json",
+    "runtime/state/WCUQ_STATUS.json",
+    "runtime/state/WCUQ_STATUS.txt",
+    "runtime/state/ACTIVE_WORK.json",
+    "runtime/state/ACTIVE_TRACKER_PREVIEW.txt",
+    "runtime/receipts/wcuq_schema_repair/WCUQ_STAGE005_REPAIR_RECEIPT_20260603T000000Z.json",
+    "governance/improvement_log/WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION_20260603.md"
+  ],
+  "regression_checks": {
+    "tracker_contains_score_90_35": false,
+    "tracker_contains_all_10_12_083pct": false,
+    "tracker_contains_STAGE011I2_ARCHIVE_INSPECT_ONLY_E4_RERUN": false,
+    "tracker_contains_K2_archive_rebuild": false,
+    "tracker_contains_suppression_text": true,
+    "wcuq_status_schema_is_v2": true,
+    "wcuq_status_state_is_stale_or_unavailable": true
+  },
+  "source_patch": "governance/improvement_log/WCUQ_STAGE004_REMOTE_PATCH_BASE64_20260602.md",
+  "file_search_used": false
+}
