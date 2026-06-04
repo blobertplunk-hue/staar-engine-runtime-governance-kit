@@ -1,0 +1,53 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.contract.v3",
+  "version": "3.0.0-stage0_2",
+  "stage_scope": [
+    "contract_hardening",
+    "inventory_normalization",
+    "first_pass_nutrition_scoring"
+  ],
+  "default_pattern": "DASH-Mediterranean-flexitarian adapted for dairy/wheat/egg/nut allergy constraints",
+  "shared_family_required_clearance": [
+    "milk",
+    "wheat",
+    "egg",
+    "peanut",
+    "tree_nut"
+  ],
+  "allowed_by_user_rule": [
+    "coconut"
+  ],
+  "external_recipe_claim_policy": "No external recipe may be called verified unless a URL/source is retrieved and cited.",
+  "unknown_policy": "Unknown packaged-food allergen or nutrition status must become needs_label_check, not safe.",
+  "required_recipe_fields": [
+    "title",
+    "mode",
+    "recipe_type",
+    "uses_from_inventory",
+    "need_to_buy",
+    "steps",
+    "allergy_status",
+    "label_checks",
+    "nutrition_score",
+    "robert_fit",
+    "wife_fit",
+    "toddler_fit",
+    "leftovers"
+  ],
+  "required_nutrition_score_fields": [
+    "protein_score",
+    "fiber_score",
+    "sodium_risk",
+    "added_sugar_risk",
+    "saturated_fat_risk",
+    "vegetable_volume",
+    "calorie_density"
+  ],
+  "fail_closed_rules": [
+    "shared_family_safe_requires_milk_wheat_egg_peanut_tree_nut_clearance",
+    "packaged_crusted_sauced_or_seasoned_requires_label_check_unless_label_is_known",
+    "wife_breastfeeding_mode_must_not_crash_diet",
+    "robert_default_fit_requires_not_high_added_sugar_and_not_high_sodium_unless_explicit_limit",
+    "toddler_fit_requires_texture_or_choking_prep_note_when_relevant"
+  ]
+}

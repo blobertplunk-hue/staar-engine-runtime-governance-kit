@@ -1,0 +1,68 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.allergen_rulebook.v3",
+  "version": "3.0.0-stage0_2",
+  "household_allergens": {
+    "milk": "avoid_for_shared_meals",
+    "wheat": "avoid_for_shared_meals_or_replace_with_GF",
+    "egg": "avoid_for_shared_meals",
+    "peanut": "avoid_for_shared_meals",
+    "tree_nut": "avoid_for_shared_meals_except_coconut_by_user_rule"
+  },
+  "major_label_allergens_to_track": [
+    "milk",
+    "egg",
+    "fish",
+    "crustacean_shellfish",
+    "tree_nut",
+    "peanut",
+    "wheat",
+    "soy",
+    "sesame"
+  ],
+  "status_values": ["clear", "contains", "needs_label_check", "not_applicable"],
+  "item_rules": {
+    "plain_single_ingredient_meat": {
+      "milk": "clear",
+      "wheat": "clear",
+      "egg": "clear",
+      "peanut": "clear",
+      "tree_nut": "clear"
+    },
+    "seasoned_rotisserie_chicken": {
+      "milk": "needs_label_check",
+      "wheat": "needs_label_check",
+      "egg": "needs_label_check",
+      "peanut": "needs_label_check",
+      "tree_nut": "needs_label_check",
+      "sodium": "medium_high"
+    },
+    "crusted_flounder": {
+      "milk": "needs_label_check",
+      "wheat": "needs_label_check",
+      "egg": "needs_label_check",
+      "sesame": "needs_label_check",
+      "peanut": "needs_label_check",
+      "tree_nut": "needs_label_check"
+    },
+    "greek_yogurt": {
+      "milk": "contains",
+      "shared_family_safe": false
+    },
+    "eggs": {
+      "egg": "contains",
+      "shared_family_safe": false
+    },
+    "flour_tortillas": {
+      "wheat": "contains",
+      "shared_family_safe": false
+    },
+    "canned_chili_or_sauce_or_broth": {
+      "milk": "needs_label_check",
+      "wheat": "needs_label_check",
+      "egg": "needs_label_check",
+      "soy": "needs_label_check",
+      "sesame": "needs_label_check",
+      "sodium": "label_check"
+    }
+  }
+}
