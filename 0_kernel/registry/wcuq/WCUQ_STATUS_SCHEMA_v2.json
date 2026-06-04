@@ -1,0 +1,26 @@
+{
+  "schema": "mb.schema_descriptor.v1",
+  "schema_id": "mb.quality_scoring.wcuq_visual_teacher_status.v2",
+  "title": "WCUQ Visual Tracker Status Schema v2",
+  "required_fields": [
+    "schema",
+    "created_at_utc",
+    "status_state",
+    "display_text",
+    "live_score",
+    "last_known_calibration",
+    "stale_or_unavailable",
+    "sources"
+  ],
+  "status_state_enum": [
+    "live_score",
+    "last_known_calibration",
+    "stale_or_unavailable"
+  ],
+  "invariants": [
+    "Numeric live score may be displayed only when status_state is live_score and created_at_utc is fresh for the active turn policy.",
+    "Historical calibration must be stored under last_known_calibration, never as display_text for a live tracker unless it is explicitly marked stale/unavailable.",
+    "When status_state is stale_or_unavailable, display_text must suppress numeric scores.",
+    "A v1 text-only status file is legacy evidence and must not be rendered as a live numeric score by the Visual Tracker."
+  ]
+}
