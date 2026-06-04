@@ -1,26 +1,10 @@
-🧭 MetaBlooms Work Status
-━━━━━━━━━━━━━━━━━━━━
-Status: Working
-Current job: Parity baseline receipt created; manual alert integration added; binding gate updated to four-section emoji format
-Current stage: VISUAL_TRACKER_STAGE006_PARITY_AND_MANUAL_ALERT_INTEGRATION
-Next action: VISUAL_TRACKER_STAGE007_REVIEW_AND_MERGE
+🟢 MetaBlooms Status
+Done: Fresh GitHub main manifest captured through PR-visible workflow artifact; parity rerun completed.
+Needs you: Nothing.
+Next: Adjudicate 14 common-path differences or project local OS updates back to GitHub.
 
-📊 Sync Parity
-━━━━━━━━━━━━━━━━━━━━
-[99.9966%] [███████████████████░]
-Resolved: 58847 / 58849
-Remaining deviations: 2
-Unclassified: 0
-Source: runtime/receipts/github_os_sync_stage0u/STAGE0U_20260603T214100Z/STAGE0T_PARITY_BASELINE.json
-
-🧪 Evidence Health
-━━━━━━━━━━━━━━━━━━━━
-Tracker source: runtime/state/ACTIVE_WORK.json
-WCUQ: WCUQ stale/unavailable; numeric score suppressed
-WCUQ source: runtime/state/WCUQ_STATUS.json
-Stale archive progress: hidden
-Manual action blocker: none
-
-🧱 Machine Details
-━━━━━━━━━━━━━━━━━━━━
-Raw archive floor and legacy quality telemetry are preserved in receipts, not displayed as current work.
+📊 Progress
+99.9767% [███████████████████░] — fresh — captured after PR #20/#22 merges via PR #23 manifest artifact
+Resolved: 60145 / 60159 · remaining: 14 · unclassified: 0
+Quality: Quality score unavailable; old WCUQ number hidden
+Proof: boot PASS · manifest artifact PASS · parity rerun PASS

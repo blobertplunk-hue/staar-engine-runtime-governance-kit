@@ -1,1 +1,1 @@
-WCUQ stale/unavailable; numeric score suppressed
+Quality score unavailable; old WCUQ number hidden
