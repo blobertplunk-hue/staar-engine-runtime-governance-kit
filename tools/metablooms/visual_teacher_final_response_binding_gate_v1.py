@@ -153,14 +153,60 @@ def _read_wcuq_status(
 # tracker formatter — four-section emoji format
 # ---------------------------------------------------------------------------
 
+def _blocker_value(alerts: dict[str, Any]) -> str:
+    """Return the raw blocker string, or empty string if none/absent."""
+    v = alerts.get("manual_action_blocker", "") if alerts else ""
+    return "" if (not v or str(v).strip().lower() == "none") else str(v).strip()
+
+
+def _format_red_alert(alerts: dict[str, Any], alerts_source: str) -> list[str]:
+    """Return lines for the 🚨🔴 block. Caller checks blocker is active first."""
+    blocker = alerts.get("manual_action_blocker", "unknown")
+    why = (
+        alerts.get("why_i_cant_do_it_here")
+        or alerts.get("why")
+        or "unknown"
+    )
+    fix = (
+        alerts.get("user_action")
+        or alerts.get("you_can_fix_it_by")
+        or alerts.get("manual_fix")
+        or "unknown"
+    )
+    token = (
+        alerts.get("next_token")
+        or alerts.get("after_you_do_it_send")
+        or alerts.get("next_action")
+        or "unknown"
+    )
+    block = [
+        "🚨🔴 MANUAL ACTION NEEDED",
+        DIVIDER,
+        f"Blocker: {blocker}",
+        f"Why I can't do it here: {why}",
+        f"You can fix it by: {fix}",
+        f"After you do it, send: {token}",
+    ]
+    if alerts_source:
+        block.append(f"Source: {alerts_source}")
+    block.append("")
+    return block
+
+
 def _format_tracker(
     wcuq_text: str,
     wcuq_source: str,
     work: dict[str, Any],
     parity: dict[str, Any],
     alerts: dict[str, Any],
+    alerts_source: str = "",
 ) -> str:
     lines: list[str] = []
+    blocker = _blocker_value(alerts)
+
+    # ── 🚨🔴 Red alert (only when a blocker is active) ──────────────────────
+    if blocker:
+        lines += _format_red_alert(alerts, alerts_source)
 
     # ── 🧭 Work Status ──────────────────────────────────────────────────────
     lines += ["🧭 MetaBlooms Work Status", DIVIDER]
@@ -204,13 +250,13 @@ def _format_tracker(
     lines += ["🧪 Evidence Health", DIVIDER]
     tracker_source = work.get("tracker_source", "runtime/state/ACTIVE_WORK.json")
     stale_hidden = work.get("stale_archive_progress_hidden", True)
-    blocker = (alerts.get("manual_action_blocker", "none") if alerts else "none") or "none"
+    blocker_summary = "present" if _blocker_value(alerts) else "none"
     lines += [
         f"Tracker source: {tracker_source}",
         f"WCUQ: {wcuq_text}",
         f"WCUQ source: {wcuq_source}",
         f"Stale archive progress: {'hidden' if stale_hidden else 'visible'}",
-        f"Manual action blocker: {blocker}",
+        f"Manual action blocker: {blocker_summary}",
     ]
     lines.append("")
 
@@ -261,7 +307,13 @@ def main() -> int:
     parity = _read_optional_json(Path(args.parity_json))
     alerts = _read_optional_json(Path(args.alerts_json))
 
-    tracker_text = _format_tracker(wcuq_text, wcuq_source, work, parity, alerts)
+    alerts_path = Path(args.alerts_json)
+    alerts_source = (
+        str(alerts_path.relative_to(ROOT))
+        if alerts_path.exists() and alerts_path.is_relative_to(ROOT)
+        else args.alerts_json
+    )
+    tracker_text = _format_tracker(wcuq_text, wcuq_source, work, parity, alerts, alerts_source)
 
     tracker_path = Path(args.tracker)
     tracker_path.parent.mkdir(parents=True, exist_ok=True)

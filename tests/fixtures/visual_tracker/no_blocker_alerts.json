@@ -1,0 +1,8 @@
+{
+  "schema": "mb.visual_tracker.manual_alerts.v1",
+  "manual_action_blocker": "none",
+  "why_i_cant_do_it_here": "",
+  "user_action": "",
+  "next_token": "",
+  "active_alerts": []
+}
