@@ -1,0 +1,48 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.nutrition_scoring_rules.v3",
+  "version": "3.0.0-stage0_2",
+  "score_values": ["low", "medium", "high", "label_check"],
+  "protein_score": {
+    "high_if_contains": ["pork loin", "chicken", "tuna", "fish", "lentils", "beans"],
+    "medium_if_contains": ["oats", "quinoa", "yogurt_adult_only"]
+  },
+  "fiber_score": {
+    "high_if_contains": ["beans", "lentils", "vegetables", "oats", "berries", "apples", "sweet potatoes"],
+    "low_if_mostly": ["meat_only", "rice_only", "pasta_only"]
+  },
+  "sodium_risk": {
+    "high_if_contains": ["canned chili", "sausage", "ham", "hot dogs", "deli meat", "heavy BBQ sauce"],
+    "medium_high_if_contains": ["rotisserie chicken", "broth", "canned beans not rinsed", "crusted fish", "ranch-style beans"],
+    "low_if_plain": ["dry beans", "lentils", "plain rice", "plain potatoes", "plain vegetables", "plain pork loin"]
+  },
+  "added_sugar_risk": {
+    "high_if_contains": ["baked beans", "sweet BBQ sauce", "sweet drinks", "dessert"],
+    "label_check_if_contains": ["jarred pasta sauce", "canned chili", "crusted fish", "packaged sauce"],
+    "low_if_plain": ["plain meat", "plain beans", "plain vegetables", "rice", "potatoes", "oats"]
+  },
+  "saturated_fat_risk": {
+    "high_if_contains": ["ribs", "sausage", "butter", "cheese", "cream", "pork belly"],
+    "medium_if_contains": ["ground beef", "rotisserie chicken skin", "eggs_adult_only"],
+    "low_if_contains": ["pork loin", "tuna", "beans", "lentils", "vegetables"]
+  },
+  "fit_rules": {
+    "robert_default_requires": [
+      "protein_score_high_or_medium",
+      "fiber_score_high_or_medium",
+      "sodium_not_high",
+      "added_sugar_not_high"
+    ],
+    "wife_compatible_requires": [
+      "not_crash_diet",
+      "adequate_protein",
+      "fiber_or_vegetables_present"
+    ],
+    "shared_safe_requires": [
+      "milk_clear",
+      "wheat_clear_or_GF",
+      "egg_clear",
+      "peanut_clear",
+      "tree_nut_clear"
+    ]
+  }
+}
