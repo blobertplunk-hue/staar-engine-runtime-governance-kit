@@ -1,17 +1,23 @@
 {
-  "schema": "mb.visual_tracker.active_work.v1",
-  "created_at_utc": "2026-06-03T00:00:00Z",
-  "current_stage": "WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION",
-  "current_work": "Apply WCUQ v2 schema patch to GitHub branch; open PR for review",
-  "next_action": "WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION",
+  "schema": "mb.visual_tracker.active_work.v2",
+  "created_at_utc": "2026-06-04T00:00:00Z",
+  "status": "Working",
+  "current_stage": "VISUAL_TRACKER_STAGE006_PARITY_AND_MANUAL_ALERT_INTEGRATION",
+  "current_job": "Parity baseline receipt created; manual alert integration added; binding gate updated to four-section emoji format",
+  "next_action": "VISUAL_TRACKER_STAGE007_REVIEW_AND_MERGE",
+  "tracker_source": "runtime/state/ACTIVE_WORK.json",
+  "stale_archive_progress_hidden": true,
+  "machine_details": "Raw archive floor and legacy quality telemetry are preserved in receipts, not displayed as current work.",
   "floor": "Stage011K2 rebuilt after portable repair",
   "floor_release": "MB-FULL-STAGE011K2-20260601T111108Z",
-  "previous_stage": "GITHUB_OS_SYNC_STAGE0U_R3",
-  "previous_decision": "PASS_STAGE0U_R3_BRANCH_READY_FOR_REVIEW",
+  "previous_stage": "VISUAL_TRACKER_STAGE005_PR21_REVIEW_MERGE_IMPORT_AND_BOOT_VERIFY",
+  "previous_decision": "PASS_PR21_MERGED_AND_IMPORTED",
   "completed_stages": [
     "STAGE011K2_REBUILT_ARCHIVE",
     "GITHUB_OS_SYNC_STAGE0I",
-    "GITHUB_OS_SYNC_STAGE0U_R3"
+    "GITHUB_OS_SYNC_STAGE0U_R3",
+    "WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION",
+    "VISUAL_TRACKER_STAGE005_PR21_REVIEW_MERGE_IMPORT_AND_BOOT_VERIFY"
   ],
   "file_search_used": false
 }

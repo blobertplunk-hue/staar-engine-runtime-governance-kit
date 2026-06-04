@@ -1,0 +1,8 @@
+{
+  "schema": "mb.visual_tracker.manual_alerts.v1",
+  "manual_action_blocker": "PR approval required",
+  "why_i_cant_do_it_here": "GitHub rejects self-approval.",
+  "user_action": "Approve the PR manually in GitHub.",
+  "next_token": "GITHUB_STAGE_NEXT",
+  "active_alerts": []
+}

@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 """MetaBlooms Visual Teacher final-response binding gate.
 
-Reads WCUQ status from runtime/state/WCUQ_STATUS.json (v2 schema) or
-runtime/state/WCUQ_STATUS.txt (v1 legacy), applies freshness rules, and
+Reads WCUQ status, active work, sync parity baseline, and manual alerts, then
 writes the MetaBlooms Visual Tracker display to
-runtime/state/ACTIVE_TRACKER_PREVIEW.txt.
+runtime/state/ACTIVE_TRACKER_PREVIEW.txt in the human-facing four-section
+emoji format.
+
+Sections:
+  🧭 MetaBlooms Work Status   — current stage, job, next action
+  📊 Sync Parity              — parity %, progress bar, deviation counts
+  🧪 Evidence Health          — WCUQ, sources, stale suppression, manual blocker
+  🧱 Machine Details          — static machine context note
 
 WCUQ freshness rules (v2 schema):
-- status_state == "live_score"  →  display live score only if created_at_utc
-  is within max_age_seconds of the current turn.
-- status_state != "live_score"  →  always render the suppression message,
-  regardless of created_at_utc age.
-- v1 legacy .txt file  →  render suppression message (never treat as live).
+  status_state == "live_score"  → display live score only if created_at_utc is
+    within max_age_seconds of the current turn.
+  status_state != "live_score"  → always render suppression message.
+  v1 legacy .txt file           → always render suppression message.
 """
 from __future__ import annotations
 import argparse, json, sys
@@ -24,11 +29,21 @@ WCUQ_JSON_DEFAULT = ROOT / "runtime" / "state" / "WCUQ_STATUS.json"
 WCUQ_TXT_DEFAULT = ROOT / "runtime" / "state" / "WCUQ_STATUS.txt"
 TRACKER_DEFAULT = ROOT / "runtime" / "state" / "ACTIVE_TRACKER_PREVIEW.txt"
 WORK_JSON_DEFAULT = ROOT / "runtime" / "state" / "ACTIVE_WORK.json"
+PARITY_DEFAULT = (
+    ROOT
+    / "runtime"
+    / "receipts"
+    / "github_os_sync_stage0u"
+    / "STAGE0U_20260603T214100Z"
+    / "STAGE0T_PARITY_BASELINE.json"
+)
+ALERTS_DEFAULT = ROOT / "runtime" / "state" / "MANUAL_ALERTS.json"
 
 SUPPRESS = "WCUQ stale/unavailable; numeric score suppressed"
-DEFAULT_MAX_AGE = 3600  # 1 hour in seconds
-
-SCHEMA = "mb.visual_tracker.binding_gate.receipt.v1"
+DEFAULT_MAX_AGE = 3600  # seconds
+DIVIDER = "━━━━━━━━━━━━━━━━━━━━"
+BAR_WIDTH = 20
+SCHEMA = "mb.visual_tracker.binding_gate.receipt.v2"
 
 
 # ---------------------------------------------------------------------------
@@ -55,13 +70,20 @@ def _read_json_safe(path: Path) -> tuple[dict, str | None]:
         return {}, f"{type(exc).__name__}:{exc}"
 
 
-def _read_work_state(path: Path) -> dict[str, Any]:
+def _read_optional_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     data, err = _read_json_safe(path)
-    if err:
-        return {"error": err}
-    return data
+    return data if not err else {"_read_error": err}
+
+
+def _progress_bar(pct: float, width: int = BAR_WIDTH) -> str:
+    if pct >= 100.0:
+        filled = width
+    else:
+        filled = min(int(pct / 100.0 * width), width)
+    empty = width - filled
+    return "[" + "█" * filled + "░" * empty + "]"
 
 
 # ---------------------------------------------------------------------------
@@ -74,10 +96,7 @@ def _read_wcuq_status(
     max_age_seconds: int,
     evidence: dict[str, Any],
 ) -> tuple[str, dict[str, Any]]:
-    """Return (display_text, evidence) with v2 schema freshness enforcement.
-
-    Side-effect: populates *evidence* in-place with diagnostic fields.
-    """
+    """Return (display_text, evidence) with v2 schema freshness enforcement."""
     data: dict[str, Any] = {}
     raw_text = ""
     schema = None
@@ -88,9 +107,15 @@ def _read_wcuq_status(
             schema = str(data.get("schema") or "")
             status_state = str(data.get("status_state") or "")
             if schema.endswith(".v2"):
-                live_score = data.get("live_score") if isinstance(data.get("live_score"), dict) else None
+                live_score = (
+                    data.get("live_score")
+                    if isinstance(data.get("live_score"), dict)
+                    else None
+                )
                 if status_state == "live_score" and live_score:
-                    raw_text = str(data.get("display_text") or live_score.get("score_text") or "")
+                    raw_text = str(
+                        data.get("display_text") or live_score.get("score_text") or ""
+                    )
                 else:
                     raw_text = ""
             else:
@@ -112,7 +137,9 @@ def _read_wcuq_status(
     else:
         age = (now - created).total_seconds()
         evidence["age_seconds"] = age
-        evidence["freshness_decision"] = "fresh" if 0 <= age <= max_age_seconds else "stale"
+        evidence["freshness_decision"] = (
+            "fresh" if 0 <= age <= max_age_seconds else "stale"
+        )
 
     if (schema or "").endswith(".v2") and status_state != "live_score":
         evidence["freshness_decision"] = status_state or evidence["freshness_decision"]
@@ -123,39 +150,127 @@ def _read_wcuq_status(
 
 
 # ---------------------------------------------------------------------------
-# tracker formatter
+# tracker formatter — four-section emoji format
 # ---------------------------------------------------------------------------
 
-def _format_tracker(wcuq_text: str, work: dict[str, Any]) -> str:
-    current_stage = work.get("current_stage", "")
-    current_work = work.get("current_work", "")
-    next_action = work.get("next_action", "")
-    floor = work.get("floor", "")
-    floor_release = work.get("floor_release", "")
+def _blocker_value(alerts: dict[str, Any]) -> str:
+    """Return the raw blocker string, or empty string if none/absent."""
+    v = alerts.get("manual_action_blocker", "") if alerts else ""
+    return "" if (not v or str(v).strip().lower() == "none") else str(v).strip()
 
-    lines = [
-        "MetaBlooms Visual Tracker",
-        "=========================",
-        "",
+
+def _format_red_alert(alerts: dict[str, Any], alerts_source: str) -> list[str]:
+    """Return lines for the 🚨🔴 block. Caller checks blocker is active first."""
+    blocker = alerts.get("manual_action_blocker", "unknown")
+    why = (
+        alerts.get("why_i_cant_do_it_here")
+        or alerts.get("why")
+        or "unknown"
+    )
+    fix = (
+        alerts.get("user_action")
+        or alerts.get("you_can_fix_it_by")
+        or alerts.get("manual_fix")
+        or "unknown"
+    )
+    token = (
+        alerts.get("next_token")
+        or alerts.get("after_you_do_it_send")
+        or alerts.get("next_action")
+        or "unknown"
+    )
+    block = [
+        "🚨🔴 MANUAL ACTION NEEDED",
+        DIVIDER,
+        f"Blocker: {blocker}",
+        f"Why I can't do it here: {why}",
+        f"You can fix it by: {fix}",
+        f"After you do it, send: {token}",
     ]
-    if floor:
-        lines += ["Floor:", f"  {floor}"]
-        if floor_release:
-            lines += [f"  Release: {floor_release}"]
-        lines.append("")
+    if alerts_source:
+        block.append(f"Source: {alerts_source}")
+    block.append("")
+    return block
+
+
+def _format_tracker(
+    wcuq_text: str,
+    wcuq_source: str,
+    work: dict[str, Any],
+    parity: dict[str, Any],
+    alerts: dict[str, Any],
+    alerts_source: str = "",
+) -> str:
+    lines: list[str] = []
+    blocker = _blocker_value(alerts)
+
+    # ── 🚨🔴 Red alert (only when a blocker is active) ──────────────────────
+    if blocker:
+        lines += _format_red_alert(alerts, alerts_source)
+
+    # ── 🧭 Work Status ──────────────────────────────────────────────────────
+    lines += ["🧭 MetaBlooms Work Status", DIVIDER]
+    lines.append(f"Status: {work.get('status', 'Working')}")
+    current_job = work.get("current_job", work.get("current_work", ""))
+    if current_job:
+        lines.append(f"Current job: {current_job}")
+    current_stage = work.get("current_stage", "")
     if current_stage:
-        lines += ["Current Stage:", f"  {current_stage}", ""]
-    if current_work:
-        lines += ["Current Work:", f"  {current_work}", ""]
+        lines.append(f"Current stage: {current_stage}")
+    next_action = work.get("next_action", "")
     if next_action:
-        lines += ["Next Action:", f"  {next_action}", ""]
+        lines.append(f"Next action: {next_action}")
+    lines.append("")
+
+    # ── 📊 Sync Parity ──────────────────────────────────────────────────────
+    lines += ["📊 Sync Parity", DIVIDER]
+    if parity:
+        pct: float = float(parity.get("parity_pct", parity.get("resolved_pct", 0.0)))
+        resolved: int = int(parity.get("resolved", 0))
+        total: int = int(parity.get("total", 0))
+        remaining: int = int(
+            parity.get("remaining_deviations", parity.get("remaining", 0))
+        )
+        unclassified: int = int(parity.get("unclassified", 0))
+        parity_source: str = str(parity.get("source_path", ""))
+        bar = _progress_bar(pct)
+        lines += [
+            f"[{pct:.4f}%] {bar}",
+            f"Resolved: {resolved} / {total}",
+            f"Remaining deviations: {remaining}",
+            f"Unclassified: {unclassified}",
+        ]
+        if parity_source:
+            lines.append(f"Source: {parity_source}")
+    else:
+        lines.append("Parity data unavailable")
+    lines.append("")
+
+    # ── 🧪 Evidence Health ──────────────────────────────────────────────────
+    lines += ["🧪 Evidence Health", DIVIDER]
+    tracker_source = work.get("tracker_source", "runtime/state/ACTIVE_WORK.json")
+    stale_hidden = work.get("stale_archive_progress_hidden", True)
+    blocker_summary = "present" if _blocker_value(alerts) else "none"
     lines += [
-        "WCUQ:",
-        f"  {wcuq_text}",
-        "",
-        "file_search_used: false",
+        f"Tracker source: {tracker_source}",
+        f"WCUQ: {wcuq_text}",
+        f"WCUQ source: {wcuq_source}",
+        f"Stale archive progress: {'hidden' if stale_hidden else 'visible'}",
+        f"Manual action blocker: {blocker_summary}",
     ]
-    return "\n".join(lines) + "\n"
+    lines.append("")
+
+    # ── 🧱 Machine Details ──────────────────────────────────────────────────
+    lines += ["🧱 Machine Details", DIVIDER]
+    machine_detail = work.get(
+        "machine_details",
+        "Raw archive floor and legacy quality telemetry are preserved in receipts,"
+        " not displayed as current work.",
+    )
+    lines.append(machine_detail)
+    lines.append("")
+
+    return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -167,21 +282,38 @@ def main() -> int:
     ap.add_argument("--wcuq-json", default=str(WCUQ_JSON_DEFAULT))
     ap.add_argument("--wcuq-txt", default=str(WCUQ_TXT_DEFAULT))
     ap.add_argument("--work-json", default=str(WORK_JSON_DEFAULT))
+    ap.add_argument("--parity-json", default=str(PARITY_DEFAULT))
+    ap.add_argument("--alerts-json", default=str(ALERTS_DEFAULT))
     ap.add_argument("--tracker", default=str(TRACKER_DEFAULT))
     ap.add_argument("--receipt", default="")
     ap.add_argument("--max-age", type=int, default=DEFAULT_MAX_AGE)
     args = ap.parse_args()
 
     evidence: dict[str, Any] = {"freshness_decision": "no_timestamp"}
+    wcuq_json_path = Path(args.wcuq_json)
     wcuq_text, evidence = _read_wcuq_status(
-        Path(args.wcuq_json),
+        wcuq_json_path,
         Path(args.wcuq_txt),
         args.max_age,
         evidence,
     )
+    wcuq_source = (
+        str(wcuq_json_path.relative_to(ROOT))
+        if wcuq_json_path.is_relative_to(ROOT)
+        else args.wcuq_json
+    )
 
-    work = _read_work_state(Path(args.work_json))
-    tracker_text = _format_tracker(wcuq_text, work)
+    work = _read_optional_json(Path(args.work_json))
+    parity = _read_optional_json(Path(args.parity_json))
+    alerts = _read_optional_json(Path(args.alerts_json))
+
+    alerts_path = Path(args.alerts_json)
+    alerts_source = (
+        str(alerts_path.relative_to(ROOT))
+        if alerts_path.exists() and alerts_path.is_relative_to(ROOT)
+        else args.alerts_json
+    )
+    tracker_text = _format_tracker(wcuq_text, wcuq_source, work, parity, alerts, alerts_source)
 
     tracker_path = Path(args.tracker)
     tracker_path.parent.mkdir(parents=True, exist_ok=True)
@@ -194,6 +326,8 @@ def main() -> int:
         "wcuq_display": wcuq_text,
         "tracker_path": str(tracker_path),
         "wcuq_evidence": evidence,
+        "parity_loaded": bool(parity),
+        "alerts_loaded": bool(alerts),
         "file_search_used": False,
     }
 

@@ -1,0 +1,8 @@
+{
+  "decision": "PASS",
+  "errors": [],
+  "file_search_used": false,
+  "schema": "mb.wcuq.status_schema_validator.result.v1",
+  "status_path": "runtime/state/WCUQ_STATUS.json",
+  "tracker_path": "runtime/state/ACTIVE_TRACKER_PREVIEW.txt"
+}
