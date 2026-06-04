@@ -1,11 +1,8 @@
 {
   "schema": "mb.visual_tracker.manual_alerts.v1",
-  "created_at_utc": "2026-06-04T00:00:00Z",
+  "created_at_utc": "2026-06-04T00:48:04Z",
   "manual_action_blocker": "none",
-  "why_i_cant_do_it_here": "",
-  "user_action": "",
-  "next_token": "",
   "active_alerts": [],
   "resolved_alerts": [],
-  "note": "Set manual_action_blocker to a non-empty, non-'none' string when human action is required. Fill why_i_cant_do_it_here, user_action, and next_token to guide the human. The binding gate renders a 🚨🔴 MANUAL ACTION NEEDED block at the top of the tracker when a blocker is active, and shows 'Manual action blocker: present' in Evidence Health."
+  "note": "Set manual_action_blocker to a string describing the required action when human intervention is needed. Set to 'none' or empty string when no blocker is active."
 }
