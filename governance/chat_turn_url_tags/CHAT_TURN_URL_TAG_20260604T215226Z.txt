@@ -1,0 +1,5 @@
+Chat turn URL tag
+Created UTC: 2026-06-04T21:52:26Z
+Tag URL: https://chatgpt.com/g/g-p-689c74a1b2c881919eef34000e072573-metabrain/c/6a189756-ada0-83ea-a80e-e12037d39b9d
+Scope: local MetaBlooms OS runtime and related GitHub governance work for this turn.
+Status: TAG_RECORDED_IN_GITHUB_MARKER
