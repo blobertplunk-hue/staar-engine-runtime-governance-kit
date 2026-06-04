@@ -1,0 +1,16 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.stage3_receipt.v3",
+  "inventory_sha256": "69ec542082de8478835fd1c5a485aa8d15012f0f154dae45f714ba66d1633fcf",
+  "output_sha256": "d4326fa25d0d11104c7492115b230b41d077cd207f26a79ff0acc3c308670cf9",
+  "recipe_count": 5,
+  "gates": {
+    "required_scores_present": true,
+    "allergy_status_present": true,
+    "label_checks_fail_closed": true
+  },
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "recipe_count": 5
+  }
+}
