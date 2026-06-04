@@ -1,370 +1,73 @@
 {
+  "schema": "mb.github_os_sync.path_classification_rules.v1",
   "default_decision": "UNCLASSIFIED_BLOCK_MOVEMENT",
-  "generated_runtime_state_policy": {
-    "block_if_source_paths_use_generated_runtime_state": true,
-    "block_if_unclassified": true,
-    "count_in_generated_drift": true,
-    "count_in_strict_denominator": false,
-    "strict_parity": false
-  },
+  "safety_precedence": ["private_excluded", "release_asset_only"],
   "matching_policy": "safety_precedence_then_longest_specificity_match",
   "rules": [
-    {
-      "class": "private_excluded",
-      "contains": "secret",
-      "reason": "secret-like path exclusion"
-    },
-    {
-      "class": "private_excluded",
-      "contains": "token",
-      "reason": "token-like path exclusion"
-    },
-    {
-      "class": "release_asset_only",
-      "reason": "large OS/export archive",
-      "suffix": ".tar.zst"
-    },
-    {
-      "class": "release_asset_only",
-      "reason": "generated review/export bundle",
-      "suffix": ".zip"
-    },
-    {
-      "class": "os_authoritative_with_github_pr_proposal_path",
-      "pattern": "governance/github_os_sync/SYNC_AUTHORITY_MAP_v1.json",
-      "reason": "bootstrap reconciliation authority"
-    },
-    {
-      "class": "github_authoritative",
-      "prefix": ".github/",
-      "reason": "repo workflow/control plane"
-    },
-    {
-      "class": "github_authoritative",
-      "prefix": ".claude/",
-      "reason": "Claude Code repo hook/control plane"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "README.md",
-      "reason": "repo documentation root"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "AGENTS.md",
-      "reason": "repo agent instructions"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "CLAUDE.md",
-      "reason": "repo Claude instructions"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "SECURITY.md",
-      "reason": "repo security policy"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "CONTRIBUTING.md",
-      "reason": "repo contribution policy"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "AUTHORITY_MAP.md",
-      "reason": "repo authority documentation"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "REPO_MAP.md",
-      "reason": "repo map documentation"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "MIGRATION_INVENTORY.json",
-      "reason": "repo migration inventory"
-    },
-    {
-      "class": "github_authoritative",
-      "pattern": "MIGRATION_RECEIPT.md",
-      "reason": "repo migration receipt"
-    },
-    {
-      "class": "github_authoritative",
-      "prefix": "governance/tool_routing/",
-      "reason": "repo-native governance control plane"
-    },
-    {
-      "class": "github_authoritative",
-      "prefix": "governance/blocker_ledger/",
-      "reason": "repo-native blocker ledger code"
-    },
-    {
-      "class": "github_authoritative",
-      "prefix": "governance/claude_code_workflows/",
-      "reason": "repo-native Claude Code workflows"
-    },
-    {
-      "class": "github_authoritative",
-      "prefix": "governance/chat_export_mining/",
-      "reason": "repo-native chat export mining cartridge"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "governance/github_os_sync/",
-      "reason": "sync workflow governance contracts"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_only",
-      "prefix": "governance/improvement_log/",
-      "reason": "improvement log evidence"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "governance/sop/",
-      "reason": "SOP documents"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "governance/sops/",
-      "reason": "SOP documents"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "governance/",
-      "reason": "governance catch-all after repo-native rules"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_or_diff_packet_only",
-      "prefix": "audits/",
-      "reason": "repo-side audit evidence"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_or_release_asset_only",
-      "prefix": "artifacts/",
-      "reason": "artifact evidence"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "contracts/",
-      "reason": "engine contracts"
-    },
-    {
-      "class": "release_asset_only",
-      "prefix": "externalization/",
-      "reason": "externalized OS export/pointer evidence"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_only",
-      "prefix": "incoming/",
-      "reason": "incoming operator packets"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_only",
-      "prefix": "memory-sync/",
-      "reason": "memory sync evidence"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_only",
-      "prefix": "metablooms_checkpoints/",
-      "reason": "checkpoint evidence"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_or_diff_packet_only",
-      "prefix": "metablooms_sidechat_research/",
-      "reason": "sidechat research evidence"
-    },
-    {
-      "class": "github_authoritative",
-      "prefix": "prompts/",
-      "reason": "repo prompt/handoff source"
-    },
-    {
-      "class": "release_asset_only",
-      "prefix": "release_artifacts/",
-      "reason": "release artifacts should not be source-of-truth Git history"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_or_release_asset_only",
-      "prefix": "runtimes/",
-      "reason": "runtime outputs"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_or_external_source_pointer",
-      "prefix": "source_materials/",
-      "reason": "source material evidence"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "docs/",
-      "reason": "OS/repo documentation"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_or_diff_packet_only",
-      "prefix": "fixtures/",
-      "reason": "fixture artifacts"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_only",
-      "prefix": "receipts/",
-      "reason": "legacy/top-level receipts"
-    },
-    {
-      "class": "generated_runtime_state",
-      "pattern": "runtime/state/ACTIVE_TRACKER_PREVIEW.txt",
-      "reason": "generated human-facing tracker preview; regenerated by visual tracker binding gate on boot",
-      "strict_parity": false
-    },
-    {
-      "class": "generated_runtime_state",
-      "pattern": "runtime/state/ACTIVE_WORK.json",
-      "reason": "mutable active-work state; current runtime context, not source-control authority",
-      "strict_parity": false
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_or_diff_packet_only",
-      "prefix": "runtime/",
-      "reason": "runtime data plane"
-    },
-    {
-      "class": "boot_kernel_source",
-      "prefix": "0_kernel/mpp_v3/",
-      "reason": "MPP kernel source subset",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    },
-    {
-      "class": "boot_kernel_source",
-      "prefix": "0_kernel/scripts/",
-      "reason": "OS kernel scripts source subset",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "0_kernel/cartridges/",
-      "reason": "cartridge artifacts"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "0_kernel/schemas/",
-      "reason": "OS schemas"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "0_kernel/registry/",
-      "reason": "OS registry"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_only_or_external_dependency_pointer",
-      "prefix": "0_kernel/vendor/",
-      "reason": "vendored dependency snapshot"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "0_kernel/",
-      "reason": "kernel catch-all"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "1_cartridges/",
-      "reason": "legacy cartridge artifacts"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "1_governance/",
-      "reason": "legacy governance artifacts"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "2_engines/",
-      "reason": "OS engine artifacts"
-    },
-    {
-      "class": "os_authoritative",
-      "prefix": "2_evidence/",
-      "reason": "evidence artifacts"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_or_manifest_only",
-      "prefix": "3_data/",
-      "reason": "OS data plane artifacts"
-    },
-    {
-      "class": "boot_kernel_source",
-      "prefix": "scripts/mpp/",
-      "reason": "boot kernel source subset",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract"
-    },
-    {
-      "class": "boot_kernel_source",
-      "prefix": "scripts/",
-      "reason": "non-MPP script source subset",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    },
-    {
-      "class": "boot_kernel_source",
-      "prefix": "tools/metablooms/",
-      "reason": "selected executable source subset",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    },
-    {
-      "class": "boot_kernel_source",
-      "prefix": "tools/mpp/",
-      "reason": "MPP tool source subset",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    },
-    {
-      "class": "boot_kernel_source",
-      "prefix": "tools/",
-      "reason": "tooling catch-all",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    },
-    {
-      "class": "github_authoritative",
-      "prefix": "tests/",
-      "reason": "repo validation source"
-    },
-    {
-      "class": "os_authoritative",
-      "github_projection": "summary_only",
-      "pattern": ".*",
-      "reason": "top-level hidden OS/repo control file"
-    },
-    {
-      "class": "boot_kernel_source",
-      "pattern": "METABLOOMS_PREBOOT*",
-      "reason": "top-level preboot rescue/bootstrap source",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    },
-    {
-      "class": "boot_kernel_source",
-      "pattern": "METABLOOMS_ROOTLESS*",
-      "reason": "top-level rootless preboot bootstrap source",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    },
-    {
-      "class": "boot_kernel_source",
-      "pattern": "metablooms_recover*",
-      "reason": "top-level recovery source",
-      "selection_rule": "commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation"
-    }
-  ],
-  "safety_precedence": [
-    "private_excluded",
-    "release_asset_only"
-  ],
-  "schema": "mb.github_os_sync.path_classification_rules.v1"
+    {"contains":"secret","class":"private_excluded","reason":"secret-like path exclusion"},
+    {"contains":"token","class":"private_excluded","reason":"token-like path exclusion"},
+    {"suffix":".tar.zst","class":"release_asset_only","reason":"large OS/export archive"},
+    {"suffix":".zip","class":"release_asset_only","reason":"generated review/export bundle"},
+    {"pattern":"governance/github_os_sync/SYNC_AUTHORITY_MAP_v1.json","class":"os_authoritative_with_github_pr_proposal_path","reason":"bootstrap reconciliation authority"},
+    {"prefix":".github/","class":"github_authoritative","reason":"repo workflow/control plane"},
+    {"prefix":".claude/","class":"github_authoritative","reason":"Claude Code repo hook/control plane"},
+    {"pattern":"README.md","class":"github_authoritative","reason":"repo documentation root"},
+    {"pattern":"AGENTS.md","class":"github_authoritative","reason":"repo agent instructions"},
+    {"pattern":"CLAUDE.md","class":"github_authoritative","reason":"repo Claude instructions"},
+    {"pattern":"SECURITY.md","class":"github_authoritative","reason":"repo security policy"},
+    {"pattern":"CONTRIBUTING.md","class":"github_authoritative","reason":"repo contribution policy"},
+    {"pattern":"AUTHORITY_MAP.md","class":"github_authoritative","reason":"repo authority documentation"},
+    {"pattern":"REPO_MAP.md","class":"github_authoritative","reason":"repo map documentation"},
+    {"pattern":"MIGRATION_INVENTORY.json","class":"github_authoritative","reason":"repo migration inventory"},
+    {"pattern":"MIGRATION_RECEIPT.md","class":"github_authoritative","reason":"repo migration receipt"},
+    {"prefix":"governance/tool_routing/","class":"github_authoritative","reason":"repo-native governance control plane"},
+    {"prefix":"governance/blocker_ledger/","class":"github_authoritative","reason":"repo-native blocker ledger code"},
+    {"prefix":"governance/claude_code_workflows/","class":"github_authoritative","reason":"repo-native Claude Code workflows"},
+    {"prefix":"governance/chat_export_mining/","class":"github_authoritative","reason":"repo-native chat export mining cartridge"},
+    {"prefix":"governance/github_os_sync/","class":"os_authoritative","reason":"sync workflow governance contracts"},
+    {"prefix":"governance/improvement_log/","class":"os_authoritative","github_projection":"summary_only","reason":"improvement log evidence"},
+    {"prefix":"governance/sop/","class":"os_authoritative","reason":"SOP documents"},
+    {"prefix":"governance/sops/","class":"os_authoritative","reason":"SOP documents"},
+    {"prefix":"governance/","class":"os_authoritative","reason":"governance catch-all after repo-native rules"},
+    {"prefix":"audits/","class":"os_authoritative","github_projection":"summary_or_diff_packet_only","reason":"repo-side audit evidence"},
+    {"prefix":"artifacts/","class":"os_authoritative","github_projection":"summary_or_release_asset_only","reason":"artifact evidence"},
+    {"prefix":"contracts/","class":"os_authoritative","reason":"engine contracts"},
+    {"prefix":"externalization/","class":"release_asset_only","reason":"externalized OS export/pointer evidence"},
+    {"prefix":"incoming/","class":"os_authoritative","github_projection":"summary_only","reason":"incoming operator packets"},
+    {"prefix":"memory-sync/","class":"os_authoritative","github_projection":"summary_only","reason":"memory sync evidence"},
+    {"prefix":"metablooms_checkpoints/","class":"os_authoritative","github_projection":"summary_only","reason":"checkpoint evidence"},
+    {"prefix":"metablooms_sidechat_research/","class":"os_authoritative","github_projection":"summary_or_diff_packet_only","reason":"sidechat research evidence"},
+    {"prefix":"prompts/","class":"github_authoritative","reason":"repo prompt/handoff source"},
+    {"prefix":"release_artifacts/","class":"release_asset_only","reason":"release artifacts should not be source-of-truth Git history"},
+    {"prefix":"runtimes/","class":"os_authoritative","github_projection":"summary_or_release_asset_only","reason":"runtime outputs"},
+    {"prefix":"source_materials/","class":"os_authoritative","github_projection":"summary_or_external_source_pointer","reason":"source material evidence"},
+    {"prefix":"docs/","class":"os_authoritative","reason":"OS/repo documentation"},
+    {"prefix":"fixtures/","class":"os_authoritative","github_projection":"summary_or_diff_packet_only","reason":"fixture artifacts"},
+    {"prefix":"receipts/","class":"os_authoritative","github_projection":"summary_only","reason":"legacy/top-level receipts"},
+    {"pattern":"runtime/state/ACTIVE_TRACKER_PREVIEW.txt","class":"generated_runtime_state","strict_parity":false,"reason":"binding gate output; excluded from strict parity denominator"},
+    {"pattern":"runtime/state/ACTIVE_WORK.json","class":"generated_runtime_state","strict_parity":false,"reason":"binding gate work state; excluded from strict parity denominator"},
+    {"prefix":"runtime/","class":"os_authoritative","github_projection":"summary_or_diff_packet_only","reason":"runtime data plane"},
+    {"prefix":"0_kernel/mpp_v3/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"MPP kernel source subset"},
+    {"prefix":"0_kernel/scripts/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"OS kernel scripts source subset"},
+    {"prefix":"0_kernel/cartridges/","class":"os_authoritative","reason":"cartridge artifacts"},
+    {"prefix":"0_kernel/schemas/","class":"os_authoritative","reason":"OS schemas"},
+    {"prefix":"0_kernel/registry/","class":"os_authoritative","reason":"OS registry"},
+    {"prefix":"0_kernel/vendor/","class":"os_authoritative","github_projection":"summary_only_or_external_dependency_pointer","reason":"vendored dependency snapshot"},
+    {"prefix":"0_kernel/","class":"os_authoritative","reason":"kernel catch-all"},
+    {"prefix":"1_cartridges/","class":"os_authoritative","reason":"legacy cartridge artifacts"},
+    {"prefix":"1_governance/","class":"os_authoritative","reason":"legacy governance artifacts"},
+    {"prefix":"2_engines/","class":"os_authoritative","reason":"OS engine artifacts"},
+    {"prefix":"2_evidence/","class":"os_authoritative","reason":"evidence artifacts"},
+    {"prefix":"3_data/","class":"os_authoritative","github_projection":"summary_or_manifest_only","reason":"OS data plane artifacts"},
+    {"prefix":"scripts/mpp/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract","reason":"boot kernel source subset"},
+    {"prefix":"scripts/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"non-MPP script source subset"},
+    {"prefix":"tools/metablooms/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"selected executable source subset"},
+    {"prefix":"tools/mpp/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"MPP tool source subset"},
+    {"prefix":"tools/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"tooling catch-all"},
+    {"prefix":"tests/","class":"github_authoritative","reason":"repo validation source"},
+    {"pattern":".*","class":"os_authoritative","github_projection":"summary_only","reason":"top-level hidden OS/repo control file"},
+    {"pattern":"METABLOOMS_PREBOOT*","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"top-level preboot rescue/bootstrap source"},
+    {"pattern":"METABLOOMS_ROOTLESS*","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"top-level rootless preboot bootstrap source"},
+    {"pattern":"metablooms_recover*","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"top-level recovery source"}
+  ]
 }
