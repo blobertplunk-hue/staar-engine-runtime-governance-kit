@@ -1,0 +1,53 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.normalized_inventory_schema.v3",
+  "required_item_fields": [
+    "item_id",
+    "display_name",
+    "category",
+    "form",
+    "source",
+    "quantity",
+    "perishable_rank",
+    "use_first_score",
+    "allergen_status",
+    "label_check_required",
+    "nutrition_flags",
+    "recipe_roles"
+  ],
+  "allergen_status_fields": [
+    "milk",
+    "wheat",
+    "egg",
+    "peanut",
+    "tree_nut",
+    "soy",
+    "sesame",
+    "fish",
+    "crustacean_shellfish"
+  ],
+  "source_values": [
+    "receipt_confirmed",
+    "user_reported_already_had",
+    "derived",
+    "unknown"
+  ],
+  "form_values": [
+    "fresh",
+    "frozen",
+    "canned",
+    "dry",
+    "refrigerated",
+    "prepared",
+    "packaged"
+  ],
+  "category_values": [
+    "produce",
+    "protein",
+    "legume",
+    "grain_starch",
+    "pantry",
+    "dairy_egg_adult_only",
+    "frozen",
+    "sauce_broth"
+  ]
+}
