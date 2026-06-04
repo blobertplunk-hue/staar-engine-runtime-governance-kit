@@ -1,0 +1,18 @@
+{
+  "alerts_loaded": true,
+  "created_at_utc": "2026-06-04T00:25:31Z",
+  "decision": "PASS",
+  "file_search_used": false,
+  "parity_loaded": true,
+  "schema": "mb.visual_tracker.binding_gate.receipt.v2",
+  "tracker_path": "/home/user/staar-engine-runtime-governance-kit/runtime/state/ACTIVE_TRACKER_PREVIEW.txt",
+  "wcuq_display": "WCUQ stale/unavailable; numeric score suppressed",
+  "wcuq_evidence": {
+    "age_seconds": 91513.110344,
+    "created_at_utc": "2026-06-02T23:00:18Z",
+    "freshness_decision": "stale_or_unavailable",
+    "max_age_seconds": 3600,
+    "schema": "mb.quality_scoring.wcuq_visual_teacher_status.v2",
+    "status_state": "stale_or_unavailable"
+  }
+}
