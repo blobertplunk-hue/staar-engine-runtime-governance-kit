@@ -1,0 +1,202 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.stage3_output.v3",
+  "recipes": [
+    {
+      "title": "Pork Loin Black Bean Rice Bowls",
+      "mode": "robert_weight_loss",
+      "recipe_type": "bowl",
+      "uses_from_inventory": [
+        "Member's Mark Whole Boneless Pork Loin",
+        "Dried black beans",
+        "White rice",
+        "Organic baby spinach",
+        "Fresh broccoli florets",
+        "Baby Bella mushrooms"
+      ],
+      "missing_required": [],
+      "need_to_buy": [],
+      "steps": [
+        "Cook pork loin plainly.",
+        "Cook or warm black beans and rice.",
+        "Add spinach, broccoli, and mushrooms.",
+        "Serve adult portion with 1/2 cup rice and extra vegetables."
+      ],
+      "allergy_status": {
+        "shared_family_safe": true,
+        "blocked_allergens": [],
+        "label_checks": []
+      },
+      "nutrition_score": {
+        "protein_score": "high",
+        "fiber_score": "high",
+        "sodium_risk": "low",
+        "added_sugar_risk": "low",
+        "saturated_fat_risk": "low",
+        "vegetable_volume": "high",
+        "calorie_density": "moderate"
+      },
+      "robert_fit": "default",
+      "wife_fit": "compatible",
+      "toddler_fit": "prep_required",
+      "leftovers": "Use pork and beans in next-day bowls or soup."
+    },
+    {
+      "title": "Lentil Tomato GF Pasta with Spinach and Mushrooms",
+      "mode": "family_shared_safe",
+      "recipe_type": "pasta",
+      "uses_from_inventory": [
+        "Lentils",
+        "GF penne",
+        "Tomato sauce",
+        "Organic baby spinach",
+        "Baby Bella mushrooms"
+      ],
+      "missing_required": [],
+      "need_to_buy": [],
+      "steps": [
+        "Cook lentils until soft.",
+        "Simmer tomato sauce with lentils and vegetables.",
+        "Serve sauce-heavy over GF pasta."
+      ],
+      "allergy_status": {
+        "shared_family_safe": false,
+        "blocked_allergens": [],
+        "label_checks": [
+          "Tomato sauce"
+        ]
+      },
+      "nutrition_score": {
+        "protein_score": "high",
+        "fiber_score": "high",
+        "sodium_risk": "label_check",
+        "added_sugar_risk": "low",
+        "saturated_fat_risk": "low",
+        "vegetable_volume": "high",
+        "calorie_density": "moderate"
+      },
+      "robert_fit": "limit",
+      "wife_fit": "compatible",
+      "toddler_fit": "label_check",
+      "leftovers": "Freeze extra lentil sauce."
+    },
+    {
+      "title": "Rotisserie Chicken Broccoli Rice Bowls",
+      "mode": "use_perishables_first",
+      "recipe_type": "bowl",
+      "uses_from_inventory": [
+        "Member's Mark Seasoned Rotisserie Chicken",
+        "White rice",
+        "Fresh broccoli florets",
+        "Organic baby spinach",
+        "Baby Bella mushrooms"
+      ],
+      "missing_required": [],
+      "need_to_buy": [],
+      "steps": [
+        "Remove chicken skin and shred breast meat.",
+        "Steam broccoli and add spinach or mushrooms.",
+        "Serve over a controlled rice portion."
+      ],
+      "allergy_status": {
+        "shared_family_safe": false,
+        "blocked_allergens": [],
+        "label_checks": [
+          "Member's Mark Seasoned Rotisserie Chicken"
+        ]
+      },
+      "nutrition_score": {
+        "protein_score": "high",
+        "fiber_score": "high",
+        "sodium_risk": "high",
+        "added_sugar_risk": "low",
+        "saturated_fat_risk": "low",
+        "vegetable_volume": "high",
+        "calorie_density": "moderate"
+      },
+      "robert_fit": "limit",
+      "wife_fit": "compatible",
+      "toddler_fit": "label_check",
+      "leftovers": "Use remaining chicken in soup."
+    },
+    {
+      "title": "White Bean Tuna Cucumber Salad Bowl",
+      "mode": "quick_dinner_30_min",
+      "recipe_type": "salad",
+      "uses_from_inventory": [
+        "Canned tuna",
+        "Great northern beans",
+        "Seedless English cucumbers",
+        "Organic baby spinach"
+      ],
+      "missing_required": [],
+      "need_to_buy": [],
+      "steps": [
+        "Drain tuna and beans.",
+        "Combine with cucumber and greens/slaw.",
+        "Dress with lemon/lime or vinegar."
+      ],
+      "allergy_status": {
+        "shared_family_safe": false,
+        "blocked_allergens": [],
+        "label_checks": [
+          "Canned tuna"
+        ]
+      },
+      "nutrition_score": {
+        "protein_score": "high",
+        "fiber_score": "high",
+        "sodium_risk": "label_check",
+        "added_sugar_risk": "low",
+        "saturated_fat_risk": "low",
+        "vegetable_volume": "high",
+        "calorie_density": "low"
+      },
+      "robert_fit": "limit",
+      "wife_fit": "compatible",
+      "toddler_fit": "label_check",
+      "leftovers": "Best eaten same day."
+    },
+    {
+      "title": "Crusted Flounder Broccoli Sweet Potato Plate",
+      "mode": "label_check",
+      "recipe_type": "sheet_pan",
+      "uses_from_inventory": [
+        "Hook Line & Savor Everything Crusted Flounder",
+        "Fresh broccoli florets",
+        "Sweet potatoes"
+      ],
+      "missing_required": [],
+      "need_to_buy": [],
+      "steps": [
+        "Check fish label for wheat, egg, dairy, sesame, and nut cross-contact.",
+        "Bake fish according to package.",
+        "Serve with broccoli and sweet potato."
+      ],
+      "allergy_status": {
+        "shared_family_safe": false,
+        "blocked_allergens": [],
+        "label_checks": [
+          "Hook Line & Savor Everything Crusted Flounder"
+        ]
+      },
+      "nutrition_score": {
+        "protein_score": "high",
+        "fiber_score": "high",
+        "sodium_risk": "label_check",
+        "added_sugar_risk": "low",
+        "saturated_fat_risk": "low",
+        "vegetable_volume": "medium",
+        "calorie_density": "moderate"
+      },
+      "robert_fit": "limit",
+      "wife_fit": "compatible",
+      "toddler_fit": "label_check",
+      "leftovers": "Fish is best same day."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "recipe_count": 5
+  }
+}
