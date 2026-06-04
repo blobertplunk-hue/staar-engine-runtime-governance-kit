@@ -1,0 +1,40 @@
+{
+  "schema": "mb.cartridge_repo_migration_workflow.v1",
+  "name": "cartridge_repo_migration_workflow_v1",
+  "decision": "hybrid_repo_architecture",
+  "control_plane_repo": "staar-engine-runtime-governance-kit",
+  "dedicated_repo_rule": "externalize only mature executable cartridge families with tests, ownership, CI, versioning, and artifact boundaries",
+  "embedded_rule": "keep markdown-only, experimental, or immature cartridges embedded until promotion gates pass",
+  "required_gates": [
+    "classified_paths_zero_unknown",
+    "classified_paths_zero_secret_or_private",
+    "source_schema_tests_present",
+    "large_fixtures_externalized_as_release_assets_or_artifact_pointers",
+    "family_repo_has_readme_cartridge_contract_codeowners_ci",
+    "central_registry_pointer_written",
+    "old_path_compatibility_stub_written",
+    "resolver_smoke_passes",
+    "rollback_pointer_written"
+  ],
+  "stages": [
+    "S0_INTAKE_AND_FREEZE",
+    "S1_CLASSIFICATION",
+    "S2_PROMOTION_DECISION",
+    "S3_REPO_CREATION_OR_RESOLUTION",
+    "S4_SOURCE_PROJECTION",
+    "S5_ARTIFACT_SPLIT",
+    "S6_CI_AND_OWNERSHIP",
+    "S7_REGISTRY_POINTER_UPDATE",
+    "S8_COMPATIBILITY_STUB",
+    "S9_VALIDATION",
+    "S10_HANDOFF"
+  ],
+  "first_migration_order": [
+    "github_sync_chat_work_registry",
+    "pdf",
+    "spreadsheet",
+    "recipe",
+    "finance",
+    "teks"
+  ]
+}
