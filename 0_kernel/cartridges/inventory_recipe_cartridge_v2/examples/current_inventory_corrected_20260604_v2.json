@@ -1,0 +1,64 @@
+{
+  "source": "corrected_household_inventory_20260604",
+  "removed_uncertain_guesses": [
+    "Mini Pinksalt",
+    "Red ice / ice item",
+    "RB 3PK PEPP as Red Bull/pepper",
+    "Plain yogurt? uncertainty"
+  ],
+  "categories": {
+    "fresh_produce": [
+      {"item": "Blueberries", "qty": "18 oz", "source": "bought_today"},
+      {"item": "Organic baby spinach", "qty": "16 oz", "source": "bought_today"},
+      {"item": "Tri-color coleslaw", "qty": "2 lb", "source": "bought_today"},
+      {"item": "Fresh broccoli florets", "qty": "2 lb", "source": "bought_today"},
+      {"item": "Baby Bella mushrooms", "qty": "24 oz", "source": "bought_today"},
+      {"item": "Honeycrisp apples", "qty": "4 lb", "source": "bought_today"},
+      {"item": "Limes", "qty": "3 lb", "source": "bought_today"},
+      {"item": "Lemons", "qty": "3 lb", "source": "bought_today"},
+      {"item": "Bananas", "qty": "3 lb x2", "source": "bought_today"},
+      {"item": "Sweet onions", "qty": "6 lb", "source": "bought_today"},
+      {"item": "Seedless English cucumbers", "qty": "3 ct", "source": "bought_today"},
+      {"item": "Sweet potatoes", "qty": "5 lb", "source": "bought_today"},
+      {"item": "Yellow potatoes", "qty": "10 lb", "source": "bought_today"}
+    ],
+    "frozen": [
+      {"item": "Member's Mark Steamable Broccoli Florets", "qty": "4 pk", "source": "bought_today"},
+      {"item": "Hook Line & Savor Everything Crusted Flounder", "qty": "27.9 oz", "source": "bought_today", "note": "crusted item; verify label for wheat, egg, dairy, sesame, and nut cross-contact"}
+    ],
+    "meat_protein": [
+      {"item": "Member's Mark Seasoned Rotisserie Chicken", "source": "bought_today", "note": "watch sodium"},
+      {"item": "Member's Mark Whole Boneless Pork Loin", "source": "bought_today"},
+      {"item": "Pork spareribs", "source": "bought_today", "note": "fattier/occasional; sauce sugar/sodium risk"},
+      {"item": "Canned tuna", "source": "already_had"},
+      {"item": "Lentils", "source": "already_had"},
+      {"item": "Dried black beans", "source": "already_had"},
+      {"item": "Great northern beans", "source": "already_had"},
+      {"item": "Canned black beans", "source": "already_had"},
+      {"item": "Canned white beans", "source": "already_had"},
+      {"item": "Refried beans", "source": "already_had"},
+      {"item": "Ranch-style beans", "source": "already_had"},
+      {"item": "Baked beans", "source": "already_had", "note": "added sugar risk"}
+    ],
+    "refrigerated_dairy_egg": [
+      {"item": "Member's Mark Plain Nonfat Greek Yogurt", "qty": "40 oz", "source": "bought_today", "note": "contains dairy; adult-only/not for dairy allergy"},
+      {"item": "Member's Mark Organic Cage Free Brown Eggs", "qty": "2 dozen", "source": "bought_today", "note": "contains egg; not for egg allergy"}
+    ],
+    "grains_starches_pasta": [
+      {"item": "GF spaghetti", "source": "already_had"},
+      {"item": "GF penne", "source": "already_had"},
+      {"item": "White rice", "source": "already_had"},
+      {"item": "Steel-cut oats", "source": "already_had"},
+      {"item": "Mission 6 inch Fajita Flour Tortillas", "qty": "40 ct", "source": "bought_today", "note": "contains wheat unless label indicates otherwise"}
+    ],
+    "pantry": [
+      {"item": "Canned chili", "source": "already_had", "note": "sodium risk"},
+      {"item": "Tomato sauce", "source": "already_had"},
+      {"item": "Diced tomatoes", "source": "already_had"},
+      {"item": "Tomato paste", "source": "already_had"},
+      {"item": "Canned corn", "source": "already_had"},
+      {"item": "Pasta sauce", "source": "already_had", "note": "label check sodium/sugar/allergens"},
+      {"item": "Chicken broth", "source": "already_had", "note": "label check sodium/allergens"}
+    ]
+  }
+}

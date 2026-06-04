@@ -1,0 +1,66 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.contract.v2",
+  "version": "2.0.0",
+  "default_pattern": "DASH-Mediterranean-flexitarian adapted for dairy/wheat/egg/nut allergy constraints",
+  "hard_recipe_rule": "A recipe is not shared-family-safe unless dairy, wheat, egg, peanut, and tree-nut exposure are absent or explicitly replaced with safe forms.",
+  "shared_family_default": [
+    "dairy_free",
+    "wheat_free_or_GF",
+    "egg_free",
+    "peanut_free",
+    "tree_nut_free",
+    "coconut_allowed_by_user_rule"
+  ],
+  "robert_goals": [
+    "weight_loss",
+    "lower_blood_pressure",
+    "lower_triglycerides",
+    "improve_non_hdl_hdl_pattern",
+    "prediabetes_prevention",
+    "lower_sodium",
+    "lower_added_sugar",
+    "high_fiber",
+    "high_protein",
+    "mostly_minimally_processed"
+  ],
+  "wife_goals": [
+    "PCOS_supportive",
+    "perimenopause_supportive",
+    "thyroid_context_label_not_assume",
+    "breastfeeding_no_crash_diet",
+    "dairy_elimination_when_needed_for_child_allergy"
+  ],
+  "label_check_required_for": [
+    "processed_or_preseasoned_meats",
+    "crusted_or_breaded_fish",
+    "broths",
+    "sauces",
+    "canned_chili",
+    "baked_beans",
+    "flour_tortillas",
+    "packaged_dairy_free_substitutes"
+  ],
+  "recipe_card_required_fields": [
+    "title",
+    "mode",
+    "uses_from_inventory",
+    "need_to_buy",
+    "steps",
+    "allergy_status",
+    "label_checks",
+    "robert_fit",
+    "wife_fit",
+    "toddler_fit",
+    "sodium_risk",
+    "added_sugar_risk",
+    "protein_score",
+    "fiber_score",
+    "leftovers"
+  ],
+  "fail_closed_rules": [
+    "unknown_allergen_status_requires_needs_label_check",
+    "external_recipe_claim_requires_citation",
+    "shared_family_safe_requires_dairy_wheat_egg_nut_clearance",
+    "wife_breastfeeding_mode_must_not_crash_diet"
+  ]
+}
