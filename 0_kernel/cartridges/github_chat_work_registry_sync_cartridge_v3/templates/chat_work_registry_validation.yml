@@ -1,0 +1,32 @@
+name: MetaBlooms Chat Work Registry Validation
+
+on:
+  pull_request:
+    paths:
+      - '.metablooms/chat_work_registry/**'
+      - '0_kernel/cartridges/github_chat_work_registry_sync_cartridge_v3/**'
+      - '.github/workflows/chat_work_registry_validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: chat-work-registry-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-chat-work-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Validate chat work registry if present
+        run: |
+          if [ -f "0_kernel/cartridges/github_chat_work_registry_sync_cartridge_v3/validate_chat_work_registry.py" ]; then
+            python3 0_kernel/cartridges/github_chat_work_registry_sync_cartridge_v3/validate_chat_work_registry.py .
+          else
+            echo "chat work registry validator projected as artifact pointer only"
+          fi
