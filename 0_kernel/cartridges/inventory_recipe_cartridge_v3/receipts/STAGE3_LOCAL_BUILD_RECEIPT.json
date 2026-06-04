@@ -1,0 +1,45 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.stage3_local_build_receipt.v1",
+  "created_utc": "2026-06-04T21:56:48Z",
+  "py_compile": "PASS",
+  "test_command": "python3 tests/test_stage3_fail_closed.py",
+  "test_returncode": 0,
+  "test_output": "PASS 11 tests",
+  "manifest": [
+    {
+      "path": "0_kernel/cartridges/inventory_recipe_cartridge_v3/current_inventory_normalized_20260604_v3.json",
+      "sha256": "69ec542082de8478835fd1c5a485aa8d15012f0f154dae45f714ba66d1633fcf",
+      "bytes": 9855
+    },
+    {
+      "path": "0_kernel/cartridges/inventory_recipe_cartridge_v3/examples/stage3_sample_output.json",
+      "sha256": "d4326fa25d0d11104c7492115b230b41d077cd207f26a79ff0acc3c308670cf9",
+      "bytes": 5998
+    },
+    {
+      "path": "0_kernel/cartridges/inventory_recipe_cartridge_v3/receipts/STAGE3_FAIL_CLOSED_RECEIPT.json",
+      "sha256": "43a032148c70c27d7fc24155d1e92f73a10b90f48a31183de409e000b0cbfba4",
+      "bytes": 482
+    },
+    {
+      "path": "0_kernel/cartridges/inventory_recipe_cartridge_v3/recipe_cartridge_runner_v3.py",
+      "sha256": "1332a93abb2d787486eb641aacf33d61a91b5c481a4c2a7a3926ebdd43208ebd",
+      "bytes": 11366
+    },
+    {
+      "path": "0_kernel/cartridges/inventory_recipe_cartridge_v3/test_fixtures/stage3_adversarial_fixtures.json",
+      "sha256": "c11bae53356447e038d131ab46fcf4084798ed4bde580f28610199b2a317d43e",
+      "bytes": 870
+    },
+    {
+      "path": "0_kernel/cartridges/inventory_recipe_cartridge_v3/tests/test_stage3_fail_closed.py",
+      "sha256": "e41c0889070ffa3001218ce4bca065a122b0cc88251ec4e9b6b05368867a24e6",
+      "bytes": 5782
+    },
+    {
+      "path": "test_output.txt",
+      "sha256": "f30000870a27848835af3a77e0aa196558befe53841cfe820d532da0e76601c4",
+      "bytes": 14
+    }
+  ]
+}
