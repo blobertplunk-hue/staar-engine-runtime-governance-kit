@@ -1,0 +1,53 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.dietary_rulebook.v3",
+  "version": "3.0.0-stage0_2",
+  "robert_default": {
+    "prefer": [
+      "high_fiber",
+      "high_protein",
+      "vegetable_forward",
+      "low_added_sugar",
+      "lower_sodium",
+      "controlled_starch",
+      "minimally_processed"
+    ],
+    "limit": [
+      "processed_meat",
+      "sugary_sauce",
+      "large_refined_starch_portions",
+      "high_sodium_canned_or_rotisserie_items",
+      "fried_or_breaded_items"
+    ],
+    "classification": ["default", "limit", "treat"]
+  },
+  "wife_pcos_breastfeeding": {
+    "prefer": [
+      "adequate_calories",
+      "protein_at_meals",
+      "fiber_rich_carbs",
+      "no_naked_carbs",
+      "no_crash_diet",
+      "dairy_elimination_when_needed"
+    ],
+    "classification": ["compatible", "needs_addon", "not_ideal"]
+  },
+  "family_shared": {
+    "default_avoid": ["milk", "wheat", "egg", "peanut", "tree_nut"],
+    "label_check_for": [
+      "fish",
+      "soy",
+      "sesame",
+      "packaged_food",
+      "seasoning_blends",
+      "sauces",
+      "broths",
+      "breaded_or_crusted_items"
+    ]
+  },
+  "portion_defaults": {
+    "adult_lean_protein_oz": "4-6",
+    "adult_rice_or_pasta_cup": "0.5-1",
+    "adult_vegetables_cup_min": 2,
+    "beans_or_lentils_cup_target": "0.5-1"
+  }
+}
