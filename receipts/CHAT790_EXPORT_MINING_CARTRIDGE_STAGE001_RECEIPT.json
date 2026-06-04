@@ -1,0 +1,83 @@
+{
+  "stage": "CHAT790_EXPORT_MINING_CARTRIDGE_STAGE001",
+  "status": "COMPLETE",
+  "completed_date": "2026-06-03",
+  "branch": "claude/chat790-export-mining-cartridge-stage001",
+  "builds_on": [
+    "META_TOOL_ROUTER_AND_REPEATED_BLOCKER_LEDGER_STAGE001 (PR #11, merged)",
+    "BOOT_ROOT_REPAIR_AND_CHAT790_LESSONS_STAGE001 (PR #12, merged)",
+    "CHAT790_FORMAT_ADAPTER_AND_LEDGER_GITIGNORE (PR #13, merged)"
+  ],
+  "goal": "Begin the structured chat_export_mining cartridge shell: manifest, schema, bounded runner contract, fixture plan, receipt format, and first validation tests. Does not implement the full cartridge.",
+  "deliverables": {
+    "governance/chat_export_mining/CARTRIDGE_MANIFEST.json": {
+      "status": "NEW",
+      "description": "Declares cartridge_id, stage, status, Stage001 bounded scope (does/does_not), future_stages roadmap, dependencies on merged machinery."
+    },
+    "governance/chat_export_mining/CHAT_EXPORT_ENTRY_SCHEMA_v1.json": {
+      "status": "NEW",
+      "description": "Schema for a single Claude Code session JSONL export entry. Documents required_for_mining fields, filter_condition (hook_event_name == PostToolUseFailure), and graceful-handling notes."
+    },
+    "governance/chat_export_mining/BOUNDED_RUNNER_CONTRACT_v1.json": {
+      "status": "NEW",
+      "description": "Contract for runner.py: invocation flags, exit codes, guarantees (no ledger writes, no /mnt/data, no network), receipt_shape. Explicitly documents what is NOT in Stage001 scope."
+    },
+    "governance/chat_export_mining/runner.py": {
+      "status": "NEW",
+      "description": "Bounded JSONL runner. Reads lines, skips blanks/parse-errors, filters PostToolUseFailure, calls map_payload (no classify), emits JSON receipt. Flags: --input, --output, --max-entries, --dry-run."
+    },
+    "tests/fixtures/chat_export_mining/": {
+      "status": "NEW",
+      "files": [
+        "single_tool_failure.jsonl — 4 lines, 1 PostToolUseFailure, expects mapped=1",
+        "multi_tool_failure.jsonl — 6 lines, 3 PostToolUseFailure, expects mapped=3",
+        "no_tool_failures.jsonl — 6 lines, 0 PostToolUseFailure, expects mapped=0",
+        "malformed_entry.jsonl — 6 lines, 2 bad JSON, 1 valid failure, 1 unmappable"
+      ]
+    },
+    "tests/test_chat_export_mining_stage001.py": {
+      "status": "NEW",
+      "test_count": 60,
+      "classes": [
+        "TestRunnerUnit (15 tests — mine_stream() unit tests with synthetic JSONL)",
+        "TestFixtureFiles (10 tests — JSONL fixtures are well-formed and produce expected counts)",
+        "TestManifestAndContracts (16 tests — JSON documents are valid and structurally complete)",
+        "TestRunnerSubprocess (14 tests — CLI invocation matching real usage patterns)",
+        "TestExistingSuiteNotBroken (3 regression guards for all prior test suites)"
+      ]
+    }
+  },
+  "test_results": {
+    "python3 -m py_compile governance/chat_export_mining/runner.py": "PASS",
+    "python3 tests/test_chat_export_mining_stage001.py": "PASS (60/60)",
+    "python3 tests/test_tool_routing_and_blocker_ledger.py": "PASS (34/34, regression)",
+    "python3 tests/test_hook_activation.py": "PASS (22/22, regression)",
+    "python3 tests/test_post_tool_failure_adapter.py": "PASS (31/31, regression)"
+  },
+  "design_decisions": {
+    "no_ledger_writes_in_stage001": "runner.py calls map_payload() only (not adapt_and_classify). This means Stage001 produces a receipt of mapped blocker events without writing to the ledger or making any recurrence decisions. Recurrence tracking is Stage002.",
+    "stream_processing": "mine_stream() consumes lines one at a time so memory stays constant regardless of export size. This is required for future ingestion of large chat790 exports.",
+    "parse_errors_not_fatal": "Bad JSON lines are counted as parse_errors and skipped. The runner exits 0 unless there is an I/O failure or an internal error. A partially-malformed export should still yield whatever valid entries it contains.",
+    "unmappable_counted_separately": "PostToolUseFailure entries with no tool_name yield adapter status UNMAPPABLE and are counted in the receipt's unmappable field, not mapped. They do not crash the runner.",
+    "max_entries_flag": "--max-entries enables safe sampling of large exports before committing to full ingestion. Useful for Stage002 dry-runs.",
+    "dry_run_flag": "--dry-run parses and counts all entries but emits events=[] and dry_run=true in the receipt. Safe for validation without producing output artifacts.",
+    "no_decision_field_on_events": "Stage001 events have no 'decision' key (LOG_ONLY/FORCE_RCA/LOG_NEW_VARIANT). Those fields appear only after classify() is called in Stage002+. Tests assert this invariant explicitly."
+  },
+  "hard_constraints_respected": [
+    "Did not implement the full cartridge in one pass",
+    "Created only the Stage001 cartridge shell (manifest, schema, contract, runner, fixtures, tests)",
+    "Did not claim full chat export mining is complete",
+    "Did not access /mnt/data or claim native MetaBlooms OS source patching",
+    "Did not start the actual chat790 export ingestion",
+    "Did not bypass or remove the PreToolUse guard",
+    "Used merged hook/adapter/router machinery (map_payload imported from post_tool_failure_adapter.py)"
+  ],
+  "limitations": [
+    "Stage001 does not write to the ledger; recurrence patterns across an export are invisible until Stage002",
+    "Fixture JSONL files are synthetic (not from actual /mnt/data/Metablooms_OS chat exports)",
+    "No deduplication across JSONL lines: if the same failure appears twice in the export, it produces two mapped events",
+    "No session-aware grouping: events from the same session are not correlated",
+    "runner.py does not validate field types within entries — it relies on the adapter's graceful handling of missing/malformed values"
+  ],
+  "next_stage_recommendation": "CHAT790_EXPORT_MINING_CARTRIDGE_STAGE002 — ledger feed: pipe mapped events through adapt_and_classify() to track recurrence across all failures in a chat export, producing a receipt with per-fingerprint occurrence counts and FORCE_RCA candidates"
+}

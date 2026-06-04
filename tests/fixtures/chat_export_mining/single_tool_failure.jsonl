@@ -1,0 +1,4 @@
+{"hook_event_name": "SessionStart", "session_id": "fixture-single-001", "cwd": "/home/user/staar-engine-runtime-governance-kit"}
+{"hook_event_name": "PreToolUse", "tool_name": "file_search", "tool_input": {"query": "boot-sound", "target_path": "/mnt/data/Metablooms_OS"}, "session_id": "fixture-single-001"}
+{"hook_event_name": "PostToolUseFailure", "tool_name": "file_search", "tool_input": {"query": "boot-sound root check", "target_path": "/mnt/data/Metablooms_OS"}, "tool_response": "Error: file_search is forbidden for mounted OS artifacts.", "session_id": "fixture-single-001", "tool_use_id": "toolu_fixture_001", "duration_ms": 12, "is_interrupt": false}
+{"hook_event_name": "Stop", "session_id": "fixture-single-001"}
