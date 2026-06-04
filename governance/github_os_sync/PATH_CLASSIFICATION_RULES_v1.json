@@ -44,6 +44,8 @@
     {"prefix":"docs/","class":"os_authoritative","reason":"OS/repo documentation"},
     {"prefix":"fixtures/","class":"os_authoritative","github_projection":"summary_or_diff_packet_only","reason":"fixture artifacts"},
     {"prefix":"receipts/","class":"os_authoritative","github_projection":"summary_only","reason":"legacy/top-level receipts"},
+    {"pattern":"runtime/state/ACTIVE_TRACKER_PREVIEW.txt","class":"generated_runtime_state","strict_parity":false,"reason":"binding gate output; excluded from strict parity denominator"},
+    {"pattern":"runtime/state/ACTIVE_WORK.json","class":"generated_runtime_state","strict_parity":false,"reason":"binding gate work state; excluded from strict parity denominator"},
     {"prefix":"runtime/","class":"os_authoritative","github_projection":"summary_or_diff_packet_only","reason":"runtime data plane"},
     {"prefix":"0_kernel/mpp_v3/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"MPP kernel source subset"},
     {"prefix":"0_kernel/scripts/","class":"boot_kernel_source","selection_rule":"commit_only_if_invoked_by_mpp_or_route_contract_or_test_or_release_pointer_validation","reason":"OS kernel scripts source subset"},
