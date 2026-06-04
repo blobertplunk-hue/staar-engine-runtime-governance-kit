@@ -1,20 +1,26 @@
-MetaBlooms Visual Tracker
-=========================
+🧭 MetaBlooms Work Status
+━━━━━━━━━━━━━━━━━━━━
+Status: Working
+Current job: Parity baseline receipt created; manual alert integration added; binding gate updated to four-section emoji format
+Current stage: VISUAL_TRACKER_STAGE006_PARITY_AND_MANUAL_ALERT_INTEGRATION
+Next action: VISUAL_TRACKER_STAGE007_REVIEW_AND_MERGE
 
-Floor:
-  Stage011K2 rebuilt after portable repair
-  Release: MB-FULL-STAGE011K2-20260601T111108Z
+📊 Sync Parity
+━━━━━━━━━━━━━━━━━━━━
+[99.9966%] [███████████████████░]
+Resolved: 58847 / 58849
+Remaining deviations: 2
+Unclassified: 0
+Source: runtime/receipts/github_os_sync_stage0u/STAGE0U_20260603T214100Z/STAGE0T_PARITY_BASELINE.json
 
-Current Stage:
-  WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION
+🧪 Evidence Health
+━━━━━━━━━━━━━━━━━━━━
+Tracker source: runtime/state/ACTIVE_WORK.json
+WCUQ: WCUQ stale/unavailable; numeric score suppressed
+WCUQ source: runtime/state/WCUQ_STATUS.json
+Stale archive progress: hidden
+Manual action blocker: none
 
-Current Work:
-  Apply WCUQ v2 schema patch to GitHub branch; open PR for review
-
-Next Action:
-  WCUQ_STATIC_SCORE_STAGE005_NATIVE_APPLY_PR_FINALIZATION
-
-WCUQ:
-  WCUQ stale/unavailable; numeric score suppressed
-
-file_search_used: false
+🧱 Machine Details
+━━━━━━━━━━━━━━━━━━━━
+Raw archive floor and legacy quality telemetry are preserved in receipts, not displayed as current work.

@@ -1,0 +1,29 @@
+{
+  "schema": "mb.github_os_sync.parity_baseline.v1",
+  "created_at_utc": "2026-06-03T21:41:00Z",
+  "stage": "STAGE0T_PARITY_BASELINE",
+  "source_path": "runtime/receipts/github_os_sync_stage0u/STAGE0U_20260603T214100Z/STAGE0T_PARITY_BASELINE.json",
+  "parity_pct": 99.9966,
+  "resolved": 58847,
+  "total": 58849,
+  "remaining_deviations": 2,
+  "unclassified": 0,
+  "remaining_detail": [
+    {
+      "path": ".gitignore",
+      "status": "DEFERRED_UNION_MERGE_REQUIRED",
+      "authority": "github_authoritative",
+      "rationale": "GitHub contains normal repo hygiene ignores; OS contains lockfile exclusions. Union merge required.",
+      "followup": "create_gitignore_union_merge_pr_or_include_in_next_projection"
+    },
+    {
+      "path": "runtime/cartridges/release_audit_harness_v1/release_audit_harness_runner_v1.py",
+      "status": "DEFERRED_NO_FILE_MOVEMENT",
+      "authority": "os_authoritative",
+      "rationale": "OS runtime/data plane path. Split or rename required before projecting runtime changes.",
+      "followup": "split_or_rename_remote_safe_harness_path_before_projecting_runtime_changes"
+    }
+  ],
+  "adjudication_receipt": "governance/github_os_sync/STAGE0I_COMMON_DIFF_ADJUDICATION_RECEIPT_20260603T192701Z.json",
+  "file_search_used": false
+}
