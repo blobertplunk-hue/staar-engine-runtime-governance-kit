@@ -1,0 +1,32 @@
+Stage 9 optional embedded source cleanup plan
+
+Decision: PLAN ONLY. Do not delete embedded source yet.
+
+Reason: The dedicated repo is canonical and embedded compatibility pointers are merged, but resolver behavior has only been proven for this one cartridge family. Embedded source remains a compatibility fallback until additional resolver proof exists.
+
+Current evidence:
+- Dedicated repo: blobertplunk-hue/metablooms-cartridge-github-sync
+- Governance repo: blobertplunk-hue/staar-engine-runtime-governance-kit
+- PR 36 merge commit: 5d45b36cd928192e4a467b5e6434f045cf745f54
+- Stage 8B status: PASS_WITH_CI_VISIBILITY_CAVEAT
+
+Next recommended stage:
+CARTRIDGE_REPO_MIGRATION_STAGE9A_RETIREMENT_GUARDS_AND_RESOLVER_FIXTURES_NO_DELETION
+
+Allowed next change:
+Add resolver fixtures, path-ban checks, drift detection, rollback proof, and cold-boot smoke tests. No source deletion.
+
+Forbidden until gates pass:
+- delete embedded source directories
+- replace embedded source with stubs only
+- change boot resolver order to require network-only access
+
+Deletion gate requirements:
+- cold boot resolves dedicated repo source without embedded path reads
+- network-unavailable fallback is documented and tested
+- path-ban test proves new changes target dedicated repo paths
+- second cartridge family follows same external repo pointer pattern or repeated cold-boot resolver smoke passes
+- rollback branch can restore embedded source or pointer order in one commit
+
+Local receipt:
+/mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage9_github_sync/STAGE9_OPTIONAL_EMBEDDED_SOURCE_CLEANUP_PLAN.json
