@@ -1,0 +1,17 @@
+Stage 8B post-merge parity status
+
+Status: PASS with CI visibility caveat
+
+PR 36: merged
+Merge commit: 5d45b36cd928192e4a467b5e6434f045cf745f54
+Head SHA: f2d39704e60778c2d34f8e801e8113858dc93785
+
+Governance pointer: main points GitHub sync family to blobertplunk-hue/metablooms-cartridge-github-sync main.
+Embedded compatibility pointers: present on main in both cartridge folders and governance GitHub sync folder.
+Embedded source deletion: none.
+Dedicated source repo: blobertplunk-hue/metablooms-cartridge-github-sync main contains cartridge contract and scaffold source.
+
+CI: PR head workflows passed before merge. Connector returned no workflow runs for the merge commit during Stage 8B recheck.
+
+Local receipt: /mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage8b_github_sync/STAGE8B_POST_PR36_MERGE_RESOLVER_SMOKE_AND_PARITY_RECEIPT.json
+Receipt SHA-256: 809f36ea57dba536c43972bed8269c289cc8118f80680ba02f4dbc56df4066ec
