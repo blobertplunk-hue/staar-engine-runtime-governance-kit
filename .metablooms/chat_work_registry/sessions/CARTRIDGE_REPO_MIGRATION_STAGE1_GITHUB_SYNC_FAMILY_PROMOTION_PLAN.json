@@ -2,7 +2,7 @@
   "schema": "mb.github.chat_work_session.v1",
   "work_id": "CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN",
   "intended_work": "Inventory and classify the GitHub sync and chat work registry cartridge family for promotion to a dedicated repository, then produce a go/no-go migration packet.",
-  "status": "registered",
+  "status": "handoff",
   "chat": {
     "chat_url_status": "PROVIDED",
     "chat_url": "https://chatgpt.com/g/g-p-689c74a1b2c881919eef34000e072573-metabrain/c/6a219536-7b1c-83ea-80ba-a5aab4de4e77",
@@ -11,15 +11,30 @@
   "github": {
     "repository_full_name": "blobertplunk-hue/staar-engine-runtime-governance-kit",
     "registry_path": ".metablooms/chat_work_registry/sessions/CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN.json",
-    "related_prs": [29, 34]
+    "related_prs": [29, 34],
+    "stage1_artifact_path": ".metablooms/chat_work_registry/artifacts/CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN/STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN.md",
+    "stage1_artifact_commit": "203f4fa0f166c1cded0db2cb3e758442ea86a4fe"
   },
   "resume": {
-    "current_stage": "S0_REGISTRATION",
-    "last_completed_step": "turn boot passed; exact chat URL supplied by user; no existing exact Stage 1 session file found on main",
-    "next_step": "Run S1 inventory and classification for the GitHub sync and chat work registry cartridge family.",
+    "current_stage": "S1_INVENTORY_CLASSIFICATION_COMPLETE",
+    "last_completed_step": "Inventory/classification complete: 73 candidate items, 63 externalizable, 10 excluded, 0 unknown, 0 secret/private path hits. Decision: GO for dedicated-repo scaffolding; not direct migration yet.",
+    "next_step": "S2 create or resolve target repo blobertplunk-hue/metablooms-cartridge-github-sync, scaffold required files, project externalizable sources, and update the control-plane registry pointer.",
     "blockers": []
   },
-  "artifacts": [],
-  "receipts": [],
-  "updated_at_utc": "2026-06-05T15:04:31Z"
+  "artifacts": [
+    {
+      "type": "github_file",
+      "path": ".metablooms/chat_work_registry/artifacts/CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN/STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN.md",
+      "commit_sha": "203f4fa0f166c1cded0db2cb3e758442ea86a4fe"
+    },
+    {
+      "type": "local_receipt_dir",
+      "path": "/mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage1_github_sync"
+    }
+  ],
+  "receipts": [
+    "/mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage1_github_sync/STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN.json",
+    "/mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage1_github_sync/STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN.md"
+  ],
+  "updated_at_utc": "2026-06-05T15:15:42Z"
 }
