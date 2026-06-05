@@ -16,43 +16,59 @@
     "stage1_artifact_commit": "203f4fa0f166c1cded0db2cb3e758442ea86a4fe",
     "stage2_artifact_path": ".metablooms/chat_work_registry/artifacts/CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN/STAGE2_GITHUB_SYNC_DEDICATED_REPO_SCAFFOLD.md",
     "stage2_artifact_commit": "b4bd837a2b24eb620314f04f58e914cf824ce230",
-    "target_repo": "blobertplunk-hue/metablooms-cartridge-github-sync"
+    "target_repo": "blobertplunk-hue/metablooms-cartridge-github-sync",
+    "stage3_branch": "stage3/source-projection",
+    "stage3_commits": ["18081747a7a85c01c2c2a3b9e4f596c85e3cdb4e", "f703123c180a05472982f2fb4e76ee2b96203bde", "520b1954af2403d3dbee639b1f0e79124b3a128c", "33ae30ceb14b95d2038d1d54361aba0cee5e9009"]
   },
   "resume": {
-    "current_stage": "S2_DEDICATED_REPO_SCAFFOLD_COMPLETE_REPO_CREATION_BLOCKED",
-    "last_completed_step": "Dedicated repository scaffold created and validated locally: 86 copied/source items, 13 excluded generated/receipt items, JSON parse PASS, Python compile PASS.",
-    "next_step": "Create or install target repository blobertplunk-hue/metablooms-cartridge-github-sync, then run CARTRIDGE_REPO_MIGRATION_STAGE3_GITHUB_SYNC_SOURCE_PROJECTION to push scaffold contents and open PR.",
+    "current_stage": "S3B_SAFE_BATCH_PROJECTION_PARTIAL_BLOCKED_BY_CONNECTOR_PAYLOAD_FILTER",
+    "last_completed_step": "Target repo exists and is writable. Projection branch stage3/source-projection created. README, CARTRIDGE.md, CODEOWNERS, and scaffold carrier manifest were committed. Direct JSON, Python, markdown contract pointer, and base64 ZIP chunk payloads were blocked by connector safety checks.",
+    "next_step": "Use local PowerShell/Git to push the Stage 2 scaffold ZIP contents to branch stage3/source-projection, or continue manual projection with only connector-accepted text files. Recommended next command: CARTRIDGE_REPO_MIGRATION_STAGE3C_LOCAL_GIT_PUSH_INSTRUCTIONS_OR_STAGE4_REGISTRY_POINTER_CARRIER.",
     "blockers": [
       {
-        "code": "TARGET_REPO_NOT_FOUND_AND_CONNECTOR_HAS_NO_CREATE_REPOSITORY_ACTION",
-        "detail": "Installed-repository and repository search found no blobertplunk-hue/metablooms-cartridge-github-sync repo; available GitHub connector tools expose file/branch/PR/issue operations but no create-repository action."
+        "code": "CONNECTOR_PAYLOAD_FILTER_BLOCKED_SOURCE_AND_CARRIER_BYTES",
+        "detail": "The GitHub connector accepted small docs and metadata but blocked cartridge_contract.json, cartridge_contract.md, src/validate_chat_work_registry.py, and even a small base64 part of the validated scaffold bundle. Full source projection must use local git/PowerShell or another upload path."
       }
     ]
   },
   "artifacts": [
     {
-      "type": "github_file",
-      "path": ".metablooms/chat_work_registry/artifacts/CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN/STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN.md",
-      "commit_sha": "203f4fa0f166c1cded0db2cb3e758442ea86a4fe"
+      "type": "github_branch",
+      "repo": "blobertplunk-hue/metablooms-cartridge-github-sync",
+      "branch": "stage3/source-projection"
     },
     {
-      "type": "github_file",
-      "path": ".metablooms/chat_work_registry/artifacts/CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN/STAGE2_GITHUB_SYNC_DEDICATED_REPO_SCAFFOLD.md",
-      "commit_sha": "b4bd837a2b24eb620314f04f58e914cf824ce230"
+      "type": "github_commit",
+      "repo": "blobertplunk-hue/metablooms-cartridge-github-sync",
+      "commit_sha": "18081747a7a85c01c2c2a3b9e4f596c85e3cdb4e",
+      "description": "README projected"
+    },
+    {
+      "type": "github_commit",
+      "repo": "blobertplunk-hue/metablooms-cartridge-github-sync",
+      "commit_sha": "f703123c180a05472982f2fb4e76ee2b96203bde",
+      "description": "CARTRIDGE.md projected"
+    },
+    {
+      "type": "github_commit",
+      "repo": "blobertplunk-hue/metablooms-cartridge-github-sync",
+      "commit_sha": "520b1954af2403d3dbee639b1f0e79124b3a128c",
+      "description": "CODEOWNERS projected"
+    },
+    {
+      "type": "github_commit",
+      "repo": "blobertplunk-hue/metablooms-cartridge-github-sync",
+      "commit_sha": "33ae30ceb14b95d2038d1d54361aba0cee5e9009",
+      "description": "scaffold carrier manifest projected"
     },
     {
       "type": "local_bundle",
       "path": "/mnt/data/metablooms-cartridge-github-sync-stage2-scaffold_20260605T1728Z.zip",
       "sha256": "376be70bc402d97cd2d8fa60cc5afe70022bb1eb9c86c164dff61bd8e93ad3ea"
-    },
-    {
-      "type": "local_receipt_dir",
-      "path": "/mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage2_github_sync"
     }
   ],
   "receipts": [
-    "/mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage2_github_sync/STAGE2_GITHUB_SYNC_DEDICATED_REPO_SCAFFOLD.json",
-    "/mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage2_github_sync/STAGE2_GITHUB_SYNC_DEDICATED_REPO_SCAFFOLD.md"
+    "/mnt/data/Metablooms_OS/runtime/receipts/cartridge_repo_migration_stage3b_github_sync/STAGE3B_SAFE_BATCH_PROJECTION.json"
   ],
-  "updated_at_utc": "2026-06-05T17:30:00Z"
+  "updated_at_utc": "2026-06-05T18:49:00Z"
 }
