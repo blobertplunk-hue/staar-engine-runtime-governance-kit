@@ -1,0 +1,15 @@
+{
+  "schema": "metablooms.inventory_recipe_cartridge.stage3_adversarial_fixtures.v1",
+  "fixtures": [
+    {"id":"greek_yogurt_shared_family","expect":"not_shared_safe_contains_milk"},
+    {"id":"egg_breakfast_shared_family","expect":"not_shared_safe_contains_egg"},
+    {"id":"flour_tortilla_tacos","expect":"not_shared_safe_contains_wheat"},
+    {"id":"crusted_flounder","expect":"needs_label_check"},
+    {"id":"bbq_ribs_sugary_sauce","expect":"robert_limit_high_added_sugar"},
+    {"id":"canned_chili_meal","expect":"robert_limit_high_sodium"},
+    {"id":"rotisserie_chicken_meal","expect":"robert_limit_high_sodium_and_label_check"},
+    {"id":"lentil_tomato_gf_pasta_clear_labels","expect":"shared_safe_robert_default"},
+    {"id":"pork_loin_bean_bowl","expect":"shared_safe_robert_default"},
+    {"id":"toddler_grape_snack","expect":"toddler_prep_required"}
+  ]
+}
