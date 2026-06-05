@@ -1,0 +1,25 @@
+{
+  "schema": "mb.github.chat_work_session.v1",
+  "work_id": "CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN",
+  "intended_work": "Inventory and classify the GitHub sync and chat work registry cartridge family for promotion to a dedicated repository, then produce a go/no-go migration packet.",
+  "status": "registered",
+  "chat": {
+    "chat_url_status": "PROVIDED",
+    "chat_url": "https://chatgpt.com/g/g-p-689c74a1b2c881919eef34000e072573-metabrain/c/6a219536-7b1c-83ea-80ba-a5aab4de4e77",
+    "source": "USER_PROVIDED"
+  },
+  "github": {
+    "repository_full_name": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+    "registry_path": ".metablooms/chat_work_registry/sessions/CARTRIDGE_REPO_MIGRATION_STAGE1_GITHUB_SYNC_FAMILY_PROMOTION_PLAN.json",
+    "related_prs": [29, 34]
+  },
+  "resume": {
+    "current_stage": "S0_REGISTRATION",
+    "last_completed_step": "turn boot passed; exact chat URL supplied by user; no existing exact Stage 1 session file found on main",
+    "next_step": "Run S1 inventory and classification for the GitHub sync and chat work registry cartridge family.",
+    "blockers": []
+  },
+  "artifacts": [],
+  "receipts": [],
+  "updated_at_utc": "2026-06-05T15:04:31Z"
+}
