@@ -2,11 +2,13 @@ MetaBlooms cartridge family pointer
 
 Family: GitHub sync and chat work registry
 Target repository: blobertplunk-hue/metablooms-cartridge-github-sync
-Target branch: stage3/source-projection
-Status: partial external projection
-Canonical source: embedded source remains canonical until full local Git projection passes
+Target branch: main
+Status: externalized source merged
+Canonical source: dedicated repository main branch after PR 1 merge
+Merge commit: 5b61cbe880b1733ffdca87582600f39d2bf68eef
+Source commit before merge: 7dcf81ed32f25c81c0d6b97a49c0c70133bd5f68
 Authoritative bundle: metablooms-cartridge-github-sync-stage2-scaffold_20260605T1728Z.zip
 Bundle digest: 376be70bc402d97cd2d8fa60cc5afe70022bb1eb9c86c164dff61bd8e93ad3ea
 
 Resolver instruction:
-Use this pointer to find the dedicated repository. Do not treat the dedicated repository as complete executable source until the full scaffold has been pushed by local Git or another accepted upload path.
+Use the dedicated repository main branch as the canonical source for this cartridge family. Keep embedded governance copies as compatibility fallback until a later cleanup stage removes or replaces them with stubs.
