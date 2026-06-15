@@ -43,5 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install MB_INSTALL test dependencies
+        run: python3 -m pip install jsonschema
       - name: Run MB_INSTALL v0 tests
         run: python3 -m unittest discover -s tests -p "test_mb_install_*.py" -v
