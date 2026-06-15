@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "description": "MB_INSTALL v0 failure-mode coverage matrix. All rows must have a non-empty 'mechanism' and 'fixture' field. PENDING_STAGE_N is valid until that stage ships.",
+  "description": "MB_INSTALL v0 failure-mode coverage matrix. All rows must have a non-empty 'mechanism' and 'fixture' field. No PENDING rows remain after Stage 3.",
   "rows": [
     {
       "fm": "FM-A",
@@ -11,14 +11,14 @@
     {
       "fm": "FM-B",
       "description": "Payload and sidecar written non-atomically — sidecar can diverge from payload after partial write",
-      "mechanism": "Stage 1 provides restamp_sidecars() helper coverage only; the atomic temp+replace FM-B fixture is PENDING_STAGE_3",
-      "fixture": "PENDING_STAGE_3"
+      "mechanism": "restamp_sidecars() writes each sidecar through a same-directory temp file, fsync, and os.replace(); the FM-B fixture simulates replace failure and proves the old sidecar remains intact",
+      "fixture": "tests/test_mb_install_fm_b_restamp_atomic.py::TestFmBRestampAtomic::test_failed_replace_preserves_existing_sidecar"
     },
     {
       "fm": "FM-C",
       "description": "Governance drop guard — governance contract silently removed during install",
-      "mechanism": "write_receipt() in tools/metablooms/mb_install_v0.py enforces score_source field; receipt gate wired in stage 3",
-      "fixture": "PENDING_STAGE_3"
+      "mechanism": "write_receipt() records governance_contracts from the manifest and validate_receipt() rejects missing governance contracts or non-execution score sources",
+      "fixture": "tests/test_mb_install_fm_c_governance_drop.py::TestFmCGovernanceDrop::test_validate_receipt_rejects_governance_contract_drop"
     },
     {
       "fm": "FM-D",

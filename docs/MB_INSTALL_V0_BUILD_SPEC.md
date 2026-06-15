@@ -1,7 +1,7 @@
 # MB_INSTALL v0 — Build Spec (Governing Document, Stages 1–5)
 
 **Repo:** staar-engine-runtime-governance-kit
-**Status:** Stage 2 FM-A fixture live; Stage 3 pending
+**Status:** Stage 3 FM-B/FM-C fixtures live; Stage 4 pending
 
 ---
 
@@ -22,8 +22,8 @@ not green.
 | ID | Name | Stakes | Governing mechanism |
 |----|------|--------|---------------------|
 | FM-A | Floor write without token | Protected surface written without Robert-auth token | `check_protected_writes()` fails closed on missing or blank token; fixture live in Stage 2 |
-| FM-B | Payload/sidecar write non-atomic | Sidecar diverges from payload after partial write | Stage 1 provides `restamp_sidecars()` helper only; atomic temp+replace fixture lands in Stage 3 |
-| FM-C | Governance drop | Governance contract silently removed during install | `write_receipt()` enforces receipt completeness; gate wired in Stage 3 |
+| FM-B | Payload/sidecar write non-atomic | Sidecar diverges from payload after partial write | `restamp_sidecars()` uses same-directory temp file, fsync, and `os.replace`; fixture live in Stage 3 |
+| FM-C | Governance drop | Governance contract silently removed during install | `write_receipt()` preserves governance contracts and `validate_receipt()` rejects drops; fixture live in Stage 3 |
 | FM-D | Fabrication wound (Stage-003B) | Bundle sha256 declared without matching actual bytes | `verify_bundle()` hashes every file and rejects undeclared/missing/duplicate payloads |
 
 ---
@@ -34,14 +34,15 @@ not green.
 verify_bundle(zip_path) → manifest          # hash every file; fail on mismatch/extra/missing/duplicate [FM-D]
 check_protected_writes(manifest, token)     # fail closed if protected file + missing/blank token [FM-A]
 stage_to_tmp(manifest, zip_path) → dir      # copy to staging dir; re-verify staged bytes
-atomic_swap(tmp_dir)                        # live-tree swap [STAGE 4 only, guard in stage 1]
-restamp_sidecars(touched_files)             # Stage 1 helper; atomic-write proof lands Stage 3 [FM-B]
+atomic_swap(tmp_dir)                        # live-tree swap [STAGE 4 only, guard remains active]
+restamp_sidecars(touched_files)             # temp+fsync+replace sidecar write [FM-B]
 write_receipt(manifest, install_id)         # deterministic receipt [FM-C]
+validate_receipt(receipt, manifest)         # receipt completeness/governance-drop guard [FM-C]
 ```
 
-The guard on `atomic_swap` is the stage 1 safety boundary: it raises `NotImplementedError`
-unless the explicit bootstrap flag is set. Stage 1 tests never set it, making live-tree
-mutation impossible during CI.
+The guard on `atomic_swap` is still the live mutation boundary: it raises `NotImplementedError`
+unless the explicit bootstrap flag is set, and even with the flag the real implementation is
+not built until Stage 4.
 
 ---
 
@@ -97,10 +98,21 @@ mutation impossible during CI.
 
 ## Stage 3 — FM-B and FM-C fixtures
 
+**Rule:** Make FM-B/FM-C live without implementing `atomic_swap()` or live-tree mutation.
+
 **Deliverables:**
-- `tests/test_mb_install_fm_b_restamp_atomic.py` — FM-B: proves sidecar is written through the Stage 3 atomic write mechanism
-- `tests/test_mb_install_fm_c_governance_drop.py` — FM-C: proves receipt gate blocks incomplete receipts
+- `tests/test_mb_install_fm_b_restamp_atomic.py` — FM-B fixture proving sidecar replacement preserves the previous sidecar if `os.replace()` fails
+- `tests/test_mb_install_fm_c_governance_drop.py` — FM-C fixture proving receipt validation rejects missing governance contracts and non-execution score sources
+- `restamp_sidecars()` uses same-directory temp files, fsync, cleanup on failure, and `os.replace()`
+- `write_receipt()` emits deterministic files and governance contracts
+- `validate_receipt()` rejects incomplete receipts, file-list drift, governance-contract drops, and non-execution score sources
 - FM matrix: FM-B and FM-C rows updated from PENDING to live fixtures
+
+**Definition of Done:**
+- FM-A/B/C/D rows all point to real fixture files
+- No PENDING FM rows remain
+- Existing `mb-install-tests` CI passes
+- `atomic_swap()` remains disabled and no live OS mutation behavior is added
 
 ---
 
@@ -127,7 +139,7 @@ mutation impossible during CI.
 
 - `atomic_swap` cannot mutate any tree that is not an explicitly designated throwaway
 - Protected-surface writes require a non-empty Robert-auth token — no exceptions
-- Sidecar and payload atomicity is not proven until the Stage 3 FM-B fixture is live
+- Sidecar and payload atomicity is proven only for the Stage 3 `restamp_sidecars()` helper; full live-tree atomicity remains Stage 4
 - Receipt `score_source` must be `"execution"` (not `"inferred"`)
 - Determinism: same bundle in → same receipt shape out
 - No FM row may be silently absent from the coverage matrix

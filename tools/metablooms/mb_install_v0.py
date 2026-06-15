@@ -1,9 +1,9 @@
 """MB_INSTALL v0 — staged-shadow-apply install primitive.
 
-Stage 1: skeleton with FM-D (verify_bundle), FM-A (check_protected_writes),
-FM-B (restamp_sidecars helper) implemented. atomic_swap is guarded
-NotImplemented and will not run without the explicit bootstrap flag (set only
-in stage 4+).
+Stage 3: FM-D (verify_bundle), FM-A (check_protected_writes), FM-B
+(atomic sidecar restamp helper), and FM-C (receipt validation helper) are
+implemented as repo-side primitives. atomic_swap is still guarded and not
+implemented until Stage 4+.
 """
 
 import hashlib
@@ -40,6 +40,10 @@ class DuplicatePathError(ManifestError):
 
 
 class UndeclaredPayloadError(ManifestError):
+    pass
+
+
+class ReceiptValidationError(ManifestError):
     pass
 
 
@@ -206,11 +210,7 @@ def atomic_swap(tmp_tree: str, *, _bootstrap_flag: bool = False) -> None:
 
 
 def restamp_sidecars(touched_files: list[str]) -> dict[str, str]:
-    """Recompute and write .sha256 sidecars for every file in this helper call (FM-B skeleton).
-
-    Stage 1 provides the helper and unit coverage. The stronger FM-B atomic-write fixture
-    and any temp+replace behavior land in Stage 3.
-    """
+    """Recompute .sha256 sidecars using same-directory temp files and os.replace (FM-B)."""
     results: dict[str, str] = {}
     for filepath in touched_files:
         filepath = os.fspath(filepath)
@@ -218,8 +218,25 @@ def restamp_sidecars(touched_files: list[str]) -> dict[str, str]:
             data = f.read()
         digest = _sha256_bytes(data)
         sidecar_path = filepath + ".sha256"
-        with open(sidecar_path, "w", encoding="utf-8") as f:
-            f.write(digest + "\n")
+        sidecar_dir = os.path.dirname(sidecar_path) or "."
+        fd, tmp_path = tempfile.mkstemp(
+            prefix=os.path.basename(sidecar_path) + ".",
+            suffix=".tmp",
+            dir=sidecar_dir,
+            text=True,
+        )
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                f.write(digest + "\n")
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp_path, sidecar_path)
+        except Exception:
+            try:
+                os.unlink(tmp_path)
+            except FileNotFoundError:
+                pass
+            raise
         results[filepath] = digest
     return results
 
@@ -233,12 +250,34 @@ def write_receipt(
     """Return a deterministic install receipt dict.
 
     score_source must be 'execution' for real installs (FM-C invariant).
-    File paths are sorted so equivalent manifests produce the same receipt shape.
+    File paths and governance contracts are sorted so equivalent manifests produce
+    the same receipt shape.
     """
+    if score_source != "execution":
+        raise ReceiptValidationError(
+            f"Install receipts must use score_source='execution', got {score_source!r}"
+        )
     return {
         "install_id": install_id,
         "module_id": manifest.get("id"),
         "semver": manifest.get("semver"),
         "score_source": score_source,
         "files_installed": sorted(e["path"] for e in manifest.get("files", [])),
+        "governance_contracts": sorted(manifest.get("governance_contracts", [])),
     }
+
+
+def validate_receipt(receipt: dict[str, Any], manifest: dict[str, Any]) -> None:
+    """Validate receipt completeness for governance-drop detection (FM-C)."""
+    required_keys = {"install_id", "module_id", "semver", "score_source", "files_installed"}
+    missing = required_keys - set(receipt)
+    if missing:
+        raise ReceiptValidationError(f"Receipt missing required key(s): {sorted(missing)!r}")
+    if receipt["score_source"] != "execution":
+        raise ReceiptValidationError("Receipt score_source must be 'execution'")
+    expected_files = sorted(e["path"] for e in manifest.get("files", []))
+    if receipt["files_installed"] != expected_files:
+        raise ReceiptValidationError("Receipt files_installed does not match manifest")
+    expected_contracts = sorted(manifest.get("governance_contracts", []))
+    if expected_contracts and receipt.get("governance_contracts") != expected_contracts:
+        raise ReceiptValidationError("Receipt governance_contracts does not match manifest")
