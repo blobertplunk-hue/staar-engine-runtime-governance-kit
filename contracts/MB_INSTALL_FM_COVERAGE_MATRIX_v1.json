@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "description": "MB_INSTALL v0 failure-mode coverage matrix. All rows must have a non-empty 'mechanism' and 'fixture' field. PENDING_STAGE_N is valid until that stage ships.",
+  "rows": [
+    {
+      "fm": "FM-A",
+      "description": "Floor write without authorization token — protected_class file written without Robert-auth token",
+      "mechanism": "check_protected_writes() in tools/metablooms/mb_install_v0.py fails closed when token is absent or empty",
+      "fixture": "PENDING_STAGE_2"
+    },
+    {
+      "fm": "FM-B",
+      "description": "Payload and sidecar written non-atomically — sidecar can diverge from payload after partial write",
+      "mechanism": "restamp_sidecars() in tools/metablooms/mb_install_v0.py recomputes and writes the sidecar in the same function call as the payload",
+      "fixture": "PENDING_STAGE_3"
+    },
+    {
+      "fm": "FM-C",
+      "description": "Governance drop guard — governance contract silently removed during install",
+      "mechanism": "write_receipt() in tools/metablooms/mb_install_v0.py enforces score_source field; receipt gate wired in stage 3",
+      "fixture": "PENDING_STAGE_3"
+    },
+    {
+      "fm": "FM-D",
+      "description": "Stage-003B fabrication wound — bundle declares a sha256 that does not match the file's actual bytes",
+      "mechanism": "verify_bundle() in tools/metablooms/mb_install_v0.py hashes every listed file and raises HashMismatchError on any mismatch",
+      "fixture": "tests/test_mb_install_fm_d_fabrication.py::TestFmDFabricationWound::test_fm_d_fabrication_wound_detected"
+    }
+  ]
+}

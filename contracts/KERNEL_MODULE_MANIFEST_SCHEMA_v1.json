@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "KERNEL_MODULE_MANIFEST_SCHEMA_v1",
+  "title": "Kernel Module Manifest",
+  "description": "Schema for MB_INSTALL v0 module manifests. Path validation: no traversal, no absolute paths, must be under 0_kernel/, tools/, contracts/, or schemas/.",
+  "type": "object",
+  "required": ["id", "semver", "provides", "requires", "files"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "provides": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "requires": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Flat list of required capability IDs. NOT resolved in v0."
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "size_bytes", "protected_class"],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "allOf": [
+              {"pattern": "^(0_kernel|tools|contracts|schemas)/"},
+              {"not": {"pattern": "\\.\\."}}
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "protected_class": {
+            "type": "boolean",
+            "description": "If true, writing this file requires the Robert-auth token."
+          }
+        }
+      }
+    }
+  }
+}

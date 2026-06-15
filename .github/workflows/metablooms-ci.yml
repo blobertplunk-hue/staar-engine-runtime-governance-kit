@@ -38,3 +38,10 @@ jobs:
           assert data.get('enforcement') == 'evaluate', data.get('enforcement')
           print('PASS: ruleset is evaluate-mode')
           PY
+
+  mb-install-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run MB_INSTALL v0 tests
+        run: python3 -m unittest discover -s tests -p "test_mb_install_*.py" -v
