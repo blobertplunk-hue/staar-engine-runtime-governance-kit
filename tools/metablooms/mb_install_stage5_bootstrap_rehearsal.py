@@ -75,7 +75,7 @@ def run_rehearsal() -> dict:
             raise AssertionError("Verified manifest changed during bundle read")
         check_protected_writes(manifest, "")
 
-        tmp_tree = stage_to_tmp(manifest, bundle_path)
+        tmp_tree = stage_to_tmp(manifest, bundle_path, staging_root=allowed_root)
         target_tree = os.path.join(allowed_root, "target")
         os.makedirs(target_tree, exist_ok=True)
         with open(os.path.join(target_tree, "old.txt"), "w", encoding="utf-8") as f:
