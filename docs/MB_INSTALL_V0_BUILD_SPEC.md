@@ -1,7 +1,7 @@
 # MB_INSTALL v0 — Build Spec (Governing Document, Stages 1–5)
 
 **Repo:** staar-engine-runtime-governance-kit
-**Status:** Stage 1 skeleton + FM-D fixture committed; Stage 1 correction pass applied
+**Status:** Stage 2 FM-A fixture live; Stage 3 pending
 
 ---
 
@@ -21,7 +21,7 @@ not green.
 
 | ID | Name | Stakes | Governing mechanism |
 |----|------|--------|---------------------|
-| FM-A | Floor write without token | Protected surface written without Robert-auth token | `check_protected_writes()` fails closed on empty token |
+| FM-A | Floor write without token | Protected surface written without Robert-auth token | `check_protected_writes()` fails closed on missing or blank token; fixture live in Stage 2 |
 | FM-B | Payload/sidecar write non-atomic | Sidecar diverges from payload after partial write | Stage 1 provides `restamp_sidecars()` helper only; atomic temp+replace fixture lands in Stage 3 |
 | FM-C | Governance drop | Governance contract silently removed during install | `write_receipt()` enforces receipt completeness; gate wired in Stage 3 |
 | FM-D | Fabrication wound (Stage-003B) | Bundle sha256 declared without matching actual bytes | `verify_bundle()` hashes every file and rejects undeclared/missing/duplicate payloads |
@@ -32,7 +32,7 @@ not green.
 
 ```
 verify_bundle(zip_path) → manifest          # hash every file; fail on mismatch/extra/missing/duplicate [FM-D]
-check_protected_writes(manifest, token)     # fail closed if protected file + no token [FM-A]
+check_protected_writes(manifest, token)     # fail closed if protected file + missing/blank token [FM-A]
 stage_to_tmp(manifest, zip_path) → dir      # copy to staging dir; re-verify staged bytes
 atomic_swap(tmp_dir)                        # live-tree swap [STAGE 4 only, guard in stage 1]
 restamp_sidecars(touched_files)             # Stage 1 helper; atomic-write proof lands Stage 3 [FM-B]
@@ -76,10 +76,22 @@ mutation impossible during CI.
 
 ## Stage 2 — FM-A fixture + protected-class enforcement live
 
+**Rule:** Only make FM-A live. Do not implement FM-B/FM-C, atomic swap, install execution, or live-tree mutation.
+
 **Deliverables:**
 - `tests/test_mb_install_fm_a_protected_write.py` — FM-A fixture
-- `check_protected_writes()` fully tested: no token + protected file → raise; token present → pass
-- FM matrix: FM-A row updated from PENDING to live fixture
+- `check_protected_writes()` tested for:
+  - protected file + empty token → raise `ProtectedWriteError`
+  - protected file + whitespace-only token → raise `ProtectedWriteError`
+  - protected file + non-empty token → pass
+  - unprotected file + empty token → pass
+- FM matrix: FM-A row updated from `PENDING_STAGE_2` to live fixture
+
+**Definition of Done:**
+- FM-A fixture runs in the existing `mb-install-tests` CI pattern
+- FM-A matrix row points to the real fixture
+- FM-B and FM-C remain pending
+- No install, swap, shrink, or live OS mutation behavior is added
 
 ---
 
