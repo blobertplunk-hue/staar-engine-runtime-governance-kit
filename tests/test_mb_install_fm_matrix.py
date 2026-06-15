@@ -14,8 +14,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 MATRIX_PATH = ROOT / "contracts" / "MB_INSTALL_FM_COVERAGE_MATRIX_v1.json"
 
 EXPECTED_FMS = {"FM-A", "FM-B", "FM-C", "FM-D"}
-LIVE_FMS = {"FM-A", "FM-D"}
-PENDING_FMS = {"FM-B", "FM-C"}
+LIVE_FMS = EXPECTED_FMS
+PENDING_FMS = set()
 
 
 class TestFmMatrixCompleteness(unittest.TestCase):
@@ -57,7 +57,7 @@ class TestFmMatrixCompleteness(unittest.TestCase):
                 f"{fm}: fixture file not found: {fixture_path}"
             )
 
-    def test_pending_rows_are_correctly_marked(self):
+    def test_no_pending_rows_remain_after_stage_3(self):
         rows = {row["fm"]: row for row in self.matrix["rows"]}
         for fm in PENDING_FMS:
             fixture = rows[fm]["fixture"]
@@ -65,6 +65,8 @@ class TestFmMatrixCompleteness(unittest.TestCase):
                 fixture.startswith("PENDING_STAGE_"),
                 f"{fm}: expected PENDING_STAGE_N marker, got {fixture!r}"
             )
+        for row in self.matrix["rows"]:
+            self.assertNotIn("PENDING", row["fixture"], f"{row['fm']}: no PENDING rows after Stage 3")
 
 
 if __name__ == "__main__":
