@@ -47,10 +47,21 @@ jobs:
         run: python3 -m pip install jsonschema
       - name: Run MB_INSTALL v0 tests
         run: python3 tools/metablooms/mb_install_ci_test_runner.py
+      - name: Run MB_INSTALL Stage 5 bootstrap rehearsal
+        run: python3 tools/metablooms/mb_install_stage5_bootstrap_rehearsal.py
+      - name: Run MB_INSTALL Stage 5 ship bundle attestation
+        run: python3 tools/metablooms/mb_install_stage5_ship_bundle.py
       - name: Upload MB_INSTALL test log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mb-install-test-log
           path: runtime/test-logs/mb-install-tests.log
+          if-no-files-found: error
+      - name: Upload MB_INSTALL Stage 5 attestations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mb-install-stage5-attestations
+          path: runtime/attestations/*.json
           if-no-files-found: error
