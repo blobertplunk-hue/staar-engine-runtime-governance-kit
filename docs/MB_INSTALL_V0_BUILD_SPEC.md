@@ -1,7 +1,7 @@
 # MB_INSTALL v0 — Build Spec (Governing Document, Stages 1–5)
 
 **Repo:** staar-engine-runtime-governance-kit
-**Status:** Stage 3 FM-B/FM-C fixtures live; Stage 4 pending
+**Status:** Stage 4 throwaway atomic swap/rollback robustness live; Stage 5 pending
 
 ---
 
@@ -34,15 +34,13 @@ not green.
 verify_bundle(zip_path) → manifest          # hash every file; fail on mismatch/extra/missing/duplicate [FM-D]
 check_protected_writes(manifest, token)     # fail closed if protected file + missing/blank token [FM-A]
 stage_to_tmp(manifest, zip_path) → dir      # copy to staging dir; re-verify staged bytes
-atomic_swap(tmp_dir)                        # live-tree swap [STAGE 4 only, guard remains active]
+atomic_swap(tmp_dir, target, allowed_root)  # throwaway-root-only swap behind bootstrap guard [Stage 4]
 restamp_sidecars(touched_files)             # temp+fsync+replace sidecar write [FM-B]
 write_receipt(manifest, install_id)         # deterministic receipt [FM-C]
 validate_receipt(receipt, manifest)         # receipt completeness/governance-drop guard [FM-C]
 ```
 
-The guard on `atomic_swap` is still the live mutation boundary: it raises `NotImplementedError`
-unless the explicit bootstrap flag is set, and even with the flag the real implementation is
-not built until Stage 4.
+The guard on `atomic_swap` remains the live mutation boundary: it refuses unless `_bootstrap_flag=True`, `target_tree` is provided, `allowed_root` is provided, and both staged and target trees resolve inside that explicitly allowed throwaway root.
 
 ---
 
@@ -118,10 +116,21 @@ not built until Stage 4.
 
 ## Stage 4 — Robustness + real atomic_swap behind the guard
 
+**Rule:** Implement atomic swap only for explicitly allowed throwaway roots. Do not add Stage 5 bootstrap rehearsal or ship bundle behavior.
+
 **Deliverables:**
-- `tests/test_mb_install_robustness.py` — crash/rollback/corrupt-bundle/self-dep/determinism fixtures
-- `atomic_swap()` real implementation, behind the bootstrap guard
-- Rollback behavior on partial write proven by test
+- `tests/test_mb_install_robustness.py` — atomic-swap robustness fixtures
+- `atomic_swap()` requires `_bootstrap_flag=True`, `target_tree`, and `allowed_root`
+- `atomic_swap()` rejects target trees outside `allowed_root`
+- `atomic_swap()` rejects staged trees outside `allowed_root`
+- `atomic_swap()` swaps a staged tree into a throwaway target
+- rollback behavior on second replace failure proven by test
+- stale backup path refusal proven by test
+
+**Definition of Done:**
+- Existing `mb-install-tests` CI passes
+- No Stage 5 bootstrap rehearsal or ship bundle is introduced
+- No target outside an explicit throwaway root can be mutated
 
 ---
 
@@ -139,7 +148,7 @@ not built until Stage 4.
 
 - `atomic_swap` cannot mutate any tree that is not an explicitly designated throwaway
 - Protected-surface writes require a non-empty Robert-auth token — no exceptions
-- Sidecar and payload atomicity is proven only for the Stage 3 `restamp_sidecars()` helper; full live-tree atomicity remains Stage 4
+- Sidecar and payload atomicity is proven only for the Stage 3 `restamp_sidecars()` helper; full live-tree atomicity remains Stage 4/5 rehearsal surface
 - Receipt `score_source` must be `"execution"` (not `"inferred"`)
 - Determinism: same bundle in → same receipt shape out
 - No FM row may be silently absent from the coverage matrix
