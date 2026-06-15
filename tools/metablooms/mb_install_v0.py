@@ -13,7 +13,7 @@ import shutil
 import tempfile
 import zipfile
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import Any, Optional
 
 _ALLOWED_PREFIXES = ("0_kernel/", "tools/", "contracts/", "schemas/")
 _MANIFEST_NAME = "manifest.json"
@@ -212,9 +212,9 @@ def _assert_within_directory(candidate: str, root: str) -> None:
 
 def atomic_swap(
     tmp_tree: str,
-    target_tree: str | None = None,
+    target_tree: Optional[str] = None,
     *,
-    allowed_root: str | None = None,
+    allowed_root: Optional[str] = None,
     _bootstrap_flag: bool = False,
 ) -> None:
     """Swap a staged tree into an explicitly allowed throwaway target.
