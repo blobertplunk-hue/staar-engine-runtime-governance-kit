@@ -1,9 +1,9 @@
 """
 FM coverage matrix completeness gate.
 
-Fails if any FM row is missing from the matrix, or if any row lacks
-a 'mechanism' or 'fixture' field (even if PENDING). This ensures no
-failure-mode wound can be silently dropped from the matrix.
+Fails if any FM row is missing from the matrix, if any row lacks
+a 'mechanism' or 'fixture' field, or if a live FM fixture points
+to a missing test file.
 """
 
 import json
@@ -14,6 +14,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 MATRIX_PATH = ROOT / "contracts" / "MB_INSTALL_FM_COVERAGE_MATRIX_v1.json"
 
 EXPECTED_FMS = {"FM-A", "FM-B", "FM-C", "FM-D"}
+LIVE_FMS = {"FM-A", "FM-D"}
+PENDING_FMS = {"FM-B", "FM-C"}
 
 
 class TestFmMatrixCompleteness(unittest.TestCase):
@@ -43,22 +45,21 @@ class TestFmMatrixCompleteness(unittest.TestCase):
             self.assertIn("fixture", row, f"{fm}: missing 'fixture' field")
             self.assertTrue(row["fixture"], f"{fm}: 'fixture' must not be empty")
 
-    def test_fm_d_fixture_points_to_real_file(self):
+    def test_live_fixtures_point_to_real_files(self):
         rows = {row["fm"]: row for row in self.matrix["rows"]}
-        fm_d = rows["FM-D"]
-        fixture = fm_d["fixture"]
-        self.assertNotIn("PENDING", fixture, "FM-D fixture must not be PENDING")
-        # Extract the file path portion (before ::)
-        fixture_file = fixture.split("::")[0]
-        fixture_path = ROOT / fixture_file
-        self.assertTrue(
-            fixture_path.exists(),
-            f"FM-D fixture file not found: {fixture_path}"
-        )
+        for fm in LIVE_FMS:
+            fixture = rows[fm]["fixture"]
+            self.assertNotIn("PENDING", fixture, f"{fm}: fixture must not be PENDING")
+            fixture_file = fixture.split("::")[0]
+            fixture_path = ROOT / fixture_file
+            self.assertTrue(
+                fixture_path.exists(),
+                f"{fm}: fixture file not found: {fixture_path}"
+            )
 
     def test_pending_rows_are_correctly_marked(self):
         rows = {row["fm"]: row for row in self.matrix["rows"]}
-        for fm in ("FM-A", "FM-B", "FM-C"):
+        for fm in PENDING_FMS:
             fixture = rows[fm]["fixture"]
             self.assertTrue(
                 fixture.startswith("PENDING_STAGE_"),
