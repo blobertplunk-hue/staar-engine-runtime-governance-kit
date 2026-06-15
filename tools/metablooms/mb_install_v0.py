@@ -172,10 +172,20 @@ def check_protected_writes(manifest: dict[str, Any], authorize_token: str) -> No
         )
 
 
-def stage_to_tmp(manifest: dict[str, Any], zip_path: str) -> str:
-    """Copy bundle files into a fresh tmp staging dir; re-verify staged bytes against manifest."""
+def stage_to_tmp(
+    manifest: dict[str, Any],
+    zip_path: str,
+    *,
+    staging_root: Optional[str] = None,
+) -> str:
+    """Copy bundle files into a fresh tmp staging dir; re-verify staged bytes.
+
+    staging_root is optional. When supplied by a controlled rehearsal harness,
+    the temporary staging tree is created inside that root so later containment
+    gates can prove both staged and target trees share the same throwaway root.
+    """
     verify_bundle(zip_path)
-    tmp_dir = tempfile.mkdtemp(prefix="mb_install_stage_")
+    tmp_dir = tempfile.mkdtemp(prefix="mb_install_stage_", dir=staging_root)
     try:
         with zipfile.ZipFile(zip_path, "r") as zf:
             for entry in manifest.get("files", []):
