@@ -1,8 +1,8 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "KERNEL_MODULE_MANIFEST_SCHEMA_v1",
   "title": "Kernel Module Manifest",
-  "description": "Schema for MB_INSTALL v0 module manifests. Path validation: no traversal, no absolute paths, must be under 0_kernel/, tools/, contracts/, or schemas/.",
+  "description": "Schema for MB_INSTALL v0 module manifests. Path validation: no traversal, no absolute paths, no backslash separators, and must be under 0_kernel/, tools/, contracts/, or schemas/.",
   "type": "object",
   "required": ["id", "semver", "provides", "requires", "files"],
   "additionalProperties": false,
@@ -26,6 +26,8 @@
     },
     "files": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "object",
         "required": ["path", "sha256", "size_bytes", "protected_class"],
@@ -35,7 +37,7 @@
             "type": "string",
             "allOf": [
               {"pattern": "^(0_kernel|tools|contracts|schemas)/"},
-              {"not": {"pattern": "\\.\\."}}
+              {"not": {"pattern": "(^/|\\.\\.|\\\\|//|^\\./|/\\./|/\\.$)"}}
             ]
           },
           "sha256": {
