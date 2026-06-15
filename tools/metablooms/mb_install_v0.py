@@ -1,9 +1,9 @@
 """MB_INSTALL v0 — staged-shadow-apply install primitive.
 
-Stage 3: FM-D (verify_bundle), FM-A (check_protected_writes), FM-B
-(atomic sidecar restamp helper), and FM-C (receipt validation helper) are
-implemented as repo-side primitives. atomic_swap is still guarded and not
-implemented until Stage 4+.
+Stage 4: FM-D (verify_bundle), FM-A (check_protected_writes), FM-B
+(atomic sidecar restamp helper), FM-C (receipt validation helper), and a
+throwaway-target-only atomic_swap implementation are present. Stage 5 bootstrap
+rehearsal and ship bundle remain pending.
 """
 
 import hashlib
@@ -12,8 +12,8 @@ import os
 import shutil
 import tempfile
 import zipfile
-from pathlib import PurePosixPath
-from typing import Any
+from pathlib import Path, PurePosixPath
+from typing import Any, Optional
 
 _ALLOWED_PREFIXES = ("0_kernel/", "tools/", "contracts/", "schemas/")
 _MANIFEST_NAME = "manifest.json"
@@ -44,6 +44,10 @@ class UndeclaredPayloadError(ManifestError):
 
 
 class ReceiptValidationError(ManifestError):
+    pass
+
+
+class AtomicSwapError(ManifestError):
     pass
 
 
@@ -193,20 +197,65 @@ def stage_to_tmp(manifest: dict[str, Any], zip_path: str) -> str:
     return tmp_dir
 
 
-def atomic_swap(tmp_tree: str, *, _bootstrap_flag: bool = False) -> None:
-    """Live-tree swap.
+def _assert_within_directory(candidate: str, root: str) -> None:
+    candidate_path = Path(candidate).resolve()
+    root_path = Path(root).resolve()
+    if candidate_path == root_path:
+        return
+    try:
+        candidate_path.relative_to(root_path)
+    except ValueError as exc:
+        raise AtomicSwapError(
+            f"Atomic swap target {candidate_path} is outside allowed throwaway root {root_path}"
+        ) from exc
 
-    Stage 1 guard: raises NotImplementedError unless _bootstrap_flag=True.
-    The flag is set only by the bootstrap harness introduced in stage 4.
-    Tests in stages 1–3 never set it, making live-tree mutation impossible.
+
+def atomic_swap(
+    tmp_tree: str,
+    target_tree: Optional[str] = None,
+    *,
+    allowed_root: Optional[str] = None,
+    _bootstrap_flag: bool = False,
+) -> None:
+    """Swap a staged tree into an explicitly allowed throwaway target.
+
+    Stage 4 still refuses by default. A caller must provide _bootstrap_flag=True,
+    a target_tree, and an allowed_root. The target must resolve inside allowed_root.
+    This is intentionally suitable only for CI/bootstrap rehearsal throwaway trees.
     """
     if not _bootstrap_flag:
         raise NotImplementedError(
-            "atomic_swap is disabled in stage 1. "
-            "Pass _bootstrap_flag=True only from the bootstrap harness (stage 4+)."
+            "atomic_swap is disabled unless _bootstrap_flag=True is supplied by "
+            "the controlled bootstrap/CI harness."
         )
-    # Real implementation lands in stage 4.
-    raise NotImplementedError("atomic_swap real implementation not yet built (stage 4+)")
+    if target_tree is None or allowed_root is None:
+        raise AtomicSwapError("atomic_swap requires target_tree and allowed_root")
+    if not os.path.isdir(tmp_tree):
+        raise AtomicSwapError(f"tmp_tree must be an existing directory: {tmp_tree!r}")
+
+    tmp_path = str(Path(tmp_tree).resolve())
+    target_path = str(Path(target_tree).resolve())
+    allowed_path = str(Path(allowed_root).resolve())
+    _assert_within_directory(target_path, allowed_path)
+    _assert_within_directory(tmp_path, allowed_path)
+
+    backup_path = target_path + ".mb_install_backup"
+    if os.path.exists(backup_path):
+        raise AtomicSwapError(f"Backup path already exists: {backup_path!r}")
+
+    backup_created = False
+    try:
+        if os.path.exists(target_path):
+            os.replace(target_path, backup_path)
+            backup_created = True
+        os.replace(tmp_path, target_path)
+    except Exception:
+        if backup_created and not os.path.exists(target_path) and os.path.exists(backup_path):
+            os.replace(backup_path, target_path)
+        raise
+    else:
+        if backup_created:
+            shutil.rmtree(backup_path)
 
 
 def restamp_sidecars(touched_files: list[str]) -> dict[str, str]:
