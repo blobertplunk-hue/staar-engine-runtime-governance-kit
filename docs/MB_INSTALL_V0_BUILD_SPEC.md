@@ -1,7 +1,7 @@
 # MB_INSTALL v0 — Build Spec (Governing Document, Stages 1–5)
 
 **Repo:** staar-engine-runtime-governance-kit
-**Status:** Stage 4 throwaway atomic swap/rollback robustness live; Stage 5 pending
+**Status:** Stage 5 bootstrap rehearsal + ship bundle attestation implemented
 
 ---
 
@@ -136,11 +136,21 @@ The guard on `atomic_swap` remains the live mutation boundary: it refuses unless
 
 ## Stage 5 — Bootstrap rehearsal + full FM matrix green + ship bundle
 
+**Rule:** Exercise the full flow only against a throwaway target tree and prepare deterministic repo-side ship-bundle attestations. Do not install to a live OS tree.
+
 **Deliverables:**
-- Bootstrap rehearsal in CI against a throwaway target tree
+- `tools/metablooms/mb_install_stage5_bootstrap_rehearsal.py` — CI rehearsal against a temporary throwaway target tree
+- `tools/metablooms/mb_install_stage5_ship_bundle.py` — deterministic ship-bundle metadata/attestation generator
+- CI runs MB_INSTALL tests, Stage 5 rehearsal, and Stage 5 ship-bundle attestation
+- CI uploads `mb-install-test-log` and `mb-install-stage5-attestations` artifacts
 - All four FM fixtures live and GREEN
 - FM matrix fully resolved (no PENDING rows)
-- Ship bundle prepared and attested
+- Ship bundle prepared and attested as repo metadata only
+
+**Definition of Done:**
+- Bootstrap rehearsal proves verify → protected-write check → stage → throwaway atomic swap → restamp → receipt → validate flow
+- Stage 5 attestations are written under `runtime/attestations/` inside CI and uploaded as artifacts
+- No live OS install, shrink, or non-throwaway mutation behavior is introduced
 
 ---
 
