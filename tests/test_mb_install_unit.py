@@ -26,10 +26,24 @@ HashMismatchError = _mod.HashMismatchError
 ManifestError = _mod.ManifestError
 ProtectedWriteError = _mod.ProtectedWriteError
 PathViolationError = _mod.PathViolationError
+DuplicatePathError = _mod.DuplicatePathError
+UndeclaredPayloadError = _mod.UndeclaredPayloadError
 
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _write_bundle(manifest: dict, payloads: list[tuple[str, bytes]]) -> str:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("manifest.json", json.dumps(manifest))
+        for path, content in payloads:
+            zf.writestr(path, content)
+    tmp = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+    tmp.write(buf.getvalue())
+    tmp.close()
+    return tmp.name
 
 
 def _good_bundle(files: list[tuple[str, bytes]] | None = None) -> tuple[str, dict]:
@@ -54,16 +68,7 @@ def _good_bundle(files: list[tuple[str, bytes]] | None = None) -> tuple[str, dic
         "files": entries,
     }
 
-    buf = io.BytesIO()
-    with zipfile.ZipFile(buf, "w") as zf:
-        zf.writestr("manifest.json", json.dumps(manifest))
-        for path, content in files:
-            zf.writestr(path, content)
-
-    tmp = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
-    tmp.write(buf.getvalue())
-    tmp.close()
-    return tmp.name, manifest
+    return _write_bundle(manifest, files), manifest
 
 
 class TestVerifyBundle(unittest.TestCase):
@@ -93,23 +98,73 @@ class TestVerifyBundle(unittest.TestCase):
             "id": "x", "semver": "0.0.1", "provides": [], "requires": [],
             "files": [{"path": "/etc/passwd", "sha256": _sha256(content), "size_bytes": len(content), "protected_class": False}],
         }
-        buf = io.BytesIO()
-        with zipfile.ZipFile(buf, "w") as zf:
-            zf.writestr("manifest.json", json.dumps(manifest))
-        tmp = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
-        tmp.write(buf.getvalue())
-        tmp.close()
+        path = _write_bundle(manifest, [])
         try:
             with self.assertRaises((PathViolationError, ManifestError)):
-                verify_bundle(tmp.name)
+                verify_bundle(path)
         finally:
-            os.unlink(tmp.name)
+            os.unlink(path)
 
     def test_rejects_out_of_tree_path(self):
         files = [("home/user/.bashrc", b"bad")]
         path, _ = _good_bundle(files)
         try:
             with self.assertRaises((PathViolationError, ManifestError)):
+                verify_bundle(path)
+        finally:
+            os.unlink(path)
+
+    def test_rejects_backslash_path(self):
+        content = b"bad"
+        manifest = {
+            "id": "x", "semver": "0.0.1", "provides": [], "requires": [],
+            "files": [{"path": "tools\\evil.txt", "sha256": _sha256(content), "size_bytes": len(content), "protected_class": False}],
+        }
+        path = _write_bundle(manifest, [("tools\\evil.txt", content)])
+        try:
+            with self.assertRaises(PathViolationError):
+                verify_bundle(path)
+        finally:
+            os.unlink(path)
+
+    def test_rejects_duplicate_manifest_paths(self):
+        content = b"same"
+        manifest = {
+            "id": "dup", "semver": "0.0.1", "provides": [], "requires": [],
+            "files": [
+                {"path": "tools/dup.txt", "sha256": _sha256(content), "size_bytes": len(content), "protected_class": False},
+                {"path": "tools/dup.txt", "sha256": _sha256(content), "size_bytes": len(content), "protected_class": False},
+            ],
+        }
+        path = _write_bundle(manifest, [("tools/dup.txt", content)])
+        try:
+            with self.assertRaises(DuplicatePathError):
+                verify_bundle(path)
+        finally:
+            os.unlink(path)
+
+    def test_rejects_duplicate_zip_members(self):
+        content = b"same"
+        manifest = {
+            "id": "dupzip", "semver": "0.0.1", "provides": [], "requires": [],
+            "files": [{"path": "tools/dup.txt", "sha256": _sha256(content), "size_bytes": len(content), "protected_class": False}],
+        }
+        path = _write_bundle(manifest, [("tools/dup.txt", content), ("tools/dup.txt", content)])
+        try:
+            with self.assertRaises(DuplicatePathError):
+                verify_bundle(path)
+        finally:
+            os.unlink(path)
+
+    def test_rejects_undeclared_zip_payload(self):
+        content = b"declared"
+        manifest = {
+            "id": "extra", "semver": "0.0.1", "provides": [], "requires": [],
+            "files": [{"path": "tools/declared.txt", "sha256": _sha256(content), "size_bytes": len(content), "protected_class": False}],
+        }
+        path = _write_bundle(manifest, [("tools/declared.txt", content), ("tools/extra.txt", b"extra")])
+        try:
+            with self.assertRaises(UndeclaredPayloadError):
                 verify_bundle(path)
         finally:
             os.unlink(path)
@@ -224,6 +279,17 @@ class TestWriteReceipt(unittest.TestCase):
         r1 = write_receipt(manifest, install_id="abc")
         r2 = write_receipt(manifest, install_id="abc")
         self.assertEqual(r1, r2)
+
+    def test_receipt_sorts_files_for_equivalent_manifests(self):
+        files_a = [
+            {"path": "tools/b.txt", "sha256": "b" * 64, "size_bytes": 1, "protected_class": False},
+            {"path": "tools/a.txt", "sha256": "a" * 64, "size_bytes": 1, "protected_class": False},
+        ]
+        files_b = list(reversed(files_a))
+        manifest_a = {"id": "mod-z", "semver": "0.0.1", "provides": [], "requires": [], "files": files_a}
+        manifest_b = {"id": "mod-z", "semver": "0.0.1", "provides": [], "requires": [], "files": files_b}
+        self.assertEqual(write_receipt(manifest_a, "abc"), write_receipt(manifest_b, "abc"))
+        self.assertEqual(write_receipt(manifest_a, "abc")["files_installed"], ["tools/a.txt", "tools/b.txt"])
 
 
 if __name__ == "__main__":
