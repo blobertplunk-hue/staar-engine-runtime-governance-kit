@@ -7,7 +7,9 @@ This file has two jobs:
      - test_fm_d_fabrication_wound_detected is RED if the hash check is removed,
        GREEN with it in place.
   2. Prove that atomic_swap() refuses to run without the bootstrap flag,
-     so stage 1 can never mutate a live tree.
+     so stage 1 can never mutate a live tree. Stage 4 adds a guarded throwaway-root
+     implementation, so _bootstrap_flag=True without target/root now fails with the
+     Stage 4 precondition error instead of NotImplementedError.
 """
 
 import hashlib
@@ -32,6 +34,7 @@ verify_bundle = _mod.verify_bundle
 atomic_swap = _mod.atomic_swap
 HashMismatchError = _mod.HashMismatchError
 ManifestError = _mod.ManifestError
+AtomicSwapError = _mod.AtomicSwapError
 
 
 def _sha256(data: bytes) -> str:
@@ -159,9 +162,9 @@ class TestAtomicSwapGuard(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             atomic_swap("/tmp/fake_staging_tree", _bootstrap_flag=False)
 
-    def test_atomic_swap_bootstrap_flag_still_raises_not_implemented(self):
-        """Even with _bootstrap_flag=True the real implementation is not yet built (stage 4+)."""
-        with self.assertRaises(NotImplementedError):
+    def test_atomic_swap_bootstrap_flag_requires_stage4_target_and_allowed_root(self):
+        """Stage 4 allows bootstrap flag only with explicit target_tree and allowed_root."""
+        with self.assertRaises(AtomicSwapError):
             atomic_swap("/tmp/fake_staging_tree", _bootstrap_flag=True)
 
 
