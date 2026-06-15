@@ -5,8 +5,8 @@
     {
       "fm": "FM-A",
       "description": "Floor write without authorization token — protected_class file written without Robert-auth token",
-      "mechanism": "check_protected_writes() in tools/metablooms/mb_install_v0.py fails closed when token is absent or empty",
-      "fixture": "PENDING_STAGE_2"
+      "mechanism": "check_protected_writes() in tools/metablooms/mb_install_v0.py fails closed when a protected_class file is present and the authorization token is absent or blank",
+      "fixture": "tests/test_mb_install_fm_a_protected_write.py::TestFmAProtectedWrite::test_protected_file_without_token_fails_closed"
     },
     {
       "fm": "FM-B",
