@@ -11,7 +11,7 @@
     {
       "fm": "FM-B",
       "description": "Payload and sidecar written non-atomically — sidecar can diverge from payload after partial write",
-      "mechanism": "restamp_sidecars() in tools/metablooms/mb_install_v0.py recomputes and writes the sidecar in the same function call as the payload",
+      "mechanism": "Stage 1 provides restamp_sidecars() helper coverage only; the atomic temp+replace FM-B fixture is PENDING_STAGE_3",
       "fixture": "PENDING_STAGE_3"
     },
     {
@@ -23,7 +23,7 @@
     {
       "fm": "FM-D",
       "description": "Stage-003B fabrication wound — bundle declares a sha256 that does not match the file's actual bytes",
-      "mechanism": "verify_bundle() in tools/metablooms/mb_install_v0.py hashes every listed file and raises HashMismatchError on any mismatch",
+      "mechanism": "verify_bundle() in tools/metablooms/mb_install_v0.py hashes every listed file and rejects hash mismatch, missing payloads, undeclared payloads, duplicate manifest paths, and duplicate zip members",
       "fixture": "tests/test_mb_install_fm_d_fabrication.py::TestFmDFabricationWound::test_fm_d_fabrication_wound_detected"
     }
   ]
