@@ -46,4 +46,11 @@ jobs:
       - name: Install MB_INSTALL test dependencies
         run: python3 -m pip install jsonschema
       - name: Run MB_INSTALL v0 tests
-        run: python3 -m unittest discover -s tests -p "test_mb_install_*.py" -v
+        run: python3 tools/metablooms/mb_install_ci_test_runner.py
+      - name: Upload MB_INSTALL test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mb-install-test-log
+          path: runtime/test-logs/mb-install-tests.log
+          if-no-files-found: error
