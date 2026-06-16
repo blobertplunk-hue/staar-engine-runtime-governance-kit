@@ -1,0 +1,41 @@
+{
+  "schema": "mb.stage_evidence.manifest.v1",
+  "stage_id": "mb_install_v0_stage6_independent_reproduction",
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "branch": "claude/new-session-g7ll2w",
+  "commit_sha": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "base_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+  "evidence_commit": "92eecde7ac009d466c6f94801c81f63ed3772b2b",
+  "evidence_path": "evidence/metablooms/mb_install_v0_stage6_independent_reproduction/",
+  "prior_evidence_path": "evidence/metablooms/mb_install_v0_current_57_of_57/",
+  "created_at_utc": "2026-06-16T00:55:00Z",
+  "decision": "PASS_MB_INSTALL_V0_STAGE6_INDEPENDENT_REPRODUCTION_57_OF_57",
+  "score_source": "execution",
+  "test_command": "python3 -m unittest discover -s tests -p 'test_mb_install_*.py' -v",
+  "clean_worktree": "/tmp/mb_stage6_clean",
+  "expected_test_total": 57,
+  "expected_test_passed": 57,
+  "expected_test_failed": 0,
+  "expected_test_errors": 0,
+  "independent_reproduction": true,
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "atomic_swap_note": "atomic_swap exercised only inside guarded throwaway-root tests (test_mb_install_robustness.py); no live-tree or protected surface touched",
+  "mutations_performed": [],
+  "artifact_sha256sums_self_exclusion": "ARTIFACT_SHA256SUMS.txt lists the 5 data artifacts; it does not list itself. Its own SHA256 is pinned in this manifest under artifacts.ARTIFACT_SHA256SUMS.txt.",
+  "artifacts": {
+    "ARTIFACT_SHA256SUMS.txt": "994a9a1b51cec230ab3fe4b7ca8f206bbc3c99e6dc1cd2d720261aec8b7df918",
+    "COMMAND_TRANSCRIPT.txt": "1321dbd256db2d7e754af40d618b3de488d36d5ef651833d0a1ce7d579be6b57",
+    "EXECUTION_RECEIPT.json": "2cc0cd9e52e0c18da0899d537fd444638c9772c61877ba39438a42572fe47ccd",
+    "REPRODUCE.ps1": "2c8c6fa245493e5e6e062cdab965f61d15a6ffa151fe90cc53a5f7c9af16d4d1",
+    "REPRODUCE.sh": "1a433204065ee36534c2309746feabbdc08188e5490cc6d6cda49461a2308da5",
+    "TEST_RESULTS.json": "913ed2077600376a8d6234b3f1eef1c9a5d891228bb24489d70643740a0f3761"
+  }
+}

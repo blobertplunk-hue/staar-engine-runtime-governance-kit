@@ -1,0 +1,21 @@
+{
+  "stage_id": "mb_install_v0_stage6_independent_reproduction",
+  "tested_commit": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "evidence_commit": "92eecde7ac009d466c6f94801c81f63ed3772b2b",
+  "branch": "claude/new-session-g7ll2w",
+  "worktree": "/tmp/mb_stage6_clean",
+  "test_command": "python3 -m unittest discover -s tests -p 'test_mb_install_*.py' -v",
+  "exit_code": 0,
+  "total": 57,
+  "passed": 57,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "summary_line": "Ran 57 tests in 0.054s",
+  "result": "OK",
+  "independent_reproduction": true,
+  "evidence_packet_integrity": {
+    "artifact_sha256sums_check": "5/5 OK",
+    "manifest_cross_check": "6/6 OK"
+  }
+}

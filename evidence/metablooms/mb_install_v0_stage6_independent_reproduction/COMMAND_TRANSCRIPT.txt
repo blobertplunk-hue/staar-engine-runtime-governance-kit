@@ -1,0 +1,111 @@
+MB_INSTALL v0 Stage 6 — Independent Reproduction Transcript
+Stage ID: mb_install_v0_stage6_independent_reproduction
+Evidence commit verified: 92eecde7ac009d466c6f94801c81f63ed3772b2b
+Tested commit: 0b63bdc77e03bcbc01052c8adcabb80f2922318f
+Branch: claude/new-session-g7ll2w
+Date (UTC): 2026-06-16
+
+== Step 1: Clean worktree setup ==
+Command: git worktree add /tmp/mb_stage6_clean 0b63bdc77e03bcbc01052c8adcabb80f2922318f
+Output:
+  Preparing worktree (detached HEAD 0b63bdc)
+  HEAD is now at 0b63bdc fix: correct reproduce scripts expected count 34->42
+
+== Step 2: Install dependencies ==
+Command (from /tmp/mb_stage6_clean): python3 -m pip install jsonschema -q
+Exit code: 0
+
+== Step 3: Run test suite ==
+Command (from /tmp/mb_stage6_clean): python3 -m unittest discover -s tests -p "test_mb_install_*.py" -v
+
+Output:
+test_protected_file_with_token_passes (test_mb_install_fm_a_protected_write.TestFmAProtectedWrite.test_protected_file_with_token_passes) ... ok
+test_protected_file_with_whitespace_token_fails_closed (test_mb_install_fm_a_protected_write.TestFmAProtectedWrite.test_protected_file_with_whitespace_token_fails_closed) ... ok
+test_protected_file_without_token_fails_closed (test_mb_install_fm_a_protected_write.TestFmAProtectedWrite.test_protected_file_without_token_fails_closed) ... ok
+test_unprotected_file_without_token_passes (test_mb_install_fm_a_protected_write.TestFmAProtectedWrite.test_unprotected_file_without_token_passes) ... ok
+test_failed_replace_preserves_existing_sidecar (test_mb_install_fm_b_restamp_atomic.TestFmBRestampAtomic.test_failed_replace_preserves_existing_sidecar) ... ok
+test_restamp_writes_expected_hash (test_mb_install_fm_b_restamp_atomic.TestFmBRestampAtomic.test_restamp_writes_expected_hash) ... ok
+test_receipt_preserves_governance_contracts (test_mb_install_fm_c_governance_drop.TestFmCGovernanceDrop.test_receipt_preserves_governance_contracts) ... ok
+test_validate_receipt_rejects_governance_contract_drop (test_mb_install_fm_c_governance_drop.TestFmCGovernanceDrop.test_validate_receipt_rejects_governance_contract_drop) ... ok
+test_validate_receipt_rejects_inferred_score_source (test_mb_install_fm_c_governance_drop.TestFmCGovernanceDrop.test_validate_receipt_rejects_inferred_score_source) ... ok
+test_write_receipt_rejects_non_execution_score_source (test_mb_install_fm_c_governance_drop.TestFmCGovernanceDrop.test_write_receipt_rejects_non_execution_score_source) ... ok
+test_atomic_swap_bootstrap_flag_requires_stage4_target_and_allowed_root (test_mb_install_fm_d_fabrication.TestAtomicSwapGuard.test_atomic_swap_bootstrap_flag_requires_stage4_target_and_allowed_root) ... ok
+test_atomic_swap_refuses_without_bootstrap_flag (test_mb_install_fm_d_fabrication.TestAtomicSwapGuard.test_atomic_swap_refuses_without_bootstrap_flag) ... ok
+test_atomic_swap_still_refuses_with_false_flag (test_mb_install_fm_d_fabrication.TestAtomicSwapGuard.test_atomic_swap_still_refuses_with_false_flag) ... ok
+test_fm_d_fabrication_wound_detected (test_mb_install_fm_d_fabrication.TestFmDFabricationWound.test_fm_d_fabrication_wound_detected) ... ok
+test_verify_bundle_passes_on_good_bundle (test_mb_install_fm_d_fabrication.TestFmDFabricationWound.test_verify_bundle_passes_on_good_bundle) ... ok
+test_verify_bundle_rejects_declared_but_absent_file (test_mb_install_fm_d_fabrication.TestFmDFabricationWound.test_verify_bundle_rejects_declared_but_absent_file) ... ok
+test_verify_bundle_rejects_missing_manifest (test_mb_install_fm_d_fabrication.TestFmDFabricationWound.test_verify_bundle_rejects_missing_manifest) ... ok
+test_all_four_fm_rows_present (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_all_four_fm_rows_present) ... ok
+test_every_row_has_fixture (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_every_row_has_fixture) ... ok
+test_every_row_has_mechanism (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_every_row_has_mechanism) ... ok
+test_live_fixtures_point_to_real_files (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_live_fixtures_point_to_real_files) ... ok
+test_matrix_file_loads (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_matrix_file_loads) ... ok
+test_no_pending_rows_remain_after_stage_3 (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_no_pending_rows_remain_after_stage_3) ... ok
+test_atomic_swap_refuses_existing_backup_path (test_mb_install_robustness.TestAtomicSwapRobustness.test_atomic_swap_refuses_existing_backup_path) ... ok
+test_atomic_swap_refuses_without_bootstrap_flag (test_mb_install_robustness.TestAtomicSwapRobustness.test_atomic_swap_refuses_without_bootstrap_flag) ... ok
+test_atomic_swap_rejects_target_outside_allowed_root (test_mb_install_robustness.TestAtomicSwapRobustness.test_atomic_swap_rejects_target_outside_allowed_root) ... ok
+test_atomic_swap_rejects_tmp_tree_outside_allowed_root (test_mb_install_robustness.TestAtomicSwapRobustness.test_atomic_swap_rejects_tmp_tree_outside_allowed_root) ... ok
+test_atomic_swap_replaces_throwaway_target (test_mb_install_robustness.TestAtomicSwapRobustness.test_atomic_swap_replaces_throwaway_target) ... ok
+test_atomic_swap_requires_target_and_allowed_root (test_mb_install_robustness.TestAtomicSwapRobustness.test_atomic_swap_requires_target_and_allowed_root) ... ok
+test_atomic_swap_rolls_back_if_new_tree_replace_fails (test_mb_install_robustness.TestAtomicSwapRobustness.test_atomic_swap_rolls_back_if_new_tree_replace_fails) ... ok
+test_good_manifest_validates (test_mb_install_schema.TestKernelModuleManifestSchema.test_good_manifest_validates) ... ok
+test_rejects_absolute_path (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_absolute_path) ... ok
+test_rejects_backslash_path (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_backslash_path) ... ok
+test_rejects_bad_semver (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_bad_semver) ... ok
+test_rejects_bad_sha256 (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_bad_sha256) ... ok
+test_rejects_exact_duplicate_file_entries (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_exact_duplicate_file_entries) ... ok
+test_rejects_out_of_tree_path (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_out_of_tree_path) ... ok
+test_rejects_traversal_path (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_traversal_path) ... ok
+test_no_protected_files_always_passes (test_mb_install_unit.TestCheckProtectedWrites.test_no_protected_files_always_passes) ... ok
+test_protected_file_with_empty_token_raises (test_mb_install_unit.TestCheckProtectedWrites.test_protected_file_with_empty_token_raises) ... ok
+test_protected_file_with_valid_token_passes (test_mb_install_unit.TestCheckProtectedWrites.test_protected_file_with_valid_token_passes) ... ok
+test_protected_file_with_whitespace_only_token_raises (test_mb_install_unit.TestCheckProtectedWrites.test_protected_file_with_whitespace_only_token_raises) ... ok
+test_restamp_creates_sidecar (test_mb_install_unit.TestRestamp.test_restamp_creates_sidecar) ... ok
+test_restamp_multiple_files (test_mb_install_unit.TestRestamp.test_restamp_multiple_files) ... ok
+test_restamp_updates_sidecar_when_content_changes (test_mb_install_unit.TestRestamp.test_restamp_updates_sidecar_when_content_changes) ... ok
+test_stages_files_correctly (test_mb_install_unit.TestStageToTmp.test_stages_files_correctly) ... ok
+test_good_bundle_returns_manifest (test_mb_install_unit.TestVerifyBundle.test_good_bundle_returns_manifest) ... ok
+test_rejects_absolute_path (test_mb_install_unit.TestVerifyBundle.test_rejects_absolute_path) ... ok
+test_rejects_backslash_path (test_mb_install_unit.TestVerifyBundle.test_rejects_backslash_path) ... ok
+test_rejects_duplicate_manifest_paths (test_mb_install_unit.TestVerifyBundle.test_rejects_duplicate_manifest_paths) ... ok
+test_rejects_duplicate_zip_members (test_mb_install_unit.TestVerifyBundle.test_rejects_duplicate_zip_members) ... ok
+test_rejects_out_of_tree_path (test_mb_install_unit.TestVerifyBundle.test_rejects_out_of_tree_path) ... ok
+test_rejects_traversal_path (test_mb_install_unit.TestVerifyBundle.test_rejects_traversal_path) ... ok
+test_rejects_undeclared_zip_payload (test_mb_install_unit.TestVerifyBundle.test_rejects_undeclared_zip_payload) ... ok
+test_receipt_is_deterministic (test_mb_install_unit.TestWriteReceipt.test_receipt_is_deterministic) ... ok
+test_receipt_shape (test_mb_install_unit.TestWriteReceipt.test_receipt_shape) ... ok
+test_receipt_sorts_files_for_equivalent_manifests (test_mb_install_unit.TestWriteReceipt.test_receipt_sorts_files_for_equivalent_manifests) ... ok
+
+----------------------------------------------------------------------
+Ran 57 tests in 0.054s
+
+OK
+
+== Step 4: Evidence packet integrity verification (92eecde7) ==
+Path: evidence/metablooms/mb_install_v0_current_57_of_57/
+
+sha256sum -c ARTIFACT_SHA256SUMS.txt:
+  COMMAND_TRANSCRIPT.txt: OK
+  EXECUTION_RECEIPT.json: OK
+  REPRODUCE.ps1: OK
+  REPRODUCE.sh: OK
+  TEST_RESULTS.json: OK
+
+Manifest cross-check (6/6 artifacts):
+  ARTIFACT_SHA256SUMS.txt: OK
+  COMMAND_TRANSCRIPT.txt: OK
+  EXECUTION_RECEIPT.json: OK
+  REPRODUCE.ps1: OK
+  REPRODUCE.sh: OK
+  TEST_RESULTS.json: OK
+  Result: ALL OK
+
+== Result ==
+exit_code: 0
+passed: 57
+failed: 0
+errors: 0
+total: 57
+independent_reproduction: PASS
+evidence_packet_integrity: PASS

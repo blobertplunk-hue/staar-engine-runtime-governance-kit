@@ -1,0 +1,30 @@
+{
+  "schema": "mb.stage_evidence.receipt.v1",
+  "stage_id": "mb_install_v0_stage6_independent_reproduction",
+  "decision": "PASS_MB_INSTALL_V0_STAGE6_INDEPENDENT_REPRODUCTION_57_OF_57",
+  "score_source": "execution",
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "branch": "claude/new-session-g7ll2w",
+  "tested_commit": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "evidence_commit": "92eecde7ac009d466c6f94801c81f63ed3772b2b",
+  "base_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+  "expected_test_total": 57,
+  "expected_test_passed": 57,
+  "expected_test_failed": 0,
+  "expected_test_errors": 0,
+  "independent_reproduction": true,
+  "clean_worktree": "/tmp/mb_stage6_clean",
+  "evidence_packet_integrity": "PASS_6_OF_6",
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "atomic_swap_note": "atomic_swap exercised only inside guarded throwaway-root tests (test_mb_install_robustness.py); no live-tree or protected surface touched",
+  "mutations_performed": [],
+  "created_at_utc": "2026-06-16T00:55:00Z"
+}
