@@ -2,7 +2,7 @@
   "schema": "mb.evidence_manifest.v1",
   "stage_id": "mb_install_v0_stage9_execution_preflight_authorization",
   "decision": "BLOCK_STAGE9_PREFLIGHT_PENDING_TARGET_TREE",
-  "commit_sha": "TO_BE_FILLED_AFTER_COMMIT",
+  "commit_sha": "1de6da2197f8afe39b20aaa0aa0fa2876d10efca",
   "base_sha": "9e22cab9988c5dc4620b7d5eb96be3ea01e4c2ec",
   "base_stage": "mb_install_v0_stage8_limited_promotion_proposal",
   "evaluated_at_utc": "2026-06-16T01:50:00Z",
