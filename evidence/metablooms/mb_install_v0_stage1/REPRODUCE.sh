@@ -16,4 +16,4 @@ python3 -m pip install jsonschema
 echo "Running MB_INSTALL v0 Stage 1 tests ..."
 python3 -m unittest discover -s tests -p "test_mb_install_*.py" -v
 
-echo "EXPECTED: 42 tests, 34 passed, 0 failures, 0 errors"
+echo "EXPECTED: 42 tests, 42 passed, 0 failures, 0 errors"
