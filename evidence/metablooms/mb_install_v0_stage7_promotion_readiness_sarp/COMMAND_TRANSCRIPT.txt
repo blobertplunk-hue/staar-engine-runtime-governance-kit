@@ -1,0 +1,57 @@
+MB_INSTALL v0 Stage 7 — Promotion-Readiness SARP Command Transcript
+Stage ID: mb_install_v0_stage7_promotion_readiness_sarp
+Date (UTC): 2026-06-16
+
+== Inputs reviewed ==
+- Stage 1 evidence (correction chain): 0b63bdc77e03bcbc01052c8adcabb80f2922318f
+- Current 57/57 evidence commit: 92eecde7ac009d466c6f94801c81f63ed3772b2b
+- Stage 6 independent reproduction commit: 298050f756f6cba3c3ffba7eb8365a7bd7255f8d
+- Tested code commit: 0b63bdc77e03bcbc01052c8adcabb80f2922318f
+
+== Step 1: Verify FM coverage matrix ==
+Command: python3 -c "import json, pathlib; m = json.loads(pathlib.Path('contracts/MB_INSTALL_FM_COVERAGE_MATRIX_v1.json').read_text()); [print(r['fm'], r['fixture'][:80]) for r in m['rows']]"
+Output:
+  FM-A tests/test_mb_install_fm_a_protected_write.py::TestFmAProtectedWrite::test_protected_file_without_token_fails_closed
+  FM-B tests/test_mb_install_fm_b_restamp_atomic.py::TestFmBRestampAtomic::test_restamp_writes_expected_hash
+  FM-C tests/test_mb_install_fm_c_governance_drop.py::TestFmCGovernanceDrop::test_validate_receipt_rejects_governance_contract_drop
+  FM-D tests/test_mb_install_fm_d_fabrication.py::TestFmDFabricationWound::test_fm_d_fabrication_wound_detected
+
+Result: All 4 FM rows have live fixtures pointing to real test files. No PENDING rows remain.
+
+== Step 2: Confirm Stage 6 evidence packet integrity ==
+Evidence path: evidence/metablooms/mb_install_v0_stage6_independent_reproduction/
+sha256sum -c ARTIFACT_SHA256SUMS.txt (run in evidence dir):
+  COMMAND_TRANSCRIPT.txt: OK
+  EXECUTION_RECEIPT.json: OK
+  REPRODUCE.ps1: OK
+  REPRODUCE.sh: OK
+  TEST_RESULTS.json: OK
+Manifest cross-check: 6/6 OK
+
+== Step 3: Enumerate test files ==
+Files: test_mb_install_fm_a_protected_write.py, test_mb_install_fm_b_restamp_atomic.py,
+       test_mb_install_fm_c_governance_drop.py, test_mb_install_fm_d_fabrication.py,
+       test_mb_install_fm_matrix.py, test_mb_install_robustness.py,
+       test_mb_install_schema.py, test_mb_install_unit.py
+
+== Step 4: Adversarial risk analysis ==
+Reviewed: MB_INSTALL_V0_BUILD_SPEC.md hard boundaries, atomic_swap guard implementation,
+          FM matrix completeness gate, bootstrap flag enforcement, receipt validation,
+          evidence chain SHA integrity, independent reproduction record.
+Identified: 7 risks (1 BLOCKER, 4 NONBLOCKING_RISK, 1 DOCUMENTATION_ONLY)
+
+BLOCKER RISK-01: Live-tree apply not authorized (process gate, not code defect)
+NONBLOCKING RISK-02: CI not independently observed by external connector
+NONBLOCKING RISK-03: atomic_swap not rehearsed against real (non-CI) target
+NONBLOCKING RISK-04: Protected-surface writes never exercised with real token
+NONBLOCKING RISK-05: External (non-Claude/non-ChatGPT) reproduction not performed
+DOCUMENTATION RISK-06: FM-B atomicity is single-agent scope only
+NONBLOCKING RISK-07: No re-verify hash check inside atomic_swap before rename
+
+== Decision ==
+PASS_READY_FOR_LIMITED_PROMOTION_PROPOSAL
+
+Rationale: Code is complete, all FM fixtures live/green, evidence chain SHA-pinned,
+independently reproduced. RISK-01 (only BLOCKER) is a process gate that blocks
+actual live-tree promotion, not the promotion proposal itself. Limited proposal
+requires: target tree authorization, CI run ID confirmation, optional rehearsal log.

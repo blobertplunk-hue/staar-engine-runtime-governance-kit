@@ -1,0 +1,50 @@
+{
+  "schema": "mb.stage_evidence.receipt.v1",
+  "stage_id": "mb_install_v0_stage7_promotion_readiness_sarp",
+  "decision": "PASS_READY_FOR_LIMITED_PROMOTION_PROPOSAL",
+  "score_source": "execution",
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "branch": "claude/new-session-g7ll2w",
+  "tested_commit": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "base_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+  "audited_evidence_chain": {
+    "stage1_correction_commit": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+    "current_57_of_57_evidence_commit": "92eecde7ac009d466c6f94801c81f63ed3772b2b",
+    "stage6_reproduction_commit": "298050f756f6cba3c3ffba7eb8365a7bd7255f8d"
+  },
+  "audited_evidence_paths": {
+    "stage1": "evidence/metablooms/mb_install_v0_stage1/",
+    "current_57": "evidence/metablooms/mb_install_v0_current_57_of_57/",
+    "stage6": "evidence/metablooms/mb_install_v0_stage6_independent_reproduction/"
+  },
+  "fm_coverage": {
+    "FM-A": "LIVE_GREEN",
+    "FM-B": "LIVE_GREEN",
+    "FM-C": "LIVE_GREEN",
+    "FM-D": "LIVE_GREEN"
+  },
+  "test_count": 57,
+  "test_count_verified_by_independent_reproduction": true,
+  "blocker_risks": 1,
+  "nonblocking_risks": 4,
+  "documentation_only_risks": 1,
+  "blocker_ids": ["RISK-01"],
+  "blocker_summary": "RISK-01 is a process/authorization gate (live-tree apply not authorized), not a code defect. It blocks actual live-tree promotion, not the limited promotion proposal.",
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "mutations_performed": [],
+  "next_stage": "MB_INSTALL_V0_STAGE8_LIMITED_PROMOTION_PROPOSAL",
+  "next_stage_requires": [
+    "Explicit authorization document: target tree name, responsible principal, Robert-auth token scope",
+    "CI run ID confirmation from external connector (RISK-02 remediation)",
+    "Optional: RISK-03 supervised rehearsal log"
+  ],
+  "created_at_utc": "2026-06-16T01:00:00Z"
+}

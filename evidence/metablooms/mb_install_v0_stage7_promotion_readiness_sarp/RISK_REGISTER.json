@@ -1,0 +1,66 @@
+{
+  "schema": "mb.sarp.risk_register.v1",
+  "stage_id": "mb_install_v0_stage7_promotion_readiness_sarp",
+  "tested_commit": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "decision": "PASS_READY_FOR_LIMITED_PROMOTION_PROPOSAL",
+  "risks": [
+    {
+      "id": "RISK-01",
+      "classification": "BLOCKER",
+      "scope": "PROCESS_GATE_NOT_CODE_DEFECT",
+      "title": "Live-tree apply has not been authorized",
+      "detail": "No role, token, or formal authorization grants permission to run atomic_swap against a real (non-throwaway) target tree. The bootstrap guard (_bootstrap_flag) enforces this boundary. Any promotion attempt without explicit written authorization violates the hard boundary in MB_INSTALL_V0_BUILD_SPEC.md.",
+      "blocks": "ACTUAL_LIVE_TREE_PROMOTION",
+      "does_not_block": "LIMITED_PROMOTION_PROPOSAL",
+      "remediation": "Explicit promotion authorization naming target tree, responsible principal, and Robert-auth token scope."
+    },
+    {
+      "id": "RISK-02",
+      "classification": "NONBLOCKING_RISK",
+      "title": "GitHub Actions CI not independently observed by external connector",
+      "detail": "The mb-install-tests CI job fires on every push. The ChatGPT connector has not directly fetched CI run logs via GitHub API for commit 0b63bdc7. Repo-side evidence is strong but cross-check via CI artifact URL is pending.",
+      "remediation": "External connector fetches CI run log for commit 0b63bdc7 and confirms Ran 57 tests / OK."
+    },
+    {
+      "id": "RISK-03",
+      "classification": "NONBLOCKING_RISK",
+      "title": "atomic_swap not exercised against a real target tree outside CI",
+      "detail": "Stage 4 atomic_swap is proven against a throwaway temp-dir in CI. No supervised rehearsal against a real (even non-protected) module install target has been performed.",
+      "remediation": "Single supervised rehearsal against an explicitly designated throwaway (non-OS, non-protected) tree, logged and attested."
+    },
+    {
+      "id": "RISK-04",
+      "classification": "NONBLOCKING_RISK",
+      "title": "Protected-surface writes never exercised with a real Robert-auth token",
+      "detail": "FM-A proves check_protected_writes fails closed on empty/whitespace token. No test has supplied an actual non-empty Robert-auth token and written to a real protected surface. Token issuance and validation semantics are out of scope for v0.",
+      "remediation": "Token issuance and validation spec to be defined before protected-surface writes are attempted."
+    },
+    {
+      "id": "RISK-05",
+      "classification": "NONBLOCKING_RISK",
+      "title": "External (non-Claude/non-ChatGPT) reproduction not yet performed",
+      "detail": "All reproduction performed within Claude Code agent environment or by ChatGPT connector verification. No independent human developer or third CI system has cloned the repo and run the suite.",
+      "remediation": "Any human developer running bash REPRODUCE.sh from the tested commit satisfies this. Required before production promotion; not required before limited promotion proposal."
+    },
+    {
+      "id": "RISK-06",
+      "classification": "DOCUMENTATION_ONLY",
+      "title": "FM-B atomicity is single-agent scope only",
+      "detail": "restamp_sidecars() uses atomic temp+replace (os.replace). Concurrent-write safety from external processes during the replace window is not proven. Acceptable for v0 single-agent installs.",
+      "remediation": "Document in spec that FM-B atomicity is single-agent scope only."
+    },
+    {
+      "id": "RISK-07",
+      "classification": "NONBLOCKING_RISK",
+      "title": "No re-verify hash check inside atomic_swap before rename (TOCTOU window)",
+      "detail": "stage_to_tmp re-verifies hashes after staging. atomic_swap does not re-verify before swapping. A TOCTOU window exists if the staging directory is writable by other processes between staging and swap.",
+      "remediation": "Stage 4+ could add a final hash check inside atomic_swap before rename. Low priority for single-agent installs."
+    }
+  ],
+  "blocker_count": 1,
+  "nonblocking_risk_count": 4,
+  "documentation_only_count": 1,
+  "total_risks": 7,
+  "blocker_ids": ["RISK-01"],
+  "promotion_path": "RISK-01 blocks actual live-tree promotion only, not the proposal. All other risks are NONBLOCKING or DOCUMENTATION_ONLY. Limited promotion proposal is authorized to proceed."
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "mb.stage_evidence.manifest.v1",
+  "stage_id": "mb_install_v0_stage7_promotion_readiness_sarp",
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "branch": "claude/new-session-g7ll2w",
+  "commit_sha": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "base_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+  "evidence_path": "evidence/metablooms/mb_install_v0_stage7_promotion_readiness_sarp/",
+  "created_at_utc": "2026-06-16T01:00:00Z",
+  "decision": "PASS_READY_FOR_LIMITED_PROMOTION_PROPOSAL",
+  "score_source": "execution",
+  "audited_evidence_chain": {
+    "stage1_correction_commit": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+    "current_57_of_57_evidence_commit": "92eecde7ac009d466c6f94801c81f63ed3772b2b",
+    "stage6_reproduction_commit": "298050f756f6cba3c3ffba7eb8365a7bd7255f8d"
+  },
+  "blocker_risks": ["RISK-01"],
+  "nonblocking_risks": ["RISK-02", "RISK-03", "RISK-04", "RISK-05", "RISK-07"],
+  "documentation_only_risks": ["RISK-06"],
+  "next_stage": "MB_INSTALL_V0_STAGE8_LIMITED_PROMOTION_PROPOSAL",
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "mutations_performed": [],
+  "artifact_sha256sums_self_exclusion": "ARTIFACT_SHA256SUMS.txt lists the 6 data artifacts; it does not list itself. Its own SHA256 is pinned in this manifest under artifacts.ARTIFACT_SHA256SUMS.txt.",
+  "artifacts": {
+    "ARTIFACT_SHA256SUMS.txt": "0267a707d4a7394c43ec8595f7069c982de7411ff01c181d23743e5592b8b218",
+    "COMMAND_TRANSCRIPT.txt": "d68917c82d5fffb2c3ce1d00ccd100faabff0e6c105376c6a7f3804df3dbe589",
+    "EXECUTION_RECEIPT.json": "00c29e82044a37ed494c9fa8b23285d36af2de69a32dc44ee3b71b23f98b1433",
+    "PROMOTION_READINESS_REPORT.md": "3a44476170be79f3066fe3bf099a43eaaa8789e031621b390afee5d3c27e5205",
+    "REPRODUCE.ps1": "8745e863351e5d5d3560dbce21823e49237e000175dd5dbca00d6a8b0074dca4",
+    "REPRODUCE.sh": "f1bdb2045a75b1c19016158d95d868bf25ca52657f55b4bcb55f6ff03b9ff55d",
+    "RISK_REGISTER.json": "dd280945c4b546ada3495a60f58471255c3550dd120c6e81f19758fb91450bb7"
+  }
+}
