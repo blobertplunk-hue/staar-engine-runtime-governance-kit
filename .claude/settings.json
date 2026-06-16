@@ -6,7 +6,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 governance/tool_routing/tool_route_guard.py --hook-stdin"
+            "command": "python3",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/governance/tool_routing/tool_route_guard.py",
+              "--hook-stdin"
+            ]
           }
         ]
       }
@@ -17,7 +21,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 governance/blocker_ledger/post_tool_failure_adapter.py --hook-stdin --mode record-or-route"
+            "command": "python3",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/governance/blocker_ledger/post_tool_failure_adapter.py",
+              "--hook-stdin",
+              "--mode",
+              "record-or-route"
+            ]
           }
         ]
       }
