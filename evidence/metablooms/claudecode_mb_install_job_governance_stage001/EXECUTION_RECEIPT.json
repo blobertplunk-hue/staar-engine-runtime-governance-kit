@@ -1,0 +1,40 @@
+{
+  "schema": "mb.execution_receipt.v1",
+  "stage_id": "CLAUDECODE_MB_INSTALL_JOB_GOVERNANCE_STAGE001",
+  "decision": "PASS_CLAUDECODE_MB_INSTALL_JOB_GOVERNANCE_STAGE001",
+  "score_source": "execution",
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "branch": "claude/mb-install-job-governance-stage001",
+  "base_sha": "5454d8232ce42e171c290bd4d416f13c62fa1176",
+  "tests_run": {
+    "command": "python3 -m unittest tests/test_claudecode_mb_install_job_governance.py -v",
+    "exit_code": 0,
+    "count": 10
+  },
+  "governance_check": {
+    "command": "python3 governance/jobs/mb_install_v0/run_job_governance_checks.py --stage CLAUDECODE_MB_INSTALL_JOB_GOVERNANCE_STAGE001 --evidence-path evidence/metablooms/claudecode_mb_install_job_governance_stage001 --mode pre-report",
+    "exit_code": 0
+  },
+  "mutations_performed": [
+    ".claude/jobs/mb_install_v0/JOB_GOVERNANCE_CONTRACT.json",
+    "governance/jobs/mb_install_v0/run_job_governance_checks.py",
+    "tests/test_claudecode_mb_install_job_governance.py",
+    "evidence/metablooms/claudecode_mb_install_job_governance_stage001/"
+  ],
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "live_atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "live_apply_authorized": false,
+  "target_tree_named": false,
+  "execution_stage_authorization_granted": false,
+  "settings_json_changed": false,
+  "hooks_added": false,
+  "next_stage": "AUDIT_CLAUDECODE_MB_INSTALL_JOB_GOVERNANCE_STAGE001"
+}

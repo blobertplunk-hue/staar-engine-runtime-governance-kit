@@ -1,0 +1,9 @@
+{
+  "schema": "mb.test_results.v1",
+  "stage_id": "CLAUDECODE_MB_INSTALL_JOB_GOVERNANCE_STAGE001",
+  "command": "python3 -m unittest tests/test_claudecode_mb_install_job_governance.py -v",
+  "exit_code": 0,
+  "tests": 10,
+  "result": "PASS",
+  "note": "Local staging run passed before commit. Repository-side CI is not claimed here."
+}

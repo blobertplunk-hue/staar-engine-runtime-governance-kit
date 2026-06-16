@@ -1,0 +1,25 @@
+{
+  "schema": "mb.claudecode.job_governance_contract.v1",
+  "stage_id": "CLAUDECODE_MB_INSTALL_JOB_GOVERNANCE_STAGE001",
+  "job_id": "mb_install_v0",
+  "purpose": "Machine-enforce MB_INSTALL v0 promotion/preflight evidence, authorization, SHA-chain, CI-claim, target-tree, and stage-transition rules before Claude Code reports completion.",
+  "required_pre_report_command": "python3 governance/jobs/mb_install_v0/run_job_governance_checks.py --stage <stage_id> --evidence-path <path> --mode pre-report",
+  "fail_closed": true,
+  "scope": {
+    "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+    "branch": "claude/mb-install-job-governance-stage001",
+    "base_sha": "5454d8232ce42e171c290bd4d416f13c62fa1176",
+    "applies_to_paths": [
+      "evidence/metablooms/mb_install_v0_*",
+      ".claude/jobs/mb_install_v0/**",
+      "governance/jobs/mb_install_v0/**",
+      "tests/test_claudecode_mb_install_job_governance.py"
+    ]
+  },
+  "placeholder_terms": ["TO_BE_FILLED", "TBD", "PLACEHOLDER", "UNKNOWN_COMMIT"],
+  "ci_allowed_classifications": ["DIRECTLY_CONFIRMED", "SUBSTANTIALLY_CLOSED_WITH_RESIDUAL", "NOT_CONFIRMED"],
+  "forbidden_without_authorization": ["live_apply", "live_atomic_swap", "protected_surface_write", "prune", "delete", "rollback", "staging_swap"],
+  "required_for_live_apply": ["target_tree", "responsible_principal", "robert_auth_token_scope", "exact_command", "rollback_plan", "preflight_receipt", "dry_run_receipt", "final_go_no_go_confirmation"],
+  "target_tree_policy": "REJECT_INVENTED_TARGETS",
+  "stage_transition_policy": "BLOCK_DECISIONS_MAY_ADVANCE_ONLY_TO_REPAIR_REVALIDATION_GOVERNANCE_OR_AUDIT"
+}

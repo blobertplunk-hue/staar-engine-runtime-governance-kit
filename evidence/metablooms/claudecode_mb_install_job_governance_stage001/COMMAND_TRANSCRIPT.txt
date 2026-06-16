@@ -1,0 +1,13 @@
+COMMAND TRANSCRIPT — CLAUDECODE_MB_INSTALL_JOB_GOVERNANCE_STAGE001
+
+Base SHA: 5454d8232ce42e171c290bd4d416f13c62fa1176
+Branch: claude/mb-install-job-governance-stage001
+
+Local staging commands run before commit:
+python3 -m unittest tests/test_claudecode_mb_install_job_governance.py -v
+Result: PASS
+
+python3 governance/jobs/mb_install_v0/run_job_governance_checks.py --stage CLAUDECODE_MB_INSTALL_JOB_GOVERNANCE_STAGE001 --evidence-path evidence/metablooms/claudecode_mb_install_job_governance_stage001 --mode pre-report
+Result: PASS
+
+No live apply, atomic_swap, protected-surface write, prune, delete, rollback, or staging_swap was performed.
