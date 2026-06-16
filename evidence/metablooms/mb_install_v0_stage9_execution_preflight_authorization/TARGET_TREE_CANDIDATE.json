@@ -1,0 +1,27 @@
+{
+  "schema": "mb.stage9.target_tree_candidate.v1",
+  "target_tree_status": "UNNAMED",
+  "reason": "No actual target tree has been named by any principal in any prompt up to and including this stage. Per Stage 9 instructions, the decision must be BLOCK_STAGE9_PREFLIGHT_PENDING_TARGET_TREE when no real target tree is provided.",
+  "required_fields_for_named_target": {
+    "target_tree_path": "REQUIRED — exact absolute path on the execution host",
+    "designation": "REQUIRED — must be explicitly designated as throwaway/isolated/noncanonical/reversible",
+    "not_live_os_surface": "REQUIRED — must confirm path is not under /usr /lib /bin /sbin /etc /boot /sys /proc /dev or any live production module path",
+    "backup_path": "REQUIRED — exact path of pre-existing complete backup",
+    "backup_confirmed_by": "REQUIRED — responsible principal who confirmed backup",
+    "execution_host": "REQUIRED — hostname or container ID where apply will run",
+    "responsible_principal": "REQUIRED — human accountable for target tree"
+  },
+  "candidate_criteria_reference": "evidence/metablooms/mb_install_v0_stage8_limited_promotion_proposal/TARGET_TREE_SELECTION_CRITERIA.md",
+  "eligible_examples": [
+    "An empty temporary directory created solely for this rehearsal (e.g., /tmp/mb_install_rehearsal_<id>/)",
+    "A named throwaway directory in a container or VM with no live OS role",
+    "A designated test-install directory with pre-existing backup at a separate path"
+  ],
+  "ineligible_examples": [
+    "Any path under /usr, /lib, /bin, /sbin, /etc, /boot, /sys, /proc, /dev",
+    "Any live kernel module path",
+    "Any MetaBlooms OS runtime production surface",
+    "Any path a running process depends on"
+  ],
+  "blocker": "BLOCK_STAGE9_PREFLIGHT_PENDING_TARGET_TREE"
+}

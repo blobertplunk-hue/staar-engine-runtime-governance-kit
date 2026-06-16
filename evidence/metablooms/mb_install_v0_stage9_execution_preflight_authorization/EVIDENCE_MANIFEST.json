@@ -1,0 +1,80 @@
+{
+  "schema": "mb.evidence_manifest.v1",
+  "stage_id": "mb_install_v0_stage9_execution_preflight_authorization",
+  "decision": "BLOCK_STAGE9_PREFLIGHT_PENDING_TARGET_TREE",
+  "commit_sha": "TO_BE_FILLED_AFTER_COMMIT",
+  "base_sha": "9e22cab9988c5dc4620b7d5eb96be3ea01e4c2ec",
+  "base_stage": "mb_install_v0_stage8_limited_promotion_proposal",
+  "evaluated_at_utc": "2026-06-16T01:50:00Z",
+  "live_apply_authorized": false,
+  "final_go_no_go_confirmation": false,
+  "mutations_performed": [],
+  "note_on_self_exclusion": "ARTIFACT_SHA256SUMS.txt lists the 12 data artifacts but not itself. EVIDENCE_MANIFEST.json lists all 13 artifacts including ARTIFACT_SHA256SUMS.txt but not itself. This self-exclusion is intentional and documented.",
+  "artifacts": [
+    {
+      "filename": "CI_CONFIRMATION.json",
+      "sha256": "321ad5e537f2765a573368bf5b6d1dcff81139136ec5a728deb502db1e24a94c",
+      "role": "RISK-02 CI closure evidence"
+    },
+    {
+      "filename": "TARGET_TREE_CANDIDATE.json",
+      "sha256": "dd911e45785d735b3b0a380fefdbac771899273eeaf632c934b884c62c1a2799",
+      "role": "Target tree status (UNNAMED — blocker)"
+    },
+    {
+      "filename": "EXACT_COMMAND_DRAFT.txt",
+      "sha256": "a52dfcc7ba9d175f3d796783fb278dea40cba03834db71abfd3d9e622ae40c0d",
+      "role": "Inert command draft (not executed)"
+    },
+    {
+      "filename": "ROLLBACK_PLAN.md",
+      "sha256": "7c81a6ab7fd6ef2c205a1e694d5e90af611b5fc7c312ca1bd76905cb0676d7f4",
+      "role": "Rollback plan template (not finalized)"
+    },
+    {
+      "filename": "DRY_RUN_PLAN.md",
+      "sha256": "8b487a0869e55aad5ffe768f23cb20849c762e60d7c3f6d625e00bf0726f8066",
+      "role": "Dry run plan (blocked pending bundle)"
+    },
+    {
+      "filename": "PREFLIGHT_CHECKLIST.json",
+      "sha256": "40b6d7276a9b08da805715a100ed9fcb73f74acb739ccc48a092234fdeff7e81",
+      "role": "10-item preflight checklist (overall_status: BLOCKED)"
+    },
+    {
+      "filename": "RISK_REGISTER_STAGE9.json",
+      "sha256": "65044fa19acd5bcc9cbd3b7470deb643d78d59271f786bcd579b4a4e641938a4",
+      "role": "Stage 9 risk register (inherited from Stage 7 SARP)"
+    },
+    {
+      "filename": "EXECUTION_PREFLIGHT_AUTHORIZATION.md",
+      "sha256": "e9b56d8a8b904cd2e9d92025b89c388b6807e1ee8c13d657416d5ab0111cf919",
+      "role": "Authorization scope + decision narrative"
+    },
+    {
+      "filename": "EXECUTION_RECEIPT.json",
+      "sha256": "c9953005dd6f8830dd7fc471a3f58c8c9cc90253a980cc7561c9c608b80393bd",
+      "role": "Stage execution receipt"
+    },
+    {
+      "filename": "COMMAND_TRANSCRIPT.txt",
+      "sha256": "97ae87a3e2dc170ab30dc732917f61b688c0333a9b39c394d5c2323cc3a7e7b4",
+      "role": "Command transcript (documentation-only actions)"
+    },
+    {
+      "filename": "REPRODUCE.sh",
+      "sha256": "605f567b8ddd5be9012da060c91215ed92babd5c74de22cb5914741719e0ed2a",
+      "role": "Bash reproduction/verification script"
+    },
+    {
+      "filename": "REPRODUCE.ps1",
+      "sha256": "6138507b4845ce249dd56c3007c320e289ce1523ec10cb89c3a50aceb1a323f2",
+      "role": "PowerShell reproduction/verification script"
+    },
+    {
+      "filename": "ARTIFACT_SHA256SUMS.txt",
+      "sha256": "9c21480fe2099de7bd5693275c739ad9b086171efe83f8361e601d651d6c9236",
+      "role": "SHA-256 checksums of 12 data artifacts (excludes itself)"
+    }
+  ]
+}

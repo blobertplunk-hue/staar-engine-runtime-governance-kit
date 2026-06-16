@@ -1,0 +1,88 @@
+{
+  "schema": "mb.stage9.risk_register.v1",
+  "stage_id": "mb_install_v0_stage9_execution_preflight_authorization",
+  "evaluated_at_utc": "2026-06-16T01:50:00Z",
+  "inherited_from_stage7_sarp": "evidence/metablooms/mb_install_v0_stage7_promotion_readiness_sarp/RISK_REGISTER.json",
+  "stage8_closure_applied": "evidence/metablooms/mb_install_v0_stage8_limited_promotion_proposal/RISK_CLOSURE_PLAN.json",
+  "risks": [
+    {
+      "risk_id": "RISK-01",
+      "title": "Live-tree apply not yet authorized",
+      "classification": "BLOCKER",
+      "stage7_status": "OPEN",
+      "stage8_status": "CARRIED_FORWARD_BLOCKER",
+      "stage9_status": "OPEN_BLOCKER",
+      "stage9_assessment": "live_apply_authorized remains false. No target tree has been named. atomic_swap must not execute. This risk closes only when Robert provides final_go_no_go_confirmation=true in a later audited prompt after all preflight checklist items PASS.",
+      "closure_condition": "final_go_no_go_confirmation=true from Robert in later audited prompt, after PC-01/PC-03/PC-04/PC-05/PC-07/PC-08/PC-09 all reach PASS status"
+    },
+    {
+      "risk_id": "RISK-02",
+      "title": "No CI run observed directly on tested SHA 0b63bdc7",
+      "classification": "NONBLOCKING_RISK",
+      "stage7_status": "OPEN",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_status": "SUBSTANTIALLY_CLOSED",
+      "stage9_assessment": "GitHub Actions run 27585275953 confirmed 57/57 on ebb12a4fd1ba (main). Commit 0b63bdc77e03 adds evidence files only — no source changes. Functional equivalence is sound. Residual: no direct CI run on 0b63bdc7 SHA. Would fully close via PR or push-to-main trigger.",
+      "source": "CI_CONFIRMATION.json",
+      "closure_condition": "Direct CI run on 0b63bdc7 or equivalent commit that includes it via fast-forward merge"
+    },
+    {
+      "risk_id": "RISK-03",
+      "title": "Protected-class file boundary not tested end-to-end",
+      "classification": "NONBLOCKING_RISK",
+      "stage7_status": "OPEN",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_assessment": "No bundle has been specified; robert_auth_token scope is UNSTATED (PC-04). This risk cannot be evaluated until a bundle is named and token scope is provided. It remains non-blocking for Stage 9 documentation but blocks preflight execution.",
+      "closure_condition": "Bundle named, token scope stated, check_protected_writes() passes against the named bundle"
+    },
+    {
+      "risk_id": "RISK-04",
+      "title": "sidecar restamp not tested against a live directory tree",
+      "classification": "NONBLOCKING_RISK",
+      "stage7_status": "OPEN",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_assessment": "restamp_sidecars() is excluded from the dry run (it mutates target tree). Will be observed only when atomic_swap is authorized. Remains non-blocking for Stage 9.",
+      "closure_condition": "Authorized execution with restamp_sidecars() run against target tree and receipt produced"
+    },
+    {
+      "risk_id": "RISK-05",
+      "title": "Receipt schema not round-trip validated against a schema file",
+      "classification": "NONBLOCKING_RISK",
+      "stage7_status": "OPEN",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_assessment": "score_source enforcement via ReceiptValidationError confirmed in source. Schema round-trip not performed in Stage 9 dry run (bundle required). Remains non-blocking.",
+      "closure_condition": "write_receipt() called against real bundle and receipt validated against schema"
+    },
+    {
+      "risk_id": "RISK-06",
+      "title": "atomic_swap atomicity guarantee unclear for non-POSIX hosts",
+      "classification": "DOCUMENTATION_ONLY",
+      "stage7_status": "OPEN",
+      "stage8_status": "CLOSED_DOCUMENTED",
+      "stage9_status": "CLOSED_DOCUMENTED",
+      "stage9_assessment": "Closed at Stage 8 by TARGET_TREE_SELECTION_CRITERIA.md section 4 (POSIX atomicity scope note). Target tree selection criteria prohibit non-POSIX hosts in the execution authorization. No further action required.",
+      "source": "evidence/metablooms/mb_install_v0_stage8_limited_promotion_proposal/TARGET_TREE_SELECTION_CRITERIA.md"
+    },
+    {
+      "risk_id": "RISK-07",
+      "title": "No external auditor review before live apply",
+      "classification": "NONBLOCKING_RISK",
+      "stage7_status": "OPEN",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage9_assessment": "SARP decision was PASS_READY_FOR_LIMITED_PROMOTION_PROPOSAL (not PASS_READY_FOR_EXTERNAL_AUDITOR). External audit not required but remains an available risk mitigation. Non-blocking for Stage 9.",
+      "closure_condition": "External auditor review or explicit waiver by Robert in later audited prompt"
+    }
+  ],
+  "stage9_summary": {
+    "blockers_open": 1,
+    "nonblocking_open": 4,
+    "closed_documented": 1,
+    "substantially_closed": 1,
+    "net_stage9_decision": "BLOCK_STAGE9_PREFLIGHT_PENDING_TARGET_TREE",
+    "dominant_blocker": "RISK-01 (no target tree named; live apply not authorized)"
+  }
+}

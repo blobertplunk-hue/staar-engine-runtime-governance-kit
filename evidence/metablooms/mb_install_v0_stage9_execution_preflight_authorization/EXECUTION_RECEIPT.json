@@ -1,0 +1,54 @@
+{
+  "schema": "mb.stage9.execution_receipt.v1",
+  "stage_id": "mb_install_v0_stage9_execution_preflight_authorization",
+  "executed_at_utc": "2026-06-16T01:50:00Z",
+  "decision": "BLOCK_STAGE9_PREFLIGHT_PENDING_TARGET_TREE",
+  "live_apply_authorized": false,
+  "final_go_no_go_confirmation": false,
+  "mutations_performed": [],
+  "forbidden_actions": {
+    "live_apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "staging_swap": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "delete": "NOT_RUN"
+  },
+  "preflight_checklist_overall_status": "BLOCKED",
+  "preflight_checklist_blocking_items": ["PC-01", "PC-03", "PC-04", "PC-05", "PC-07", "PC-08", "PC-09"],
+  "target_tree_status": "UNNAMED",
+  "responsible_principal": "UNNAMED",
+  "bundle_zip_path": "UNNAMED",
+  "robert_auth_token_scope": "UNSTATED",
+  "ci_status": {
+    "risk02_closure": "SUBSTANTIALLY_CLOSED",
+    "run_id": 27585275953,
+    "job_id": 81554131075,
+    "head_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+    "conclusion": "success",
+    "tests_passed": 57,
+    "tests_total": 57
+  },
+  "artifacts_produced": [
+    "CI_CONFIRMATION.json",
+    "TARGET_TREE_CANDIDATE.json",
+    "EXACT_COMMAND_DRAFT.txt",
+    "ROLLBACK_PLAN.md",
+    "DRY_RUN_PLAN.md",
+    "PREFLIGHT_CHECKLIST.json",
+    "RISK_REGISTER_STAGE9.json",
+    "EXECUTION_PREFLIGHT_AUTHORIZATION.md",
+    "EXECUTION_RECEIPT.json",
+    "COMMAND_TRANSCRIPT.txt",
+    "REPRODUCE.sh",
+    "REPRODUCE.ps1",
+    "ARTIFACT_SHA256SUMS.txt",
+    "EVIDENCE_MANIFEST.json"
+  ],
+  "authorization_chain": [
+    "Stage 8: PASS_STAGE8_LIMITED_PROMOTION_PROPOSAL_READY_FOR_AUDIT at 9e22cab9988c5dc4620b7d5eb96be3ea01e4c2ec",
+    "Stage 9: BLOCK_STAGE9_PREFLIGHT_PENDING_TARGET_TREE — preflight packet produced, no execution authorized"
+  ],
+  "next_required_action": "Robert must provide target_tree_path, responsible_principal, bundle_zip_path, robert_auth_token_scope, and final_go_no_go_confirmation in a later audited prompt before any execution proceeds"
+}

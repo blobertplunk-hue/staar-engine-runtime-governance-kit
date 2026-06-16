@@ -1,0 +1,42 @@
+{
+  "schema": "mb.stage9.ci_confirmation.v1",
+  "risk_id": "RISK-02",
+  "risk_title": "GitHub Actions CI not independently observed by external connector",
+  "status": "SUBSTANTIALLY_CLOSED",
+  "residual_status": "MINOR_RESIDUAL_DIRECT_SHA_NOT_TRIGGERED",
+  "query_method": "GitHub Actions API via mcp__github__actions_list + mcp__github__get_job_logs",
+  "queried_at_utc": "2026-06-16T01:50:00Z",
+  "ci_run": {
+    "run_id": 27585275953,
+    "workflow": "metablooms-ci",
+    "job_name": "mb-install-tests",
+    "job_id": 81554131075,
+    "head_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+    "branch": "main",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-06-16T00:19:19Z",
+    "completed_at": "2026-06-16T00:19:35Z",
+    "html_url": "https://github.com/blobertplunk-hue/staar-engine-runtime-governance-kit/actions/runs/27585275953/job/81554131075"
+  },
+  "confirmed_log_lines": [
+    "Ran 57 tests in 0.030s",
+    "OK"
+  ],
+  "also_confirmed": [
+    "Stage 5 bootstrap rehearsal: PASS (mutation_boundary: temporary_directory_only)",
+    "Stage 5 ship bundle attestation: PASS (mutation_boundary: repo_metadata_only_no_live_os_install)",
+    "mb-install-test-log artifact uploaded (1700 bytes)",
+    "mb-install-stage5-attestations artifact uploaded (1932 bytes)"
+  ],
+  "ci_sha_vs_tested_sha": {
+    "ci_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+    "tested_sha": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+    "relationship": "0b63bdc7 is ebb12a4f plus two commits adding evidence files only (no source code changes). Test source code is identical.",
+    "diff_scope": "evidence/metablooms/mb_install_v0_stage1/REPRODUCE.sh and REPRODUCE.ps1 only"
+  },
+  "direct_ci_on_tested_sha": false,
+  "reason_no_direct_ci": "Branch claude/new-session-g7ll2w only triggers CI via pull_request event. Commits pushed directly to the branch after PR merge do not trigger CI. 0b63bdc7 was pushed after PR#37 was merged and main advanced to ebb12a4f.",
+  "risk02_closure_assessment": "SUBSTANTIALLY_CLOSED: CI confirmed 57/57 on functionally identical code. Minor residual: no direct GitHub Actions run on 0b63bdc7 SHA specifically. A new PR from this branch would produce a direct CI run on the current branch tip."
+}

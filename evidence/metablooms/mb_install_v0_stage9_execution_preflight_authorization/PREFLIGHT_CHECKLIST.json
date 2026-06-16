@@ -1,0 +1,90 @@
+{
+  "schema": "mb.stage9.preflight_checklist.v1",
+  "stage_id": "mb_install_v0_stage9_execution_preflight_authorization",
+  "evaluated_at_utc": "2026-06-16T01:50:00Z",
+  "overall_status": "BLOCKED",
+  "blocking_items": ["PC-01", "PC-03", "PC-04", "PC-05", "PC-07", "PC-08", "PC-09"],
+  "checklist": [
+    {
+      "id": "PC-01",
+      "description": "target_tree named and confirmed throwaway/noncanonical/reversible",
+      "status": "BLOCKED",
+      "current_value": "UNNAMED",
+      "required_value": "Exact absolute path, designated throwaway",
+      "source": "TARGET_TREE_CANDIDATE.json"
+    },
+    {
+      "id": "PC-02",
+      "description": "CI confirmed 57 tests green on functionally identical code (RISK-02)",
+      "status": "SUBSTANTIALLY_PASS",
+      "current_value": "CI confirmed on ebb12a4f (main) — 57/57 OK. 0b63bdc7 only adds evidence files.",
+      "required_value": "57 tests green on code at or equivalent to tested commit",
+      "residual": "No direct CI run on 0b63bdc7 SHA; would close fully via PR or push-to-main trigger",
+      "source": "CI_CONFIRMATION.json"
+    },
+    {
+      "id": "PC-03",
+      "description": "responsible_principal named",
+      "status": "BLOCKED",
+      "current_value": "UNNAMED",
+      "required_value": "Human name and contact",
+      "source": "No principal has been named in any stage prompt"
+    },
+    {
+      "id": "PC-04",
+      "description": "robert_auth_token_scope stated (or confirmed empty for no protected-class bundle)",
+      "status": "BLOCKED",
+      "current_value": "UNSTATED",
+      "required_value": "Explicit token scope statement or explicit confirmation that no protected-class files are in bundle",
+      "source": "No token scope provided in any stage prompt"
+    },
+    {
+      "id": "PC-05",
+      "description": "exact_command reviewed (draft present, not executed)",
+      "status": "DRAFT_ONLY",
+      "current_value": "Draft present in EXACT_COMMAND_DRAFT.txt with <PLACEHOLDER> values",
+      "required_value": "All placeholders filled with real values and reviewed by responsible principal",
+      "source": "EXACT_COMMAND_DRAFT.txt"
+    },
+    {
+      "id": "PC-06",
+      "description": "rollback_plan written",
+      "status": "TEMPLATE_ONLY",
+      "current_value": "Template present in ROLLBACK_PLAN.md with <UNNAMED> values",
+      "required_value": "All placeholders filled; backup path confirmed; responsible principal named",
+      "source": "ROLLBACK_PLAN.md"
+    },
+    {
+      "id": "PC-07",
+      "description": "bundle_zip_path named and SHA-pinned",
+      "status": "BLOCKED",
+      "current_value": "UNNAMED",
+      "required_value": "Exact path to bundle zip; SHA256 declared and pre-verified",
+      "source": "No bundle has been specified in any stage prompt"
+    },
+    {
+      "id": "PC-08",
+      "description": "preflight_receipt produced and reviewed (verify_bundle + check_protected_writes + stage_to_tmp dry pass)",
+      "status": "BLOCKED",
+      "current_value": "NOT_PRODUCED — blocked by PC-07 (no bundle path)",
+      "required_value": "Preflight receipt showing all three steps PASS with no errors",
+      "source": "DRY_RUN_PLAN.md"
+    },
+    {
+      "id": "PC-09",
+      "description": "dry_run_receipt produced and reviewed",
+      "status": "BLOCKED",
+      "current_value": "NOT_PRODUCED — blocked by PC-07 (no bundle path)",
+      "required_value": "Dry run receipt confirming staged files match manifest hashes",
+      "source": "DRY_RUN_PLAN.md"
+    },
+    {
+      "id": "PC-10",
+      "description": "final_go_no_go_confirmation set to true by Robert in a later audited prompt",
+      "status": "NOT_YET",
+      "current_value": false,
+      "required_value": true,
+      "source": "No go/no-go confirmation given; this is the final gate before atomic_swap"
+    }
+  ]
+}

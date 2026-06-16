@@ -1,0 +1,99 @@
+EXACT COMMAND DRAFT — MB_INSTALL v0 Stage 9 Execution Preflight
+STATUS: INERT TEXT ONLY — NOT EXECUTED — NOT AUTHORIZED FOR EXECUTION
+
+This file contains a draft of the command sequence that would be executed
+in a later authorized execution stage. It must not be executed until:
+  - TARGET_TREE_CANDIDATE.json target_tree_status changes from UNNAMED to NAMED
+  - All PREFLIGHT_CHECKLIST.json items are PASS
+  - DRY_RUN_PLAN.md dry run has been performed and reviewed
+  - final_go_no_go_confirmation is set to true by Robert in a later audited prompt
+  - All other preconditions in LIMITED_PROMOTION_PROPOSAL.md are satisfied
+
+============================================================
+DRAFT COMMAND SEQUENCE (inert — do not execute)
+============================================================
+
+# Step 0: Confirm environment
+echo "Execution host: $(hostname)"
+echo "Execution date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+git -C <REPO_ROOT> log --oneline -1   # must show 0b63bdc7
+
+# Step 1: Verify bundle (read-only, no mutation)
+python3 -c "
+import sys
+sys.path.insert(0, '<REPO_ROOT>/tools/metablooms')
+from mb_install_v0 import verify_bundle
+manifest = verify_bundle('<BUNDLE_ZIP_PATH>')
+print('verify_bundle: PASS — files:', len(manifest['files']))
+"
+
+# Step 2: Check protected writes (read-only, no mutation)
+python3 -c "
+import sys
+sys.path.insert(0, '<REPO_ROOT>/tools/metablooms')
+from mb_install_v0 import verify_bundle, check_protected_writes
+manifest = verify_bundle('<BUNDLE_ZIP_PATH>')
+check_protected_writes(manifest, '<ROBERT_AUTH_TOKEN>')
+print('check_protected_writes: PASS')
+"
+
+# Step 3: Stage to tmp (writes to temp dir only, not to target)
+python3 -c "
+import sys
+sys.path.insert(0, '<REPO_ROOT>/tools/metablooms')
+from mb_install_v0 import verify_bundle, stage_to_tmp
+manifest = verify_bundle('<BUNDLE_ZIP_PATH>')
+tmp_dir = stage_to_tmp(manifest, '<BUNDLE_ZIP_PATH>')
+print('stage_to_tmp: PASS — staged to:', tmp_dir)
+"
+# Save tmp_dir for step 4
+
+# Step 4: atomic_swap (REQUIRES final_go_no_go_confirmation=true — DO NOT RUN UNTIL AUTHORIZED)
+# python3 -c "
+# import sys
+# sys.path.insert(0, '<REPO_ROOT>/tools/metablooms')
+# from mb_install_v0 import atomic_swap
+# atomic_swap(
+#     tmp_tree='<TMP_DIR_FROM_STEP3>',
+#     target_tree='<TARGET_TREE_PATH>',
+#     allowed_root='<TARGET_TREE_PATH>',
+#     _bootstrap_flag=True
+# )
+# print('atomic_swap: PASS')
+# "
+
+# Step 5: Restamp sidecars
+# python3 -c "
+# import sys, os
+# sys.path.insert(0, '<REPO_ROOT>/tools/metablooms')
+# from mb_install_v0 import restamp_sidecars
+# installed_files = [os.path.join('<TARGET_TREE_PATH>', f) for f in <FILES_LIST>]
+# result = restamp_sidecars(installed_files)
+# print('restamp_sidecars: PASS — stamped:', len(result), 'files')
+# "
+
+# Step 6: Write receipt
+# python3 -c "
+# import sys, json
+# sys.path.insert(0, '<REPO_ROOT>/tools/metablooms')
+# from mb_install_v0 import verify_bundle, write_receipt
+# manifest = verify_bundle('<BUNDLE_ZIP_PATH>')
+# receipt = write_receipt(manifest, install_id='<INSTALL_ID>')
+# print('write_receipt:', json.dumps(receipt, indent=2))
+# "
+
+============================================================
+PLACEHOLDERS THAT MUST BE FILLED BEFORE EXECUTION
+============================================================
+<REPO_ROOT>          = absolute path to repo on execution host
+<BUNDLE_ZIP_PATH>    = absolute path to SHA-pinned bundle zip
+<ROBERT_AUTH_TOKEN>  = non-empty token if any protected_class=true files; else empty string
+<TARGET_TREE_PATH>   = named, designated throwaway target tree path (currently UNNAMED)
+<TMP_DIR_FROM_STEP3> = output of stage_to_tmp in step 3
+<INSTALL_ID>         = deterministic install ID string for receipt
+<FILES_LIST>         = list of installed file paths for sidecar restamping
+
+============================================================
+NOTE: Step 4 (atomic_swap) is commented out and MUST remain commented until
+final_go_no_go_confirmation=true is set by Robert in a later audited prompt.
+============================================================
