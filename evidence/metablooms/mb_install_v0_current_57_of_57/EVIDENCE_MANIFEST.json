@@ -1,0 +1,36 @@
+{
+  "schema": "mb.stage_evidence.manifest.v1",
+  "stage_id": "mb_install_v0_current_57_of_57",
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "branch": "claude/new-session-g7ll2w",
+  "commit_sha": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "base_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+  "evidence_path": "evidence/metablooms/mb_install_v0_current_57_of_57/",
+  "created_at_utc": "2026-06-16T00:47:00Z",
+  "decision": "PASS_MB_INSTALL_V0_CURRENT_57_OF_57",
+  "score_source": "execution",
+  "test_command": "python3 -m unittest discover -s tests -p 'test_mb_install_*.py' -v",
+  "expected_test_total": 57,
+  "expected_test_passed": 57,
+  "expected_test_failed": 0,
+  "expected_test_errors": 0,
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "mutations_performed": [],
+  "artifacts": {
+    "ARTIFACT_SHA256SUMS.txt": "963afd2f43c8cb08a24f33f2042fe24056508b19c3c43061412acf9591a39c65",
+    "COMMAND_TRANSCRIPT.txt": "1d163f62d9c7e614a3abcd86577d14bca16ec5e82048f0f3d807db69006c2626",
+    "EXECUTION_RECEIPT.json": "2e6f6268770a9535bf566e6022fc13aa49dbba246d01bd1f65e2696b4cbe1a36",
+    "REPRODUCE.ps1": "fd3f59782604b33b04d2c508e176fac54a8b0ed01319bf04199762133b599b8c",
+    "REPRODUCE.sh": "7168d0398467ac62f6e6dd8acbb793582705db25c27a225bdcba59c70b736f88",
+    "TEST_RESULTS.json": "c1fb49e830630c655c2ecf347b9eb645713244ce1ab1ffa1aef16da88038e2b1"
+  },
+  "artifact_sha256sums_self_exclusion": "ARTIFACT_SHA256SUMS.txt lists the 5 data artifacts; it does not list itself. Its own SHA256 is pinned in this manifest under artifacts.ARTIFACT_SHA256SUMS.txt."
+}

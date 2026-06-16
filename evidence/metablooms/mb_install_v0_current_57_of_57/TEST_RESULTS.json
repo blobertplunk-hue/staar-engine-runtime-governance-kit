@@ -1,0 +1,14 @@
+{
+  "stage_id": "mb_install_v0_current_57_of_57",
+  "commit_sha": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "branch": "claude/new-session-g7ll2w",
+  "test_command": "python3 -m unittest discover -s tests -p 'test_mb_install_*.py' -v",
+  "exit_code": 0,
+  "total": 57,
+  "passed": 57,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "summary_line": "Ran 57 tests in 0.057s",
+  "result": "OK"
+}
