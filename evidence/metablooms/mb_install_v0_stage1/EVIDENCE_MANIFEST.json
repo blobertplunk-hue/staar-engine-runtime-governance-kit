@@ -1,0 +1,35 @@
+{
+  "artifacts": {
+    "ARTIFACT_SHA256SUMS.txt": "6bcd17ac26ce62d8ac90ca7c2d45fecbcb86bb8b918d84f4dac4c9d2cb90420a",
+    "COMMAND_TRANSCRIPT.txt": "cdd43a5ba8c56557f6f0ecfa066ad4fbbea5e5fdb9b4f06795bb8cc89f03927f",
+    "EXECUTION_RECEIPT.json": "abeaf7e8fcf6323f31edc0ea77a0876f6abb1de2e1a7a64c377371b908934b09",
+    "REPRODUCE.ps1": "ec40949541d76f78fad29891741123a47f5f548196c2c533e714febe052113b6",
+    "REPRODUCE.sh": "8c08721c2df394e9699ad73a1a9eda50fa53ffcee21e123e451bae6c1c4c202c",
+    "TEST_RESULTS.json": "13a39dfb15f1c675affc27431b61a15a144ae30b90d3b7e10cd28ef280b37067"
+  },
+  "base_sha": "87a99df2a6530dea8d34b0aefa04a4635de4348d",
+  "branch": "claude/new-session-g7ll2w",
+  "commit_sha": "d8738e27ec7d588434cbea111cf82cdf61e08e9c",
+  "created_at_utc": "2026-06-16T00:02:27Z",
+  "decision": "PASS_MB_INSTALL_V0_STAGE1_42_OF_42",
+  "evidence_path": "evidence/metablooms/mb_install_v0_stage1/",
+  "expected_test_errors": 0,
+  "expected_test_failed": 0,
+  "expected_test_passed": 42,
+  "expected_test_total": 42,
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "mutations_performed": [],
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "schema": "mb.stage_evidence.manifest.v1",
+  "score_source": "execution",
+  "stage_id": "mb_install_v0_stage1",
+  "test_command": "python3 -m unittest discover -s tests -p 'test_mb_install_*.py' -v"
+}

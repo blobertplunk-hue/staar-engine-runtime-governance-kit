@@ -1,0 +1,68 @@
+# MB_INSTALL v0 Stage 1 — Command Transcript
+# Generated : 2026-06-16T00:02:27Z
+# Repo      : blobertplunk-hue/staar-engine-runtime-governance-kit
+# Branch    : claude/new-session-g7ll2w
+# Commit    : d8738e27ec7d588434cbea111cf82cdf61e08e9c
+# Base      : 87a99df2a6530dea8d34b0aefa04a4635de4348d
+# Stage     : mb_install_v0_stage1
+
+$ python3 -m pip install jsonschema  # install schema-validator dependency
+$ python3 -m unittest discover -s tests -p "test_mb_install_*.py" -v
+
+--- TEST OUTPUT ---
+test_atomic_swap_bootstrap_flag_still_raises_not_implemented (test_mb_install_fm_d_fabrication.TestAtomicSwapGuard.test_atomic_swap_bootstrap_flag_still_raises_not_implemented)
+Even with _bootstrap_flag=True the real implementation is not yet built (stage 4+). ... ok
+test_atomic_swap_refuses_without_bootstrap_flag (test_mb_install_fm_d_fabrication.TestAtomicSwapGuard.test_atomic_swap_refuses_without_bootstrap_flag)
+atomic_swap must raise NotImplementedError when called without _bootstrap_flag. ... ok
+test_atomic_swap_still_refuses_with_false_flag (test_mb_install_fm_d_fabrication.TestAtomicSwapGuard.test_atomic_swap_still_refuses_with_false_flag)
+Explicitly passing False should also refuse. ... ok
+test_fm_d_fabrication_wound_detected (test_mb_install_fm_d_fabrication.TestFmDFabricationWound.test_fm_d_fabrication_wound_detected)
+FM-D: verify_bundle MUST raise when declared sha256 != actual file bytes. ... ok
+test_verify_bundle_passes_on_good_bundle (test_mb_install_fm_d_fabrication.TestFmDFabricationWound.test_verify_bundle_passes_on_good_bundle)
+verify_bundle accepts a correctly-hashed bundle and returns the manifest. ... ok
+test_verify_bundle_rejects_declared_but_absent_file (test_mb_install_fm_d_fabrication.TestFmDFabricationWound.test_verify_bundle_rejects_declared_but_absent_file)
+verify_bundle raises ManifestError when a file listed in manifest is absent from the zip. ... ok
+test_verify_bundle_rejects_missing_manifest (test_mb_install_fm_d_fabrication.TestFmDFabricationWound.test_verify_bundle_rejects_missing_manifest)
+verify_bundle raises ManifestError when manifest.json is absent. ... ok
+test_all_four_fm_rows_present (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_all_four_fm_rows_present) ... ok
+test_every_row_has_fixture (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_every_row_has_fixture) ... ok
+test_every_row_has_mechanism (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_every_row_has_mechanism) ... ok
+test_fm_d_fixture_points_to_real_file (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_fm_d_fixture_points_to_real_file) ... ok
+test_matrix_file_loads (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_matrix_file_loads) ... ok
+test_pending_rows_are_correctly_marked (test_mb_install_fm_matrix.TestFmMatrixCompleteness.test_pending_rows_are_correctly_marked) ... ok
+test_good_manifest_validates (test_mb_install_schema.TestKernelModuleManifestSchema.test_good_manifest_validates) ... ok
+test_rejects_absolute_path (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_absolute_path) ... ok
+test_rejects_backslash_path (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_backslash_path) ... ok
+test_rejects_bad_semver (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_bad_semver) ... ok
+test_rejects_bad_sha256 (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_bad_sha256) ... ok
+test_rejects_exact_duplicate_file_entries (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_exact_duplicate_file_entries) ... ok
+test_rejects_out_of_tree_path (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_out_of_tree_path) ... ok
+test_rejects_traversal_path (test_mb_install_schema.TestKernelModuleManifestSchema.test_rejects_traversal_path) ... ok
+test_no_protected_files_always_passes (test_mb_install_unit.TestCheckProtectedWrites.test_no_protected_files_always_passes) ... ok
+test_protected_file_with_empty_token_raises (test_mb_install_unit.TestCheckProtectedWrites.test_protected_file_with_empty_token_raises) ... ok
+test_protected_file_with_valid_token_passes (test_mb_install_unit.TestCheckProtectedWrites.test_protected_file_with_valid_token_passes) ... ok
+test_protected_file_with_whitespace_only_token_raises (test_mb_install_unit.TestCheckProtectedWrites.test_protected_file_with_whitespace_only_token_raises) ... ok
+test_restamp_creates_sidecar (test_mb_install_unit.TestRestamp.test_restamp_creates_sidecar) ... ok
+test_restamp_multiple_files (test_mb_install_unit.TestRestamp.test_restamp_multiple_files) ... ok
+test_restamp_updates_sidecar_when_content_changes (test_mb_install_unit.TestRestamp.test_restamp_updates_sidecar_when_content_changes) ... ok
+test_stages_files_correctly (test_mb_install_unit.TestStageToTmp.test_stages_files_correctly) ... ok
+test_good_bundle_returns_manifest (test_mb_install_unit.TestVerifyBundle.test_good_bundle_returns_manifest) ... ok
+test_rejects_absolute_path (test_mb_install_unit.TestVerifyBundle.test_rejects_absolute_path) ... ok
+test_rejects_backslash_path (test_mb_install_unit.TestVerifyBundle.test_rejects_backslash_path) ... ok
+test_rejects_duplicate_manifest_paths (test_mb_install_unit.TestVerifyBundle.test_rejects_duplicate_manifest_paths) ... ok
+test_rejects_duplicate_zip_members (test_mb_install_unit.TestVerifyBundle.test_rejects_duplicate_zip_members) ... /usr/lib/python3.11/zipfile.py:1580: UserWarning: Duplicate name: 'tools/dup.txt'
+  return self._open_to_write(zinfo, force_zip64=force_zip64)
+ok
+test_rejects_out_of_tree_path (test_mb_install_unit.TestVerifyBundle.test_rejects_out_of_tree_path) ... ok
+test_rejects_traversal_path (test_mb_install_unit.TestVerifyBundle.test_rejects_traversal_path) ... ok
+test_rejects_undeclared_zip_payload (test_mb_install_unit.TestVerifyBundle.test_rejects_undeclared_zip_payload) ... ok
+test_receipt_is_deterministic (test_mb_install_unit.TestWriteReceipt.test_receipt_is_deterministic) ... ok
+test_receipt_raises_on_empty_score_source (test_mb_install_unit.TestWriteReceipt.test_receipt_raises_on_empty_score_source) ... ok
+test_receipt_raises_on_non_execution_score_source (test_mb_install_unit.TestWriteReceipt.test_receipt_raises_on_non_execution_score_source) ... ok
+test_receipt_shape (test_mb_install_unit.TestWriteReceipt.test_receipt_shape) ... ok
+test_receipt_sorts_files_for_equivalent_manifests (test_mb_install_unit.TestWriteReceipt.test_receipt_sorts_files_for_equivalent_manifests) ... ok
+
+----------------------------------------------------------------------
+Ran 42 tests in 0.022s
+
+OK

@@ -1,0 +1,32 @@
+{
+  "base_sha": "87a99df2a6530dea8d34b0aefa04a4635de4348d",
+  "branch": "claude/new-session-g7ll2w",
+  "commit_sha": "d8738e27ec7d588434cbea111cf82cdf61e08e9c",
+  "created_at_utc": "2026-06-16T00:02:27Z",
+  "decision": "PASS_MB_INSTALL_V0_STAGE1_42_OF_42",
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "mutations_performed": [],
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "schema": "mb.stage_evidence.execution_receipt.v1",
+  "score_source": "execution",
+  "stage1_invariants": {
+    "atomic_swap_guarded": true,
+    "bootstrap_flag_set_in_tests": false,
+    "live_tree_mutation": false,
+    "protected_surface_write": false,
+    "swap_performed": false
+  },
+  "stage_id": "mb_install_v0_stage1",
+  "test_errors": 0,
+  "test_failed": 0,
+  "test_passed": 42,
+  "test_total": 42
+}
