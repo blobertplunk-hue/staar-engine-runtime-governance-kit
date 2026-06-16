@@ -1,0 +1,75 @@
+{
+  "schema": "mb.sarp.risk_closure_plan.v1",
+  "stage_id": "mb_install_v0_stage8_limited_promotion_proposal",
+  "source_sarp_commit": "6b5cc7e95278ab2b03fcb9ae24ef749d22cf1d49",
+  "risks": [
+    {
+      "id": "RISK-01",
+      "title": "Live-tree apply has not been authorized",
+      "stage7_classification": "BLOCKER",
+      "stage8_status": "CARRIED_FORWARD_BLOCKER",
+      "stage8_action": "AUTHORIZATION_SCOPE.json establishes that live_apply_authorized is false and enumerates the required_later_authorization_fields that must be supplied before execution. The proposal exists but live apply remains blocked. Execution-stage authorization must supply: target_tree, responsible_principal, robert_auth_token_scope, exact_command, rollback_plan, preflight_receipt, dry_run_receipt, final_go_no_go_confirmation.",
+      "closed_by": null,
+      "required_to_close": "Later execution-stage prompt with all required_later_authorization_fields and explicit go/no-go confirmation."
+    },
+    {
+      "id": "RISK-02",
+      "title": "GitHub Actions CI not independently observed by external connector",
+      "stage7_classification": "NONBLOCKING_RISK",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage8_action": "Identified as a hard precondition in LIMITED_PROMOTION_PROPOSAL.md: RISK-02 must be resolved before execution-stage is approved. External connector must fetch CI run log for commit 0b63bdc7 and confirm Ran 57 tests / OK.",
+      "closed_by": null,
+      "required_to_close": "External connector (non-Claude, non-ChatGPT) fetches and confirms GitHub Actions run log for 0b63bdc7."
+    },
+    {
+      "id": "RISK-03",
+      "title": "atomic_swap not rehearsed against real non-CI target",
+      "stage7_classification": "NONBLOCKING_RISK",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage8_action": "Identified as a soft precondition in LIMITED_PROMOTION_PROPOSAL.md. The limited promotion execution itself will constitute the first supervised rehearsal, provided all hard preconditions are met first. Carry-forward is permitted for the proposal stage.",
+      "closed_by": null,
+      "required_to_close": "Supervised rehearsal log produced during execution stage."
+    },
+    {
+      "id": "RISK-04",
+      "title": "Protected-surface writes never exercised with real Robert-auth token",
+      "stage7_classification": "NONBLOCKING_RISK",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage8_action": "TARGET_TREE_SELECTION_CRITERIA.md section 3 requires explicit token scope naming before any protected-class write. If the limited promotion bundle contains no protected-class files (protected_class: false for all entries), RISK-04 does not apply to the execution stage. Must be declared in the execution-stage authorization document.",
+      "closed_by": null,
+      "required_to_close": "Execution-stage authorization document declares either: (a) no protected-class files in bundle, or (b) explicit token scope for each protected-class file."
+    },
+    {
+      "id": "RISK-05",
+      "title": "External non-Claude/non-ChatGPT reproduction not performed",
+      "stage7_classification": "NONBLOCKING_RISK",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage8_action": "Identified as a soft precondition in LIMITED_PROMOTION_PROPOSAL.md. Required before production promotion; not required before limited promotion execution. Carry-forward is permitted.",
+      "closed_by": null,
+      "required_to_close": "Human developer or third CI system runs bash REPRODUCE.sh from commit 0b63bdc7 and logs result."
+    },
+    {
+      "id": "RISK-06",
+      "title": "FM-B atomicity is single-agent scope only",
+      "stage7_classification": "DOCUMENTATION_ONLY",
+      "stage8_status": "DOCUMENTED",
+      "stage8_action": "TARGET_TREE_SELECTION_CRITERIA.md section 4 documents FM-B atomicity scope: single-agent installs only; target trees must not be subject to concurrent sidecar writes. No code change required for limited promotion.",
+      "closed_by": "TARGET_TREE_SELECTION_CRITERIA.md section 4",
+      "required_to_close": null
+    },
+    {
+      "id": "RISK-07",
+      "title": "No re-verify hash check inside atomic_swap before rename",
+      "stage7_classification": "NONBLOCKING_RISK",
+      "stage8_status": "CARRIED_FORWARD_NONBLOCKING",
+      "stage8_action": "Identified as a soft precondition in LIMITED_PROMOTION_PROPOSAL.md. For limited promotion against a throwaway isolated target (no concurrent writers), TOCTOU risk is negligible. Carry-forward with documented justification: limited promotion target trees must not be subject to concurrent writes (per TARGET_TREE_SELECTION_CRITERIA.md section 1.1), so the window is effectively unexploitable.",
+      "closed_by": null,
+      "required_to_close": "Optional: add hash re-verify inside atomic_swap before rename in a future code revision. Not required for limited promotion execution."
+    }
+  ],
+  "blocker_risks_remaining": 1,
+  "blocker_ids_remaining": ["RISK-01"],
+  "nonblocking_risks_remaining": 4,
+  "documented_risks_closed": 1,
+  "summary": "RISK-06 is closed by documentation in TARGET_TREE_SELECTION_CRITERIA.md. RISK-01 remains a BLOCKER for live apply — carried forward to execution stage. RISK-02 is a hard precondition for execution-stage approval. RISK-03, RISK-04, RISK-05, RISK-07 are carried forward as nonblocking with defined closure paths."
+}

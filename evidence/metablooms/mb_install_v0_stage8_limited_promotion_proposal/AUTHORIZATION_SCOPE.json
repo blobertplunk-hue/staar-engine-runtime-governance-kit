@@ -1,0 +1,42 @@
+{
+  "schema": "mb.authorization_scope.v1",
+  "stage_id": "mb_install_v0_stage8_limited_promotion_proposal",
+  "authorizing_principal": "Robert",
+  "authorization_statement": "Robert authorizes creation of a limited promotion proposal and scoped authorization document for MB_INSTALL v0. This authorizes planning and artifact creation only. It does not yet authorize execution against a live target tree until Stage 8 is audited and a later execution-stage prompt explicitly confirms the target and command.",
+  "authorization_type": "LIMITED_PROMOTION_PROPOSAL_ONLY",
+  "authorized_actions": [
+    "produce_promotion_proposal_document",
+    "produce_authorization_scope_document",
+    "produce_target_tree_selection_criteria",
+    "produce_risk_closure_plan",
+    "produce_evidence_packet",
+    "commit_evidence_packet_to_repo",
+    "push_evidence_packet_to_remote_branch"
+  ],
+  "live_apply_authorized": false,
+  "protected_surface_write_authorized": false,
+  "prune_authorized": false,
+  "rollback_authorized": false,
+  "staging_swap_authorized": false,
+  "target_tree_authorized": false,
+  "atomic_swap_authorized": false,
+  "delete_authorized": false,
+  "required_later_authorization_fields": [
+    "target_tree",
+    "responsible_principal",
+    "robert_auth_token_scope",
+    "exact_command",
+    "rollback_plan",
+    "preflight_receipt",
+    "dry_run_receipt",
+    "final_go_no_go_confirmation"
+  ],
+  "enforcement_note": "Any execution-stage action that is not listed in authorized_actions is forbidden until a separately-audited execution stage supplies all required_later_authorization_fields and receives explicit confirmation.",
+  "pinned_commits": {
+    "tested_code": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+    "current_57_evidence": "92eecde7ac009d466c6f94801c81f63ed3772b2b",
+    "stage6_reproduction": "298050f756f6cba3c3ffba7eb8365a7bd7255f8d",
+    "stage7_sarp": "6b5cc7e95278ab2b03fcb9ae24ef749d22cf1d49"
+  },
+  "created_at_utc": "2026-06-16T01:13:00Z"
+}

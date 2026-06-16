@@ -1,0 +1,39 @@
+MB_INSTALL v0 Stage 8 — Limited Promotion Proposal Command Transcript
+Stage ID: mb_install_v0_stage8_limited_promotion_proposal
+Date (UTC): 2026-06-16
+
+== Inputs received and pinned ==
+- Tested code commit:              0b63bdc77e03bcbc01052c8adcabb80f2922318f
+- Current 57/57 evidence commit:   92eecde7ac009d466c6f94801c81f63ed3772b2b
+- Stage 6 reproduction commit:     298050f756f6cba3c3ffba7eb8365a7bd7255f8d
+- Stage 7 SARP commit:             6b5cc7e95278ab2b03fcb9ae24ef749d22cf1d49
+
+Robert authorization statement encoded as received:
+"Robert authorizes creation of a limited promotion proposal and scoped
+authorization document for MB_INSTALL v0. This authorizes planning and
+artifact creation only. It does not yet authorize execution against a live
+target tree until Stage 8 is audited and a later execution-stage prompt
+explicitly confirms the target and command."
+
+== Actions performed ==
+1. Created evidence/metablooms/mb_install_v0_stage8_limited_promotion_proposal/
+2. Wrote LIMITED_PROMOTION_PROPOSAL.md — proposal summary, definition, preconditions
+3. Wrote AUTHORIZATION_SCOPE.json — all live_*_authorized fields set to false; required_later_authorization_fields enumerated
+4. Wrote TARGET_TREE_SELECTION_CRITERIA.md — eligibility requirements, absolute exclusions, protected-surface constraints, FM-B scope note
+5. Wrote RISK_CLOSURE_PLAN.json — 7 risks classified; RISK-06 documented/closed; RISK-01 carried forward as BLOCKER; RISK-02 as hard precondition for execution; RISK-03/04/05/07 as nonblocking
+6. Wrote EXECUTION_RECEIPT.json — decision: PASS_STAGE8_LIMITED_PROMOTION_PROPOSAL_READY_FOR_AUDIT
+7. Wrote COMMAND_TRANSCRIPT.txt (this file)
+8. Wrote REPRODUCE.sh and REPRODUCE.ps1 — SHA chain verification scripts
+9. Computed SHA256 of all 8 data artifacts → ARTIFACT_SHA256SUMS.txt
+10. Computed SHA256 of ARTIFACT_SHA256SUMS.txt → pinned in EVIDENCE_MANIFEST.json
+11. Wrote EVIDENCE_MANIFEST.json — pins all commits, all artifact SHAs, all authorization fields
+
+== No mutations performed ==
+No apply, prune, delete, rollback, staging_swap, live atomic_swap,
+or protected-surface write was performed.
+mutations_performed: []
+forbidden_actions: all NOT_RUN
+
+== SHA chain verified ==
+sha256sum -c ARTIFACT_SHA256SUMS.txt: all OK
+manifest cross-check: all OK

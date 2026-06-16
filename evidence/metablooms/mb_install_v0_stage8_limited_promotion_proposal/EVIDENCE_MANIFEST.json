@@ -1,0 +1,64 @@
+{
+  "schema": "mb.stage_evidence.manifest.v1",
+  "stage_id": "mb_install_v0_stage8_limited_promotion_proposal",
+  "repo": "blobertplunk-hue/staar-engine-runtime-governance-kit",
+  "branch": "claude/new-session-g7ll2w",
+  "commit_sha": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+  "base_sha": "ebb12a4fd1ba5caa75993b5d04446294806a5570",
+  "evidence_path": "evidence/metablooms/mb_install_v0_stage8_limited_promotion_proposal/",
+  "created_at_utc": "2026-06-16T01:13:00Z",
+  "decision": "PASS_STAGE8_LIMITED_PROMOTION_PROPOSAL_READY_FOR_AUDIT",
+  "score_source": "execution",
+  "authorizing_principal": "Robert",
+  "authorization_type": "LIMITED_PROMOTION_PROPOSAL_ONLY",
+  "live_apply_authorized": false,
+  "mutations_performed": [],
+  "forbidden_actions": {
+    "apply": "NOT_RUN",
+    "atomic_swap": "NOT_RUN",
+    "delete": "NOT_RUN",
+    "protected_surface_write": "NOT_RUN",
+    "prune": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "staging_swap": "NOT_RUN"
+  },
+  "pinned_input_commits": {
+    "tested_code": "0b63bdc77e03bcbc01052c8adcabb80f2922318f",
+    "current_57_evidence": "92eecde7ac009d466c6f94801c81f63ed3772b2b",
+    "stage6_reproduction": "298050f756f6cba3c3ffba7eb8365a7bd7255f8d",
+    "stage7_sarp": "6b5cc7e95278ab2b03fcb9ae24ef749d22cf1d49"
+  },
+  "pinned_input_evidence_paths": {
+    "stage1": "evidence/metablooms/mb_install_v0_stage1/",
+    "current_57": "evidence/metablooms/mb_install_v0_current_57_of_57/",
+    "stage6": "evidence/metablooms/mb_install_v0_stage6_independent_reproduction/",
+    "stage7": "evidence/metablooms/mb_install_v0_stage7_promotion_readiness_sarp/"
+  },
+  "blocker_risks_remaining": 1,
+  "blocker_ids_remaining": ["RISK-01"],
+  "risk_closure_summary": "RISK-06 documented/closed. RISK-01 carried forward BLOCKER. RISK-02 hard precondition for execution. RISK-03/04/05/07 nonblocking carried forward.",
+  "next_stage": "MB_INSTALL_V0_STAGE9_EXECUTION",
+  "next_stage_hard_preconditions": [
+    "target_tree named and confirmed throwaway",
+    "responsible_principal named",
+    "robert_auth_token_scope stated",
+    "exact_command reviewed",
+    "rollback_plan written and pre-authorized",
+    "RISK-02 CI confirmation from external connector",
+    "preflight_receipt produced and reviewed",
+    "dry_run_receipt produced and reviewed",
+    "final_go_no_go_confirmation from responsible principal"
+  ],
+  "artifact_sha256sums_self_exclusion": "ARTIFACT_SHA256SUMS.txt lists the 8 data artifacts; it does not list itself. Its own SHA256 is pinned in this manifest under artifacts.ARTIFACT_SHA256SUMS.txt.",
+  "artifacts": {
+    "ARTIFACT_SHA256SUMS.txt": "719a2bdb0cd16227d4d69e2ef86e6568f54349013218b271a08125acb5d056e6",
+    "AUTHORIZATION_SCOPE.json": "a61a21f2bae61f98f90653b9affe26ffa06db9154b0538cb5de5e377703d54fc",
+    "COMMAND_TRANSCRIPT.txt": "cf696670c8eb77fac08abb8d4ebbf59aed87e25bc27d97ac05d522ae5e6ca185",
+    "EXECUTION_RECEIPT.json": "9e74c8917329b3b94c5eb9f058849cb9b8b3456ab3b8a27bb77b5c580c4c4e66",
+    "LIMITED_PROMOTION_PROPOSAL.md": "21b1824eca9c520afdca16599b81b4370632f1c09dd991aa6810a0e8a8f052b2",
+    "REPRODUCE.ps1": "8795b2538195534827c8d543fa480735b7af62ff08f0cf42202f5ebdb18e6e07",
+    "REPRODUCE.sh": "83a6ea2e4c65e16110958756401ea9c3b2229a63a23f65efeb4c5f7529fed02b",
+    "RISK_CLOSURE_PLAN.json": "f9d7245dd3e9fc9d5fc43ae1097a90d3a45ec789e1d2fe6604f98fa3bf72afeb",
+    "TARGET_TREE_SELECTION_CRITERIA.md": "0d53766e2e530e49f624e5ccb1112c4293cdfd52f5d77365573d11a2923b098a"
+  }
+}
