@@ -12,31 +12,38 @@
   },
   "resume": {
     "status": "waiting_operator",
-    "current_stage": "TERMUX_ASSURANCE_TOOLPACK_BUILDER_V1_1_0_DEVICE_RETRY",
-    "last_completed_step": "Repaired builder v1.1.0 passed 19 source tests, 19 exact-archive tests, static checks, atomic OS promotion, and GitHub remote readback",
-    "next_step": "Run the repaired builder in Termux and upload the generated x86_64 glibc tar.zst and sha256 sidecar"
+    "current_stage": "TERMUX_ASSURANCE_TOOLPACK_BUILDER_V1_1_1_DEVICE_RERUN",
+    "last_completed_step": "Analyzed uploaded v1.1.0 failure diagnostics, removed the strict-shell ELF-validation failure class, added exact failure telemetry and cache reuse, qualified v1.1.1 with 27 tests, promoted it atomically, published the checkpoint, and cold-boot verified the fresh OS export",
+    "next_step": "Run builder v1.1.1 in Termux and upload the generated x86_64 glibc tar.zst and sha256 sidecar"
   },
   "artifacts": [
     {
-      "path": "/mnt/data/METABLOOMS_ASSURANCE_TOOLPACK_BUILDER_TERMUX_V1_1_0_20260719T203230Z.zip",
-      "sha256": "4667874b589696270e36b7b9f45d7a0d55c8604168ffc44538d8c393ac503a77",
+      "path": "/mnt/data/METABLOOMS_ASSURANCE_TOOLPACK_BUILDER_TERMUX_V1_1_1_20260719T215310Z.zip",
+      "sha256": "b378f042c82d69eae2456ac87382807b90955184879d5c3727aa17d2897699f3",
       "kind": "artifact"
     },
     {
-      "path": "/mnt/data/METABLOOMS_ASSURANCE_TOOLPACK_BUILDER_TERMUX_V1_1_0_20260719T203230Z.zip.sha256",
+      "path": "/mnt/data/METABLOOMS_ASSURANCE_TOOLPACK_BUILDER_TERMUX_V1_1_1_20260719T215310Z.zip.sha256",
       "kind": "sidecar"
+    },
+    {
+      "path": "/mnt/data/METABLOOMS_OS_FULL_EXPORT_TERMUX_BUILDER_V1_1_1_20260719T220100Z.tar.zst",
+      "sha256": "f3ccf90714ed3e19ce1452d190141f11cdb4271154ca5711610108c2dcf8e793",
+      "kind": "full_os_export"
     }
   ],
   "receipts": [
-    "/mnt/data/Metablooms_OS/runtime/receipts/toolpacks/TERMUX_ASSURANCE_TOOLPACK_BUILDER_V1_1_0_ROOT_CAUSE_REPAIR_20260719T203913Z_RECEIPT.json",
-    "/mnt/data/Metablooms_OS/runtime/receipts/toolpacks/ASSURANCE_TOOLPACK_BUILDER_V1_1_0_EXACT_QUALIFICATION_20260719.json"
+    "/mnt/data/Metablooms_OS/runtime/receipts/toolpacks/ASSURANCE_TOOLPACK_BUILDER_V1_1_1_FAILURE_CLASS_REPAIR_20260719T215731Z_RECEIPT.json",
+    "/mnt/data/Metablooms_OS/runtime/reports/toolpacks/ASSURANCE_TOOLPACK_BUILDER_V1_1_1_REPAIR_CHECKPOINT_20260719.json",
+    "/mnt/data/Metablooms_OS/runtime/state/turn_closeout/TURN_CLOSEOUT_RECEIPT_CURRENT.json"
   ],
   "blockers": [],
   "boundaries": [
-    "Live Termux network acquisition remains pending.",
+    "The exact v1.1.0 failing shell command remains unproven because its diagnostic bundle lacked line and command context.",
+    "Live Termux acquisition remains pending.",
     "Final sandbox toolpack acceptance requires fresh-sandbox hydration and smoke testing.",
-    "Analyzer v4 remains blocked by 15 scanner coverage gaps."
+    "Analyzer v4 remains blocked by unavailable scanner coverage."
   ],
   "created_at_utc": "2026-07-19T20:15:31Z",
-  "updated_at_utc": "2026-07-19T20:41:00Z"
+  "updated_at_utc": "2026-07-19T22:03:00Z"
 }
