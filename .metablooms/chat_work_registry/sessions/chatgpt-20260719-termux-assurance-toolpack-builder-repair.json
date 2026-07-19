@@ -1,0 +1,35 @@
+{
+  "schema": "mb.github.chat_work_session.v1",
+  "work_id": "chatgpt-20260719-termux-assurance-toolpack-builder-repair",
+  "intended_work": "Repair Termux assurance toolpack builder, restart research-reasoning-coding loop, and produce runnable x86_64 glibc project-file toolpack",
+  "chat": {
+    "chat_url_status": "PROVIDED",
+    "chat_url": "https://chatgpt.com/g/g-p-689c74a1b2c881919eef34000e072573-metabrain/c/6a5bbc59-b98c-83ea-a064-cf6f4cbd49b5",
+    "source": "USER_PROVIDED"
+  },
+  "github": {
+    "repository_full_name": "blobertplunk-hue/staar-engine-runtime-governance-kit"
+  },
+  "resume": {
+    "status": "active",
+    "current_stage": "TERMUX_ASSURANCE_TOOLPACK_BUILDER_RCA_AND_REPAIR",
+    "last_completed_step": "Observed Termux failure: Python 3.14.6 installed without pip module; prior builder stopped before acquisition",
+    "next_step": "Audit official Termux Python packaging, redesign bootstrap to install python-pip or avoid host pip, test repaired builder, and publish replacement"
+  },
+  "artifacts": [
+    {
+      "path": "/mnt/data/METABLOOMS_ASSURANCE_TOOLPACK_BUILDER_TERMUX_V1_20260719T180000Z.zip",
+      "sha256": "c76a1333f93c422052517a24e5cfb3a5aa8d717d258294997e04e3c229b9b43e",
+      "kind": "artifact"
+    }
+  ],
+  "receipts": [],
+  "blockers": [
+    {
+      "code": "TERMUX_PIP_MODULE_MISSING",
+      "detail": "Current Termux python package omits pip; builder assumed python3 -m pip existed."
+    }
+  ],
+  "created_at_utc": "2026-07-19T20:15:31Z",
+  "updated_at_utc": "2026-07-19T20:15:31Z"
+}
