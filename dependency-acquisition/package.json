@@ -1,0 +1,18 @@
+{
+  "name": "@metablooms/hybrid-resource-harvester-dependency-acquisition",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0 <23"
+  },
+  "dependencies": {
+    "playwright": "1.61.1",
+    "fast-xml-parser": "5.10.1",
+    "parse5": "8.0.1",
+    "pdfjs-dist": "6.1.200",
+    "yauzl": "3.4.0",
+    "file-type": "22.0.1",
+    "minisearch": "7.2.0"
+  }
+}
