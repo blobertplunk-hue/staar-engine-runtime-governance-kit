@@ -38,20 +38,25 @@ def sha256(path: pathlib.Path) -> str:
 
 
 def run(*args: str, capture: bool = False) -> str:
-    completed = subprocess.run(
-        list(args),
-        cwd=WORK,
-        env={**os.environ, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "1"},
-        check=True,
-        text=True,
-        stdout=subprocess.PIPE if capture else None,
-        stderr=subprocess.STDOUT if capture else None,
-    )
+    try:
+        completed = subprocess.run(
+            list(args),
+            cwd=WORK,
+            env={**os.environ, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "1"},
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE if capture else None,
+            stderr=subprocess.STDOUT if capture else None,
+        )
+    except subprocess.CalledProcessError as exc:
+        if exc.stdout:
+            print(exc.stdout)
+        raise
     return completed.stdout or ""
 
 
 def main() -> int:
-    run("npm", "install", "--ignore-scripts", "--omit=optional", "--no-audit", "--no-fund")
+    run("npm", "install", "--ignore-scripts", "--no-audit", "--no-fund")
     npm_ls_text = run("npm", "ls", "--depth=0", capture=True)
     npm_ls_json = json.loads(run("npm", "ls", "--depth=0", "--json", capture=True))
 
@@ -112,7 +117,7 @@ console.log('IMPORT_PROBE=PASS');
         "status": "PASS",
         "node_version": run("node", "--version", capture=True).strip(),
         "npm_version": run("npm", "--version", capture=True).strip(),
-        "install_command": "npm install --ignore-scripts --omit=optional --no-audit --no-fund",
+        "install_command": "npm install --ignore-scripts --no-audit --no-fund",
         "direct_dependencies": direct,
         "npm_ls": npm_ls_json,
         "npm_ls_text": npm_ls_text,
