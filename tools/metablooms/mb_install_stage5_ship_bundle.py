@@ -8,6 +8,8 @@ live OS tree.
 import hashlib
 import json
 import pathlib
+import subprocess
+import sys
 from datetime import datetime, timezone
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -72,6 +74,14 @@ def main() -> int:
         json.dump(attestation, f, indent=2, sort_keys=True)
         f.write("\n")
     print(json.dumps(attestation, sort_keys=True))
+
+    acquisition_manifest = ROOT / "dependency-acquisition" / "package.json"
+    if acquisition_manifest.exists():
+        subprocess.run(
+            [sys.executable, str(ROOT / "tools" / "metablooms" / "hybrid_harvester_task1_dependency_acquisition.py")],
+            cwd=ROOT,
+            check=True,
+        )
     return 0
 
 
