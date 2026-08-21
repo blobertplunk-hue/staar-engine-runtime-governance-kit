@@ -63,5 +63,80 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mb-install-stage5-attestations
-          path: runtime/attestations/*.json
+          path: |
+            runtime/attestations/*.json
+            !runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_*.json
+          if-no-files-found: error
+      - name: Upload Android Recorder Stage002 chunks 001-018
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-recorder-stage002-chunks-001-018
+          path: |
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0001_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0002_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0003_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0004_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0005_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0006_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0007_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0008_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0009_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0010_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0011_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0012_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0013_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0014_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0015_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0016_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0017_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0018_OF_0052.json
+          if-no-files-found: error
+      - name: Upload Android Recorder Stage002 chunks 019-036
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-recorder-stage002-chunks-019-036
+          path: |
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0019_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0020_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0021_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0022_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0023_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0024_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0025_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0026_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0027_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0028_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0029_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0030_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0031_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0032_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0033_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0034_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0035_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0036_OF_0052.json
+          if-no-files-found: error
+      - name: Upload Android Recorder Stage002 chunks 037-052
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-recorder-stage002-chunks-037-052
+          path: |
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0037_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0038_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0039_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0040_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0041_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0042_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0043_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0044_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0045_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0046_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0047_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0048_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0049_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0050_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0051_OF_0052.json
+            runtime/attestations/ANDROID_RECORDER_STAGE002_PAYLOAD_CHUNK_0052_OF_0052.json
           if-no-files-found: error
