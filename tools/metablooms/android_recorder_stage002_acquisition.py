@@ -85,7 +85,7 @@ def main() -> int:
     run(str(sdkmanager), f"--sdk_root={android_home}", "platform-tools", platform_pkg, build_tools_pkg, env=env)
     sdk_list = run(str(sdkmanager), f"--sdk_root={android_home}", "--list_installed", env=env, capture=True)
     required = [
-        android_home / f"platforms/android-{platform_suffix}/android.jar",
+        android_home / f"platforms/{platform_suffix}/android.jar",
         android_home / "platform-tools/adb",
         android_home / f"build-tools/{build_tools_suffix}/aapt2",
     ]
