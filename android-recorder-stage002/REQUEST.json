@@ -1,0 +1,10 @@
+{
+  "schema": "metablooms.android_recorder.stage002.acquisition_request.v1",
+  "stage": "ANDROID_RECORDER_STAGE002_TOOLCHAIN_HYDRATION_AND_BUILD_SHELL_RED_GREEN",
+  "chat_url": "https://chatgpt.com/g/g-p-689c74a1b2c881919eef34000e072573-metabrain/c/6a87d177-78b0-83ea-afae-af07936577d3",
+  "commandline_tools_filename": "commandlinetools-linux-15859902_latest.zip",
+  "commandline_tools_sha256": "4e4c464f145a7512b57d088ac6c278c03c9eea610886b35a5e0804e74eedf583",
+  "android_platform_package": "platforms;android-37",
+  "android_build_tools_package": "build-tools;36.0.0",
+  "gradle_version": "9.5.0"
+}
